@@ -106,9 +106,72 @@ class SimplifiersTest extends TestCase {
     $parser_controller->setDisplayLog(false);
     /* @var $ddex NewReleaseMessage */
     $ddex = $parser_controller->parse($xml_path);
-		
+
 		$album = new SimpleAlbum($ddex);
 		$this->assertTrue($album->isTakedown());
 		$this->assertTrue($album->isPurge());
 	}
+
+  /**
+   * Test SimpleAlbum with ERN 4.3 data
+   */
+  public function testSimpleAlbumErn43() {
+    $parser = new ErnParserController();
+    $ern = $parser->parse("tests/samples/018_ern43.xml");
+
+    $album = new SimpleAlbum($ern);
+
+    // Album title
+    $this->assertEquals("Test Album ERN43", $album->getTitle());
+
+    // ICPN
+    $this->assertEquals("1234567890123", $album->getIcpn());
+
+    // PLine
+    $this->assertEquals(2024, $album->getPLineYear());
+    $this->assertEquals("(P) 2024 Test Label", $album->getPLineText());
+
+    // CLine
+    $this->assertEquals(2024, $album->getCLineYear());
+    $this->assertEquals("(C) 2024 Test Label", $album->getCLineText());
+
+    // Artists (from DisplayArtistName fallback in 4.x)
+    $artists = $album->getArtists();
+    $this->assertNotEmpty($artists);
+    $this->assertEquals("Test Artist", $artists[0]->getName());
+
+    // Genre
+    $this->assertEquals("Pop", $album->getGenre());
+
+    // Parental warning
+    $this->assertEquals("NotExplicit", $album->getParentalWarningType());
+
+    // Deal
+    $deal = $album->getDeal();
+    $this->assertNotNull($deal);
+    $this->assertContains("SubscriptionModel", $deal->getCommercialModelTypes());
+    $this->assertContains("OnDemandStream", $deal->getUseTypes());
+
+    // Image front cover
+    $image = $album->getImageFrontCover();
+    $this->assertNotNull($image);
+    $this->assertEquals("test_cover.jpg", $image->getFileName());
+
+    // Tracks
+    $tracks = $album->getTracksPerCd();
+    $this->assertCount(1, $tracks); // 1 CD
+    $this->assertCount(2, $tracks[1]); // 2 tracks on CD 1
+
+    // Track 1
+    $track1 = $tracks[1][1];
+    $this->assertEquals("Track One", $track1->getTitle());
+    $this->assertEquals("TEST00000001", $track1->getIsrc());
+    $this->assertEquals("track_001.wav", $track1->getFileName());
+
+    // Track 2
+    $track2 = $tracks[1][2];
+    $this->assertEquals("Track Two", $track2->getTitle());
+    $this->assertEquals("TEST00000002", $track2->getIsrc());
+    $this->assertEquals("track_002.wav", $track2->getFileName());
+  }
 }

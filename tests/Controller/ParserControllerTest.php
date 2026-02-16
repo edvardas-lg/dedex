@@ -235,4 +235,43 @@ class ParserControllerTest extends TestCase {
     $this->assertEquals('DedexBundle\Entity\Ern411\NewReleaseMessage', get_class($ddex));
   }
 
+  /**
+   * Test ERN 43 is parsed correctly
+   */
+  public function testSample018Ern43() {
+    $xml_path = "tests/samples/018_ern43.xml";
+    $parser_controller = new ErnParserController();
+    $parser_controller->setDisplayLog(false);
+    $ddex = $parser_controller->parse($xml_path);
+
+    // ERN version is 43. It uses classes with namespace Ern43.
+    $this->assertEquals('DedexBundle\Entity\Ern43\NewReleaseMessage', get_class($ddex));
+
+    // Message header
+    $this->assertEquals("Test43", $ddex->getMessageHeader()->getMessageThreadId());
+    $this->assertEquals("Test43.1", $ddex->getMessageHeader()->getMessageId());
+
+    // Resources
+    $this->assertCount(2, $ddex->getResourceList()->getSoundRecording());
+    $this->assertCount(1, $ddex->getResourceList()->getImage());
+
+    // First sound recording
+    $sr0 = $ddex->getResourceList()->getSoundRecording()[0];
+    $this->assertEquals("A1", $sr0->getResourceReference());
+    $this->assertEquals("TEST00000001", $sr0->getResourceId()[0]->getISRC());
+    $this->assertEquals("Track One", (string) $sr0->getDisplayTitleText()[0]);
+
+    // Image
+    $image = $ddex->getResourceList()->getImage()[0];
+    $this->assertEquals("A3", $image->getResourceReference());
+    $this->assertEquals("FrontCoverImage", $image->getType());
+
+    // Release
+    $release = $ddex->getReleaseList()->getRelease()[0];
+    $this->assertEquals("R0", $release->getReleaseReference()[0]);
+    $this->assertEquals("Album", $release->getReleaseType()[0]);
+    $this->assertEquals("1234567890123", $release->getReleaseId()[0]->getICPN());
+    $this->assertEquals("Test Album ERN43", (string) $release->getDisplayTitleText()[0]);
+  }
+
 }

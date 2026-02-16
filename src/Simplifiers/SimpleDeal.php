@@ -28,7 +28,7 @@ namespace DedexBundle\Simplifiers;
 
 use DateTimeImmutable;
 use DedexBundle\Entity\Ern382\DealType;
-use Swoole\MySQL\Exception;
+use Exception;
 use Throwable;
 
 /**

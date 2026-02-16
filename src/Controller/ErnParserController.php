@@ -77,8 +77,10 @@ class ErnParserController {
    * NewReleaseMessage object from the right entity based on version, like:
    *     \DedexBundle\Entity\Ern382\NewReleaseMessage
    * or  \DedexBundle\Entity\Ern41\NewReleaseMessage
+   * or  \DedexBundle\Entity\Ern43\NewReleaseMessage
    * or  \DedexBundle\Entity\Ern382\PurgeReleaseMessage
    * or  \DedexBundle\Entity\Ern41\PurgeReleaseMessage
+   * or  \DedexBundle\Entity\Ern43\PurgeReleaseMessage
    */
   private $ern = null;
 
@@ -644,7 +646,7 @@ class ErnParserController {
    */
   private function detectVersion($fp) {
     $version = null;
-    $supported_versions = ["411", "41", "382"];
+    $supported_versions = ["43", "411", "41", "382"];
 
     while (($buffer = fgets($fp, 4096)) !== false) {
       $trimed = trim($buffer);
@@ -789,7 +791,7 @@ class ErnParserController {
 
     // Free parser memory
     xml_parser_free($this->xml_parser);
-    
+
     // Check for rules
     $this->validateRules();
 
