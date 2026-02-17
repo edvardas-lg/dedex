@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class ResourceRightsControllerType
 {
-
     /**
      * The number indicating the order of the RightsController in a group of RightsControllers. This is represented in an XML schema as an XML Attribute.
      *
@@ -28,9 +27,9 @@ class ResourceRightsControllerType
     /**
      * A role that describes the Party involved in the administration of Rights.
      *
-     * @var string[] $rightsControllerRole
+     * @var string[] $rightsControlType
      */
-    private $rightsControllerRole = [
+    private $rightsControlType = [
         
     ];
 
@@ -42,7 +41,8 @@ class ResourceRightsControllerType
     private $rightShareUnknown = null;
 
     /**
-     * The share of the licensed Rights owned by the RightsController. RightShare information is given as a xs:decimal value with up to 6 digits (e.g. '12.5' represents 12.5%). If no information is given, 100% is assumed.
+     * The share of the licensed Rights owned by the RightsController. RightShare information is given as a xs:decimal value with up to 6 digits after the decimal point (e.g. '12.5' represents 12.5%). If no information is given, 100% is assumed.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/communication-of-percentages
      *
      * @var \DedexBundle\Entity\Ern43\PercentageType $rightSharePercentage
      */
@@ -110,68 +110,68 @@ class ResourceRightsControllerType
     }
 
     /**
-     * Adds as rightsControllerRole
+     * Adds as rightsControlType
      *
      * A role that describes the Party involved in the administration of Rights.
      *
      * @return self
-     * @param string $rightsControllerRole
+     * @param string $rightsControlType
      */
-    public function addToRightsControllerRole($rightsControllerRole)
+    public function addToRightsControlType($rightsControlType)
     {
-        $this->rightsControllerRole[] = $rightsControllerRole;
+        $this->rightsControlType[] = $rightsControlType;
         return $this;
     }
 
     /**
-     * isset rightsControllerRole
+     * isset rightsControlType
      *
      * A role that describes the Party involved in the administration of Rights.
      *
      * @param int|string $index
      * @return bool
      */
-    public function issetRightsControllerRole($index)
+    public function issetRightsControlType($index)
     {
-        return isset($this->rightsControllerRole[$index]);
+        return isset($this->rightsControlType[$index]);
     }
 
     /**
-     * unset rightsControllerRole
+     * unset rightsControlType
      *
      * A role that describes the Party involved in the administration of Rights.
      *
      * @param int|string $index
      * @return void
      */
-    public function unsetRightsControllerRole($index)
+    public function unsetRightsControlType($index)
     {
-        unset($this->rightsControllerRole[$index]);
+        unset($this->rightsControlType[$index]);
     }
 
     /**
-     * Gets as rightsControllerRole
+     * Gets as rightsControlType
      *
      * A role that describes the Party involved in the administration of Rights.
      *
      * @return string[]
      */
-    public function getRightsControllerRole()
+    public function getRightsControlType()
     {
-        return $this->rightsControllerRole;
+        return $this->rightsControlType;
     }
 
     /**
-     * Sets a new rightsControllerRole
+     * Sets a new rightsControlType
      *
      * A role that describes the Party involved in the administration of Rights.
      *
-     * @param string $rightsControllerRole
+     * @param string $rightsControlType
      * @return self
      */
-    public function setRightsControllerRole(array $rightsControllerRole)
+    public function setRightsControlType(?array $rightsControlType = null)
     {
-        $this->rightsControllerRole = $rightsControllerRole;
+        $this->rightsControlType = $rightsControlType;
         return $this;
     }
 
@@ -204,7 +204,8 @@ class ResourceRightsControllerType
     /**
      * Gets as rightSharePercentage
      *
-     * The share of the licensed Rights owned by the RightsController. RightShare information is given as a xs:decimal value with up to 6 digits (e.g. '12.5' represents 12.5%). If no information is given, 100% is assumed.
+     * The share of the licensed Rights owned by the RightsController. RightShare information is given as a xs:decimal value with up to 6 digits after the decimal point (e.g. '12.5' represents 12.5%). If no information is given, 100% is assumed.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/communication-of-percentages
      *
      * @return \DedexBundle\Entity\Ern43\PercentageType
      */
@@ -216,12 +217,13 @@ class ResourceRightsControllerType
     /**
      * Sets a new rightSharePercentage
      *
-     * The share of the licensed Rights owned by the RightsController. RightShare information is given as a xs:decimal value with up to 6 digits (e.g. '12.5' represents 12.5%). If no information is given, 100% is assumed.
+     * The share of the licensed Rights owned by the RightsController. RightShare information is given as a xs:decimal value with up to 6 digits after the decimal point (e.g. '12.5' represents 12.5%). If no information is given, 100% is assumed.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/communication-of-percentages
      *
      * @param \DedexBundle\Entity\Ern43\PercentageType $rightSharePercentage
      * @return self
      */
-    public function setRightSharePercentage(\DedexBundle\Entity\Ern43\PercentageType $rightSharePercentage)
+    public function setRightSharePercentage(?\DedexBundle\Entity\Ern43\PercentageType $rightSharePercentage = null)
     {
         $this->rightSharePercentage = $rightSharePercentage;
         return $this;
@@ -287,12 +289,10 @@ class ResourceRightsControllerType
      * @param \DedexBundle\Entity\Ern43\DelegatedUsageRightsType[] $delegatedUsageRights
      * @return self
      */
-    public function setDelegatedUsageRights(array $delegatedUsageRights)
+    public function setDelegatedUsageRights(?array $delegatedUsageRights = null)
     {
         $this->delegatedUsageRights = $delegatedUsageRights;
         return $this;
     }
-
-
 }
 

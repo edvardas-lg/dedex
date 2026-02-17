@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class CharacterType
 {
-
     /**
      * The number indicating the order of the Character in a group of Characters. This is represented in an XML schema as an XML Attribute.
      *
@@ -104,12 +103,10 @@ class CharacterType
      * @param \DedexBundle\Entity\Ern43\ContributorType $performer
      * @return self
      */
-    public function setPerformer(\DedexBundle\Entity\Ern43\ContributorType $performer)
+    public function setPerformer(?\DedexBundle\Entity\Ern43\ContributorType $performer = null)
     {
         $this->performer = $performer;
         return $this;
     }
-
-
 }
 

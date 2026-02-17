@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class TechnicalVideoDetailsType
 {
-
     /**
      * The Language and script for the Elements of the TechnicalSoundRecordingDetails as defined in IETF RfC 5646. The default is the same as indicated for the containing composite. Language and Script are provided as lang[-script][-region][-variant]. This is represented in an XML schema as an XML Attribute.
      *
@@ -47,151 +46,27 @@ class TechnicalVideoDetailsType
     private $overallBitRate = null;
 
     /**
-     * A Composite containing details of a ContainerFormat.
+     * A Composite containing details of a delivery File.
      *
-     * @var \DedexBundle\Entity\Ern43\ContainerFormatType $containerFormat
+     * @var \DedexBundle\Entity\Ern43\VideoDeliveryFileType[] $deliveryFile
      */
-    private $containerFormat = null;
+    private $deliveryFile = [
+        
+    ];
 
     /**
-     * A Composite containing details of a Type of VideoCodec.
+     * The Flag indicating whether the Video is technically a clip of the parent Resource (=true) or not (=false). If the Flag is set to true, the Video described is a clip and the ClipDetails describe how the clip is generated from the full recording described in another TechnicalVideoDetails composite. If the Flag is set to false (or left out), the Video described is a 'full' recording and any ClipDetails describe how a clip is generated from said full recording. Note that nothing can be implied from this element as to the conditions under which the clip can be made available.
      *
-     * @var \DedexBundle\Entity\Ern43\VideoCodecTypeType $videoCodecType
+     * @var bool $isClip
      */
-    private $videoCodecType = null;
-
-    /**
-     * A Composite containing the BitRate for the video data and a UnitOfMeasure (the default is kbps).
-     *
-     * @var \DedexBundle\Entity\Ern43\BitRateType $videoBitRate
-     */
-    private $videoBitRate = null;
-
-    /**
-     * A Composite containing the Rate for a number of frames shown in the Video in a specific Period of Time and a UnitOfMeasure (the default is Hz, interlaced).
-     *
-     * @var \DedexBundle\Entity\Ern43\FrameRateType $frameRate
-     */
-    private $frameRate = null;
-
-    /**
-     * A Composite containing the vertical Extent of an Image of the Video and a UnitOfMeasure (the default is Pixels).
-     *
-     * @var \DedexBundle\Entity\Ern43\ExtentType $imageHeight
-     */
-    private $imageHeight = null;
-
-    /**
-     * A Composite containing the horizontal Extent of an Image of the Video and a UnitOfMeasure (the default is Pixels).
-     *
-     * @var \DedexBundle\Entity\Ern43\ExtentType $imageWidth
-     */
-    private $imageWidth = null;
-
-    /**
-     * A Composite containing the ratio formed by dividing the ImageHeight by the ImageWidth.
-     *
-     * @var \DedexBundle\Entity\Ern43\AspectRatioType $aspectRatio
-     */
-    private $aspectRatio = null;
-
-    /**
-     * A Composite containing details of the core part of the Video.
-     *
-     * @var \DedexBundle\Entity\Ern43\CoreAreaType $coreArea
-     */
-    private $coreArea = null;
-
-    /**
-     * An amount of data determining the color of a pixel of an Image of the Video (given in bits per pixel).
-     *
-     * @var int $colorDepth
-     */
-    private $colorDepth = null;
-
-    /**
-     * A Type of resolution (or definition) in which the Video is provided.
-     *
-     * @var string $videoDefinitionType
-     */
-    private $videoDefinitionType = null;
-
-    /**
-     * A Composite containing details of a Type of AudioCodec.
-     *
-     * @var \DedexBundle\Entity\Ern43\AudioCodecTypeType $audioCodecType
-     */
-    private $audioCodecType = null;
-
-    /**
-     * A Composite containing the BitRate for the audio data and a UnitOfMeasure (the default is kbps).
-     *
-     * @var \DedexBundle\Entity\Ern43\BitRateType $audioBitRate
-     */
-    private $audioBitRate = null;
-
-    /**
-     * A number of audio channels.
-     *
-     * @var int $numberOfAudioChannels
-     */
-    private $numberOfAudioChannels = null;
-
-    /**
-     * A Composite containing the SamplingRate for the audio data and a UnitOfMeasure (the default is Hz).
-     *
-     * @var \DedexBundle\Entity\Ern43\SamplingRateType $audioSamplingRate
-     */
-    private $audioSamplingRate = null;
-
-    /**
-     * An amount of audio data in a sample.
-     *
-     * @var int $audioBitsPerSample
-     */
-    private $audioBitsPerSample = null;
-
-    /**
-     * The Duration of the instantiation of the Video if this differs from the Duration provided for the Video itself (using the ISO 8601:2004 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S). This element must only be used if and when there are no royalty reporting implications on this change in duration and when the specific technical instantiation is a clip taken from a technical instantiation representing the whole Video.
-     *
-     * @var \DateInterval $duration
-     */
-    private $duration = null;
-
-    /**
-     * The BitDepth of the File.
-     *
-     * @var int $bitDepth
-     */
-    private $bitDepth = null;
-
-    /**
-     * The Flag indicating whether the Video is technically a preview of the parent Resource (=true) or not (=false). Note that nothing can be implied from this element as to the conditions under which the preview can be made available.
-     *
-     * @var bool $isPreview
-     */
-    private $isPreview = null;
+    private $isClip = null;
 
     /**
      * A Composite containing details of a preview.
      *
-     * @var \DedexBundle\Entity\Ern43\SoundRecordingPreviewDetailsType $previewDetails
+     * @var \DedexBundle\Entity\Ern43\VideoClipDetailsType[] $clipDetails
      */
-    private $previewDetails = null;
-
-    /**
-     * A Composite containing details of a File containing the Video that a DSP can obtain.
-     *
-     * @var \DedexBundle\Entity\Ern43\FileType $file
-     */
-    private $file = null;
-
-    /**
-     * A Composite containing details of a Fingerprint and its governing algorithm.
-     *
-     * @var \DedexBundle\Entity\Ern43\FingerprintType[] $fingerprint
-     */
-    private $fingerprint = [
+    private $clipDetails = [
         
     ];
 
@@ -319,598 +194,168 @@ class TechnicalVideoDetailsType
      * @param \DedexBundle\Entity\Ern43\BitRateType $overallBitRate
      * @return self
      */
-    public function setOverallBitRate(\DedexBundle\Entity\Ern43\BitRateType $overallBitRate)
+    public function setOverallBitRate(?\DedexBundle\Entity\Ern43\BitRateType $overallBitRate = null)
     {
         $this->overallBitRate = $overallBitRate;
         return $this;
     }
 
     /**
-     * Gets as containerFormat
+     * Adds as deliveryFile
      *
-     * A Composite containing details of a ContainerFormat.
+     * A Composite containing details of a delivery File.
      *
-     * @return \DedexBundle\Entity\Ern43\ContainerFormatType
-     */
-    public function getContainerFormat()
-    {
-        return $this->containerFormat;
-    }
-
-    /**
-     * Sets a new containerFormat
-     *
-     * A Composite containing details of a ContainerFormat.
-     *
-     * @param \DedexBundle\Entity\Ern43\ContainerFormatType $containerFormat
      * @return self
+     * @param \DedexBundle\Entity\Ern43\VideoDeliveryFileType $deliveryFile
      */
-    public function setContainerFormat(\DedexBundle\Entity\Ern43\ContainerFormatType $containerFormat)
+    public function addToDeliveryFile(\DedexBundle\Entity\Ern43\VideoDeliveryFileType $deliveryFile)
     {
-        $this->containerFormat = $containerFormat;
+        $this->deliveryFile[] = $deliveryFile;
         return $this;
     }
 
     /**
-     * Gets as videoCodecType
+     * isset deliveryFile
      *
-     * A Composite containing details of a Type of VideoCodec.
-     *
-     * @return \DedexBundle\Entity\Ern43\VideoCodecTypeType
-     */
-    public function getVideoCodecType()
-    {
-        return $this->videoCodecType;
-    }
-
-    /**
-     * Sets a new videoCodecType
-     *
-     * A Composite containing details of a Type of VideoCodec.
-     *
-     * @param \DedexBundle\Entity\Ern43\VideoCodecTypeType $videoCodecType
-     * @return self
-     */
-    public function setVideoCodecType(\DedexBundle\Entity\Ern43\VideoCodecTypeType $videoCodecType)
-    {
-        $this->videoCodecType = $videoCodecType;
-        return $this;
-    }
-
-    /**
-     * Gets as videoBitRate
-     *
-     * A Composite containing the BitRate for the video data and a UnitOfMeasure (the default is kbps).
-     *
-     * @return \DedexBundle\Entity\Ern43\BitRateType
-     */
-    public function getVideoBitRate()
-    {
-        return $this->videoBitRate;
-    }
-
-    /**
-     * Sets a new videoBitRate
-     *
-     * A Composite containing the BitRate for the video data and a UnitOfMeasure (the default is kbps).
-     *
-     * @param \DedexBundle\Entity\Ern43\BitRateType $videoBitRate
-     * @return self
-     */
-    public function setVideoBitRate(\DedexBundle\Entity\Ern43\BitRateType $videoBitRate)
-    {
-        $this->videoBitRate = $videoBitRate;
-        return $this;
-    }
-
-    /**
-     * Gets as frameRate
-     *
-     * A Composite containing the Rate for a number of frames shown in the Video in a specific Period of Time and a UnitOfMeasure (the default is Hz, interlaced).
-     *
-     * @return \DedexBundle\Entity\Ern43\FrameRateType
-     */
-    public function getFrameRate()
-    {
-        return $this->frameRate;
-    }
-
-    /**
-     * Sets a new frameRate
-     *
-     * A Composite containing the Rate for a number of frames shown in the Video in a specific Period of Time and a UnitOfMeasure (the default is Hz, interlaced).
-     *
-     * @param \DedexBundle\Entity\Ern43\FrameRateType $frameRate
-     * @return self
-     */
-    public function setFrameRate(\DedexBundle\Entity\Ern43\FrameRateType $frameRate)
-    {
-        $this->frameRate = $frameRate;
-        return $this;
-    }
-
-    /**
-     * Gets as imageHeight
-     *
-     * A Composite containing the vertical Extent of an Image of the Video and a UnitOfMeasure (the default is Pixels).
-     *
-     * @return \DedexBundle\Entity\Ern43\ExtentType
-     */
-    public function getImageHeight()
-    {
-        return $this->imageHeight;
-    }
-
-    /**
-     * Sets a new imageHeight
-     *
-     * A Composite containing the vertical Extent of an Image of the Video and a UnitOfMeasure (the default is Pixels).
-     *
-     * @param \DedexBundle\Entity\Ern43\ExtentType $imageHeight
-     * @return self
-     */
-    public function setImageHeight(\DedexBundle\Entity\Ern43\ExtentType $imageHeight)
-    {
-        $this->imageHeight = $imageHeight;
-        return $this;
-    }
-
-    /**
-     * Gets as imageWidth
-     *
-     * A Composite containing the horizontal Extent of an Image of the Video and a UnitOfMeasure (the default is Pixels).
-     *
-     * @return \DedexBundle\Entity\Ern43\ExtentType
-     */
-    public function getImageWidth()
-    {
-        return $this->imageWidth;
-    }
-
-    /**
-     * Sets a new imageWidth
-     *
-     * A Composite containing the horizontal Extent of an Image of the Video and a UnitOfMeasure (the default is Pixels).
-     *
-     * @param \DedexBundle\Entity\Ern43\ExtentType $imageWidth
-     * @return self
-     */
-    public function setImageWidth(\DedexBundle\Entity\Ern43\ExtentType $imageWidth)
-    {
-        $this->imageWidth = $imageWidth;
-        return $this;
-    }
-
-    /**
-     * Gets as aspectRatio
-     *
-     * A Composite containing the ratio formed by dividing the ImageHeight by the ImageWidth.
-     *
-     * @return \DedexBundle\Entity\Ern43\AspectRatioType
-     */
-    public function getAspectRatio()
-    {
-        return $this->aspectRatio;
-    }
-
-    /**
-     * Sets a new aspectRatio
-     *
-     * A Composite containing the ratio formed by dividing the ImageHeight by the ImageWidth.
-     *
-     * @param \DedexBundle\Entity\Ern43\AspectRatioType $aspectRatio
-     * @return self
-     */
-    public function setAspectRatio(\DedexBundle\Entity\Ern43\AspectRatioType $aspectRatio)
-    {
-        $this->aspectRatio = $aspectRatio;
-        return $this;
-    }
-
-    /**
-     * Gets as coreArea
-     *
-     * A Composite containing details of the core part of the Video.
-     *
-     * @return \DedexBundle\Entity\Ern43\CoreAreaType
-     */
-    public function getCoreArea()
-    {
-        return $this->coreArea;
-    }
-
-    /**
-     * Sets a new coreArea
-     *
-     * A Composite containing details of the core part of the Video.
-     *
-     * @param \DedexBundle\Entity\Ern43\CoreAreaType $coreArea
-     * @return self
-     */
-    public function setCoreArea(\DedexBundle\Entity\Ern43\CoreAreaType $coreArea)
-    {
-        $this->coreArea = $coreArea;
-        return $this;
-    }
-
-    /**
-     * Gets as colorDepth
-     *
-     * An amount of data determining the color of a pixel of an Image of the Video (given in bits per pixel).
-     *
-     * @return int
-     */
-    public function getColorDepth()
-    {
-        return $this->colorDepth;
-    }
-
-    /**
-     * Sets a new colorDepth
-     *
-     * An amount of data determining the color of a pixel of an Image of the Video (given in bits per pixel).
-     *
-     * @param int $colorDepth
-     * @return self
-     */
-    public function setColorDepth($colorDepth)
-    {
-        $this->colorDepth = $colorDepth;
-        return $this;
-    }
-
-    /**
-     * Gets as videoDefinitionType
-     *
-     * A Type of resolution (or definition) in which the Video is provided.
-     *
-     * @return string
-     */
-    public function getVideoDefinitionType()
-    {
-        return $this->videoDefinitionType;
-    }
-
-    /**
-     * Sets a new videoDefinitionType
-     *
-     * A Type of resolution (or definition) in which the Video is provided.
-     *
-     * @param string $videoDefinitionType
-     * @return self
-     */
-    public function setVideoDefinitionType($videoDefinitionType)
-    {
-        $this->videoDefinitionType = $videoDefinitionType;
-        return $this;
-    }
-
-    /**
-     * Gets as audioCodecType
-     *
-     * A Composite containing details of a Type of AudioCodec.
-     *
-     * @return \DedexBundle\Entity\Ern43\AudioCodecTypeType
-     */
-    public function getAudioCodecType()
-    {
-        return $this->audioCodecType;
-    }
-
-    /**
-     * Sets a new audioCodecType
-     *
-     * A Composite containing details of a Type of AudioCodec.
-     *
-     * @param \DedexBundle\Entity\Ern43\AudioCodecTypeType $audioCodecType
-     * @return self
-     */
-    public function setAudioCodecType(\DedexBundle\Entity\Ern43\AudioCodecTypeType $audioCodecType)
-    {
-        $this->audioCodecType = $audioCodecType;
-        return $this;
-    }
-
-    /**
-     * Gets as audioBitRate
-     *
-     * A Composite containing the BitRate for the audio data and a UnitOfMeasure (the default is kbps).
-     *
-     * @return \DedexBundle\Entity\Ern43\BitRateType
-     */
-    public function getAudioBitRate()
-    {
-        return $this->audioBitRate;
-    }
-
-    /**
-     * Sets a new audioBitRate
-     *
-     * A Composite containing the BitRate for the audio data and a UnitOfMeasure (the default is kbps).
-     *
-     * @param \DedexBundle\Entity\Ern43\BitRateType $audioBitRate
-     * @return self
-     */
-    public function setAudioBitRate(\DedexBundle\Entity\Ern43\BitRateType $audioBitRate)
-    {
-        $this->audioBitRate = $audioBitRate;
-        return $this;
-    }
-
-    /**
-     * Gets as numberOfAudioChannels
-     *
-     * A number of audio channels.
-     *
-     * @return int
-     */
-    public function getNumberOfAudioChannels()
-    {
-        return $this->numberOfAudioChannels;
-    }
-
-    /**
-     * Sets a new numberOfAudioChannels
-     *
-     * A number of audio channels.
-     *
-     * @param int $numberOfAudioChannels
-     * @return self
-     */
-    public function setNumberOfAudioChannels($numberOfAudioChannels)
-    {
-        $this->numberOfAudioChannels = $numberOfAudioChannels;
-        return $this;
-    }
-
-    /**
-     * Gets as audioSamplingRate
-     *
-     * A Composite containing the SamplingRate for the audio data and a UnitOfMeasure (the default is Hz).
-     *
-     * @return \DedexBundle\Entity\Ern43\SamplingRateType
-     */
-    public function getAudioSamplingRate()
-    {
-        return $this->audioSamplingRate;
-    }
-
-    /**
-     * Sets a new audioSamplingRate
-     *
-     * A Composite containing the SamplingRate for the audio data and a UnitOfMeasure (the default is Hz).
-     *
-     * @param \DedexBundle\Entity\Ern43\SamplingRateType $audioSamplingRate
-     * @return self
-     */
-    public function setAudioSamplingRate(\DedexBundle\Entity\Ern43\SamplingRateType $audioSamplingRate)
-    {
-        $this->audioSamplingRate = $audioSamplingRate;
-        return $this;
-    }
-
-    /**
-     * Gets as audioBitsPerSample
-     *
-     * An amount of audio data in a sample.
-     *
-     * @return int
-     */
-    public function getAudioBitsPerSample()
-    {
-        return $this->audioBitsPerSample;
-    }
-
-    /**
-     * Sets a new audioBitsPerSample
-     *
-     * An amount of audio data in a sample.
-     *
-     * @param int $audioBitsPerSample
-     * @return self
-     */
-    public function setAudioBitsPerSample($audioBitsPerSample)
-    {
-        $this->audioBitsPerSample = $audioBitsPerSample;
-        return $this;
-    }
-
-    /**
-     * Gets as duration
-     *
-     * The Duration of the instantiation of the Video if this differs from the Duration provided for the Video itself (using the ISO 8601:2004 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S). This element must only be used if and when there are no royalty reporting implications on this change in duration and when the specific technical instantiation is a clip taken from a technical instantiation representing the whole Video.
-     *
-     * @return \DateInterval
-     */
-    public function getDuration()
-    {
-        return $this->duration;
-    }
-
-    /**
-     * Sets a new duration
-     *
-     * The Duration of the instantiation of the Video if this differs from the Duration provided for the Video itself (using the ISO 8601:2004 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S). This element must only be used if and when there are no royalty reporting implications on this change in duration and when the specific technical instantiation is a clip taken from a technical instantiation representing the whole Video.
-     *
-     * @param \DateInterval $duration
-     * @return self
-     */
-    public function setDuration(\DateInterval $duration)
-    {
-        $this->duration = $duration;
-        return $this;
-    }
-
-    /**
-     * Gets as bitDepth
-     *
-     * The BitDepth of the File.
-     *
-     * @return int
-     */
-    public function getBitDepth()
-    {
-        return $this->bitDepth;
-    }
-
-    /**
-     * Sets a new bitDepth
-     *
-     * The BitDepth of the File.
-     *
-     * @param int $bitDepth
-     * @return self
-     */
-    public function setBitDepth($bitDepth)
-    {
-        $this->bitDepth = $bitDepth;
-        return $this;
-    }
-
-    /**
-     * Gets as isPreview
-     *
-     * The Flag indicating whether the Video is technically a preview of the parent Resource (=true) or not (=false). Note that nothing can be implied from this element as to the conditions under which the preview can be made available.
-     *
-     * @return bool
-     */
-    public function getIsPreview()
-    {
-        return $this->isPreview;
-    }
-
-    /**
-     * Sets a new isPreview
-     *
-     * The Flag indicating whether the Video is technically a preview of the parent Resource (=true) or not (=false). Note that nothing can be implied from this element as to the conditions under which the preview can be made available.
-     *
-     * @param bool $isPreview
-     * @return self
-     */
-    public function setIsPreview($isPreview)
-    {
-        $this->isPreview = $isPreview;
-        return $this;
-    }
-
-    /**
-     * Gets as previewDetails
-     *
-     * A Composite containing details of a preview.
-     *
-     * @return \DedexBundle\Entity\Ern43\SoundRecordingPreviewDetailsType
-     */
-    public function getPreviewDetails()
-    {
-        return $this->previewDetails;
-    }
-
-    /**
-     * Sets a new previewDetails
-     *
-     * A Composite containing details of a preview.
-     *
-     * @param \DedexBundle\Entity\Ern43\SoundRecordingPreviewDetailsType $previewDetails
-     * @return self
-     */
-    public function setPreviewDetails(\DedexBundle\Entity\Ern43\SoundRecordingPreviewDetailsType $previewDetails)
-    {
-        $this->previewDetails = $previewDetails;
-        return $this;
-    }
-
-    /**
-     * Gets as file
-     *
-     * A Composite containing details of a File containing the Video that a DSP can obtain.
-     *
-     * @return \DedexBundle\Entity\Ern43\FileType
-     */
-    public function getFile()
-    {
-        return $this->file;
-    }
-
-    /**
-     * Sets a new file
-     *
-     * A Composite containing details of a File containing the Video that a DSP can obtain.
-     *
-     * @param \DedexBundle\Entity\Ern43\FileType $file
-     * @return self
-     */
-    public function setFile(\DedexBundle\Entity\Ern43\FileType $file)
-    {
-        $this->file = $file;
-        return $this;
-    }
-
-    /**
-     * Adds as fingerprint
-     *
-     * A Composite containing details of a Fingerprint and its governing algorithm.
-     *
-     * @return self
-     * @param \DedexBundle\Entity\Ern43\FingerprintType $fingerprint
-     */
-    public function addToFingerprint(\DedexBundle\Entity\Ern43\FingerprintType $fingerprint)
-    {
-        $this->fingerprint[] = $fingerprint;
-        return $this;
-    }
-
-    /**
-     * isset fingerprint
-     *
-     * A Composite containing details of a Fingerprint and its governing algorithm.
+     * A Composite containing details of a delivery File.
      *
      * @param int|string $index
      * @return bool
      */
-    public function issetFingerprint($index)
+    public function issetDeliveryFile($index)
     {
-        return isset($this->fingerprint[$index]);
+        return isset($this->deliveryFile[$index]);
     }
 
     /**
-     * unset fingerprint
+     * unset deliveryFile
      *
-     * A Composite containing details of a Fingerprint and its governing algorithm.
+     * A Composite containing details of a delivery File.
      *
      * @param int|string $index
      * @return void
      */
-    public function unsetFingerprint($index)
+    public function unsetDeliveryFile($index)
     {
-        unset($this->fingerprint[$index]);
+        unset($this->deliveryFile[$index]);
     }
 
     /**
-     * Gets as fingerprint
+     * Gets as deliveryFile
      *
-     * A Composite containing details of a Fingerprint and its governing algorithm.
+     * A Composite containing details of a delivery File.
      *
-     * @return \DedexBundle\Entity\Ern43\FingerprintType[]
+     * @return \DedexBundle\Entity\Ern43\VideoDeliveryFileType[]
      */
-    public function getFingerprint()
+    public function getDeliveryFile()
     {
-        return $this->fingerprint;
+        return $this->deliveryFile;
     }
 
     /**
-     * Sets a new fingerprint
+     * Sets a new deliveryFile
      *
-     * A Composite containing details of a Fingerprint and its governing algorithm.
+     * A Composite containing details of a delivery File.
      *
-     * @param \DedexBundle\Entity\Ern43\FingerprintType[] $fingerprint
+     * @param \DedexBundle\Entity\Ern43\VideoDeliveryFileType[] $deliveryFile
      * @return self
      */
-    public function setFingerprint(array $fingerprint)
+    public function setDeliveryFile(?array $deliveryFile = null)
     {
-        $this->fingerprint = $fingerprint;
+        $this->deliveryFile = $deliveryFile;
         return $this;
     }
 
+    /**
+     * Gets as isClip
+     *
+     * The Flag indicating whether the Video is technically a clip of the parent Resource (=true) or not (=false). If the Flag is set to true, the Video described is a clip and the ClipDetails describe how the clip is generated from the full recording described in another TechnicalVideoDetails composite. If the Flag is set to false (or left out), the Video described is a 'full' recording and any ClipDetails describe how a clip is generated from said full recording. Note that nothing can be implied from this element as to the conditions under which the clip can be made available.
+     *
+     * @return bool
+     */
+    public function getIsClip()
+    {
+        return $this->isClip;
+    }
 
+    /**
+     * Sets a new isClip
+     *
+     * The Flag indicating whether the Video is technically a clip of the parent Resource (=true) or not (=false). If the Flag is set to true, the Video described is a clip and the ClipDetails describe how the clip is generated from the full recording described in another TechnicalVideoDetails composite. If the Flag is set to false (or left out), the Video described is a 'full' recording and any ClipDetails describe how a clip is generated from said full recording. Note that nothing can be implied from this element as to the conditions under which the clip can be made available.
+     *
+     * @param bool $isClip
+     * @return self
+     */
+    public function setIsClip($isClip)
+    {
+        $this->isClip = $isClip;
+        return $this;
+    }
+
+    /**
+     * Adds as clipDetails
+     *
+     * A Composite containing details of a preview.
+     *
+     * @return self
+     * @param \DedexBundle\Entity\Ern43\VideoClipDetailsType $clipDetails
+     */
+    public function addToClipDetails(\DedexBundle\Entity\Ern43\VideoClipDetailsType $clipDetails)
+    {
+        $this->clipDetails[] = $clipDetails;
+        return $this;
+    }
+
+    /**
+     * isset clipDetails
+     *
+     * A Composite containing details of a preview.
+     *
+     * @param int|string $index
+     * @return bool
+     */
+    public function issetClipDetails($index)
+    {
+        return isset($this->clipDetails[$index]);
+    }
+
+    /**
+     * unset clipDetails
+     *
+     * A Composite containing details of a preview.
+     *
+     * @param int|string $index
+     * @return void
+     */
+    public function unsetClipDetails($index)
+    {
+        unset($this->clipDetails[$index]);
+    }
+
+    /**
+     * Gets as clipDetails
+     *
+     * A Composite containing details of a preview.
+     *
+     * @return \DedexBundle\Entity\Ern43\VideoClipDetailsType[]
+     */
+    public function getClipDetails()
+    {
+        return $this->clipDetails;
+    }
+
+    /**
+     * Sets a new clipDetails
+     *
+     * A Composite containing details of a preview.
+     *
+     * @param \DedexBundle\Entity\Ern43\VideoClipDetailsType[] $clipDetails
+     * @return self
+     */
+    public function setClipDetails(?array $clipDetails = null)
+    {
+        $this->clipDetails = $clipDetails;
+        return $this;
+    }
 }
 

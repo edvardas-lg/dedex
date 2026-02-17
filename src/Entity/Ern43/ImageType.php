@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class ImageType
 {
-
     /**
      * The Language and script for the Elements of the Image as defined in IETF RfC 5646. Language and Script are provided as lang[-script][-region][-variant]. This is represented in an XML schema as an XML Attribute.
      *
@@ -50,6 +49,7 @@ class ImageType
 
     /**
      * A Composite containing details of a Title of the Image as the MessageSender suggests it should be shown to the Consumer. In many instances this is the only Title to be communicated for any given Creation. Multiple instances can be supplied with an ApplicableTerritoryCode and/or LanguageAndScriptCode. One such element is required for each DisplayTitle element and its content typically provides the same information as the concatenation of the DisplayTitle's sub-elements.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
      *
      * @var \DedexBundle\Entity\Ern43\DisplayTitleTextType[] $displayTitleText
      */
@@ -76,7 +76,7 @@ class ImageType
     ];
 
     /**
-     * A Composite containing details of a Type of Version of the Image.
+     * A Composite containing details of a Type of Version given by the releasing party to characterise and differentiate one Image from another with identical or similar Title metadata. VersionTypes may be used for disambiguating an Image that has been derived from another Image by using the value EditedVersion. EditedVersion value is often combined with another VersionType such as RadioVersion.
      *
      * @var \DedexBundle\Entity\Ern43\VersionTypeType[] $versionType
      */
@@ -86,6 +86,9 @@ class ImageType
 
     /**
      * A Composite containing the Name to be used by a DSP when presenting Artist details of the Resource to a Consumer.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @var \DedexBundle\Entity\Ern43\DisplayArtistNameWithDefaultType[] $displayArtistName
      */
@@ -95,6 +98,9 @@ class ImageType
 
     /**
      * A Composite containing details of the DisplayArtist for the Image. The DisplayArtist may be described through Name, Identifier and Roles.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @var \DedexBundle\Entity\Ern43\DisplayArtistType[] $displayArtist
      */
@@ -208,6 +214,7 @@ class ImageType
 
     /**
      * A Composite containing technical details of the Image.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-binaries/communicating-binaries
      *
      * @var \DedexBundle\Entity\Ern43\TechnicalImageDetailsType[] $technicalDetails
      */
@@ -389,6 +396,7 @@ class ImageType
      * Adds as displayTitleText
      *
      * A Composite containing details of a Title of the Image as the MessageSender suggests it should be shown to the Consumer. In many instances this is the only Title to be communicated for any given Creation. Multiple instances can be supplied with an ApplicableTerritoryCode and/or LanguageAndScriptCode. One such element is required for each DisplayTitle element and its content typically provides the same information as the concatenation of the DisplayTitle's sub-elements.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
      *
      * @return self
      * @param \DedexBundle\Entity\Ern43\DisplayTitleTextType $displayTitleText
@@ -403,6 +411,7 @@ class ImageType
      * isset displayTitleText
      *
      * A Composite containing details of a Title of the Image as the MessageSender suggests it should be shown to the Consumer. In many instances this is the only Title to be communicated for any given Creation. Multiple instances can be supplied with an ApplicableTerritoryCode and/or LanguageAndScriptCode. One such element is required for each DisplayTitle element and its content typically provides the same information as the concatenation of the DisplayTitle's sub-elements.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
      *
      * @param int|string $index
      * @return bool
@@ -416,6 +425,7 @@ class ImageType
      * unset displayTitleText
      *
      * A Composite containing details of a Title of the Image as the MessageSender suggests it should be shown to the Consumer. In many instances this is the only Title to be communicated for any given Creation. Multiple instances can be supplied with an ApplicableTerritoryCode and/or LanguageAndScriptCode. One such element is required for each DisplayTitle element and its content typically provides the same information as the concatenation of the DisplayTitle's sub-elements.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
      *
      * @param int|string $index
      * @return void
@@ -429,6 +439,7 @@ class ImageType
      * Gets as displayTitleText
      *
      * A Composite containing details of a Title of the Image as the MessageSender suggests it should be shown to the Consumer. In many instances this is the only Title to be communicated for any given Creation. Multiple instances can be supplied with an ApplicableTerritoryCode and/or LanguageAndScriptCode. One such element is required for each DisplayTitle element and its content typically provides the same information as the concatenation of the DisplayTitle's sub-elements.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
      *
      * @return \DedexBundle\Entity\Ern43\DisplayTitleTextType[]
      */
@@ -441,11 +452,12 @@ class ImageType
      * Sets a new displayTitleText
      *
      * A Composite containing details of a Title of the Image as the MessageSender suggests it should be shown to the Consumer. In many instances this is the only Title to be communicated for any given Creation. Multiple instances can be supplied with an ApplicableTerritoryCode and/or LanguageAndScriptCode. One such element is required for each DisplayTitle element and its content typically provides the same information as the concatenation of the DisplayTitle's sub-elements.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
      *
      * @param \DedexBundle\Entity\Ern43\DisplayTitleTextType[] $displayTitleText
      * @return self
      */
-    public function setDisplayTitleText(array $displayTitleText)
+    public function setDisplayTitleText(?array $displayTitleText = null)
     {
         $this->displayTitleText = $displayTitleText;
         return $this;
@@ -511,7 +523,7 @@ class ImageType
      * @param \DedexBundle\Entity\Ern43\DisplayTitleType[] $displayTitle
      * @return self
      */
-    public function setDisplayTitle(array $displayTitle)
+    public function setDisplayTitle(?array $displayTitle = null)
     {
         $this->displayTitle = $displayTitle;
         return $this;
@@ -577,7 +589,7 @@ class ImageType
      * @param \DedexBundle\Entity\Ern43\AdditionalTitleType[] $additionalTitle
      * @return self
      */
-    public function setAdditionalTitle(array $additionalTitle)
+    public function setAdditionalTitle(?array $additionalTitle = null)
     {
         $this->additionalTitle = $additionalTitle;
         return $this;
@@ -586,7 +598,7 @@ class ImageType
     /**
      * Adds as versionType
      *
-     * A Composite containing details of a Type of Version of the Image.
+     * A Composite containing details of a Type of Version given by the releasing party to characterise and differentiate one Image from another with identical or similar Title metadata. VersionTypes may be used for disambiguating an Image that has been derived from another Image by using the value EditedVersion. EditedVersion value is often combined with another VersionType such as RadioVersion.
      *
      * @return self
      * @param \DedexBundle\Entity\Ern43\VersionTypeType $versionType
@@ -600,7 +612,7 @@ class ImageType
     /**
      * isset versionType
      *
-     * A Composite containing details of a Type of Version of the Image.
+     * A Composite containing details of a Type of Version given by the releasing party to characterise and differentiate one Image from another with identical or similar Title metadata. VersionTypes may be used for disambiguating an Image that has been derived from another Image by using the value EditedVersion. EditedVersion value is often combined with another VersionType such as RadioVersion.
      *
      * @param int|string $index
      * @return bool
@@ -613,7 +625,7 @@ class ImageType
     /**
      * unset versionType
      *
-     * A Composite containing details of a Type of Version of the Image.
+     * A Composite containing details of a Type of Version given by the releasing party to characterise and differentiate one Image from another with identical or similar Title metadata. VersionTypes may be used for disambiguating an Image that has been derived from another Image by using the value EditedVersion. EditedVersion value is often combined with another VersionType such as RadioVersion.
      *
      * @param int|string $index
      * @return void
@@ -626,7 +638,7 @@ class ImageType
     /**
      * Gets as versionType
      *
-     * A Composite containing details of a Type of Version of the Image.
+     * A Composite containing details of a Type of Version given by the releasing party to characterise and differentiate one Image from another with identical or similar Title metadata. VersionTypes may be used for disambiguating an Image that has been derived from another Image by using the value EditedVersion. EditedVersion value is often combined with another VersionType such as RadioVersion.
      *
      * @return \DedexBundle\Entity\Ern43\VersionTypeType[]
      */
@@ -638,12 +650,12 @@ class ImageType
     /**
      * Sets a new versionType
      *
-     * A Composite containing details of a Type of Version of the Image.
+     * A Composite containing details of a Type of Version given by the releasing party to characterise and differentiate one Image from another with identical or similar Title metadata. VersionTypes may be used for disambiguating an Image that has been derived from another Image by using the value EditedVersion. EditedVersion value is often combined with another VersionType such as RadioVersion.
      *
      * @param \DedexBundle\Entity\Ern43\VersionTypeType[] $versionType
      * @return self
      */
-    public function setVersionType(array $versionType)
+    public function setVersionType(?array $versionType = null)
     {
         $this->versionType = $versionType;
         return $this;
@@ -653,6 +665,9 @@ class ImageType
      * Adds as displayArtistName
      *
      * A Composite containing the Name to be used by a DSP when presenting Artist details of the Resource to a Consumer.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @return self
      * @param \DedexBundle\Entity\Ern43\DisplayArtistNameWithDefaultType $displayArtistName
@@ -667,6 +682,9 @@ class ImageType
      * isset displayArtistName
      *
      * A Composite containing the Name to be used by a DSP when presenting Artist details of the Resource to a Consumer.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @param int|string $index
      * @return bool
@@ -680,6 +698,9 @@ class ImageType
      * unset displayArtistName
      *
      * A Composite containing the Name to be used by a DSP when presenting Artist details of the Resource to a Consumer.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @param int|string $index
      * @return void
@@ -693,6 +714,9 @@ class ImageType
      * Gets as displayArtistName
      *
      * A Composite containing the Name to be used by a DSP when presenting Artist details of the Resource to a Consumer.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @return \DedexBundle\Entity\Ern43\DisplayArtistNameWithDefaultType[]
      */
@@ -705,11 +729,14 @@ class ImageType
      * Sets a new displayArtistName
      *
      * A Composite containing the Name to be used by a DSP when presenting Artist details of the Resource to a Consumer.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @param \DedexBundle\Entity\Ern43\DisplayArtistNameWithDefaultType[] $displayArtistName
      * @return self
      */
-    public function setDisplayArtistName(array $displayArtistName)
+    public function setDisplayArtistName(?array $displayArtistName = null)
     {
         $this->displayArtistName = $displayArtistName;
         return $this;
@@ -719,6 +746,9 @@ class ImageType
      * Adds as displayArtist
      *
      * A Composite containing details of the DisplayArtist for the Image. The DisplayArtist may be described through Name, Identifier and Roles.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @return self
      * @param \DedexBundle\Entity\Ern43\DisplayArtistType $displayArtist
@@ -733,6 +763,9 @@ class ImageType
      * isset displayArtist
      *
      * A Composite containing details of the DisplayArtist for the Image. The DisplayArtist may be described through Name, Identifier and Roles.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @param int|string $index
      * @return bool
@@ -746,6 +779,9 @@ class ImageType
      * unset displayArtist
      *
      * A Composite containing details of the DisplayArtist for the Image. The DisplayArtist may be described through Name, Identifier and Roles.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @param int|string $index
      * @return void
@@ -759,6 +795,9 @@ class ImageType
      * Gets as displayArtist
      *
      * A Composite containing details of the DisplayArtist for the Image. The DisplayArtist may be described through Name, Identifier and Roles.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @return \DedexBundle\Entity\Ern43\DisplayArtistType[]
      */
@@ -771,11 +810,14 @@ class ImageType
      * Sets a new displayArtist
      *
      * A Composite containing details of the DisplayArtist for the Image. The DisplayArtist may be described through Name, Identifier and Roles.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @param \DedexBundle\Entity\Ern43\DisplayArtistType[] $displayArtist
      * @return self
      */
-    public function setDisplayArtist(array $displayArtist)
+    public function setDisplayArtist(?array $displayArtist = null)
     {
         $this->displayArtist = $displayArtist;
         return $this;
@@ -841,7 +883,7 @@ class ImageType
      * @param \DedexBundle\Entity\Ern43\ContributorType[] $contributor
      * @return self
      */
-    public function setContributor(array $contributor)
+    public function setContributor(?array $contributor = null)
     {
         $this->contributor = $contributor;
         return $this;
@@ -907,7 +949,7 @@ class ImageType
      * @param \DedexBundle\Entity\Ern43\ResourceRightsControllerType[] $resourceRightsController
      * @return self
      */
-    public function setResourceRightsController(array $resourceRightsController)
+    public function setResourceRightsController(?array $resourceRightsController = null)
     {
         $this->resourceRightsController = $resourceRightsController;
         return $this;
@@ -973,7 +1015,7 @@ class ImageType
      * @param \DedexBundle\Entity\Ern43\WorkRightsControllerType[] $workRightsController
      * @return self
      */
-    public function setWorkRightsController(array $workRightsController)
+    public function setWorkRightsController(?array $workRightsController = null)
     {
         $this->workRightsController = $workRightsController;
         return $this;
@@ -1039,7 +1081,7 @@ class ImageType
      * @param \DedexBundle\Entity\Ern43\CLineWithDefaultType[] $cLine
      * @return self
      */
-    public function setCLine(array $cLine)
+    public function setCLine(?array $cLine = null)
     {
         $this->cLine = $cLine;
         return $this;
@@ -1105,7 +1147,7 @@ class ImageType
      * @param \DedexBundle\Entity\Ern43\CourtesyLineWithDefaultType[] $courtesyLine
      * @return self
      */
-    public function setCourtesyLine(array $courtesyLine)
+    public function setCourtesyLine(?array $courtesyLine = null)
     {
         $this->courtesyLine = $courtesyLine;
         return $this;
@@ -1131,7 +1173,7 @@ class ImageType
      * @param \DedexBundle\Entity\Ern43\EventDateWithoutFlagsType $creationDate
      * @return self
      */
-    public function setCreationDate(\DedexBundle\Entity\Ern43\EventDateWithoutFlagsType $creationDate)
+    public function setCreationDate(?\DedexBundle\Entity\Ern43\EventDateWithoutFlagsType $creationDate = null)
     {
         $this->creationDate = $creationDate;
         return $this;
@@ -1197,7 +1239,7 @@ class ImageType
      * @param \DedexBundle\Entity\Ern43\FulfillmentDateWithTerritoryType[] $firstPublicationDate
      * @return self
      */
-    public function setFirstPublicationDate(array $firstPublicationDate)
+    public function setFirstPublicationDate(?array $firstPublicationDate = null)
     {
         $this->firstPublicationDate = $firstPublicationDate;
         return $this;
@@ -1263,7 +1305,7 @@ class ImageType
      * @param \DedexBundle\Entity\Ern43\ParentalWarningTypeWithTerritoryType[] $parentalWarningType
      * @return self
      */
-    public function setParentalWarningType(array $parentalWarningType)
+    public function setParentalWarningType(?array $parentalWarningType = null)
     {
         $this->parentalWarningType = $parentalWarningType;
         return $this;
@@ -1329,7 +1371,7 @@ class ImageType
      * @param \DedexBundle\Entity\Ern43\RelatedReleaseType[] $relatedRelease
      * @return self
      */
-    public function setRelatedRelease(array $relatedRelease)
+    public function setRelatedRelease(?array $relatedRelease = null)
     {
         $this->relatedRelease = $relatedRelease;
         return $this;
@@ -1395,7 +1437,7 @@ class ImageType
      * @param \DedexBundle\Entity\Ern43\RelatedResourceType[] $relatedResource
      * @return self
      */
-    public function setRelatedResource(array $relatedResource)
+    public function setRelatedResource(?array $relatedResource = null)
     {
         $this->relatedResource = $relatedResource;
         return $this;
@@ -1487,7 +1529,7 @@ class ImageType
      * @param \DedexBundle\Entity\Ern43\DescriptionWithTerritoryType[] $description
      * @return self
      */
-    public function setDescription(array $description)
+    public function setDescription(?array $description = null)
     {
         $this->description = $description;
         return $this;
@@ -1497,6 +1539,7 @@ class ImageType
      * Adds as technicalDetails
      *
      * A Composite containing technical details of the Image.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-binaries/communicating-binaries
      *
      * @return self
      * @param \DedexBundle\Entity\Ern43\TechnicalImageDetailsType $technicalDetails
@@ -1511,6 +1554,7 @@ class ImageType
      * isset technicalDetails
      *
      * A Composite containing technical details of the Image.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-binaries/communicating-binaries
      *
      * @param int|string $index
      * @return bool
@@ -1524,6 +1568,7 @@ class ImageType
      * unset technicalDetails
      *
      * A Composite containing technical details of the Image.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-binaries/communicating-binaries
      *
      * @param int|string $index
      * @return void
@@ -1537,6 +1582,7 @@ class ImageType
      * Gets as technicalDetails
      *
      * A Composite containing technical details of the Image.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-binaries/communicating-binaries
      *
      * @return \DedexBundle\Entity\Ern43\TechnicalImageDetailsType[]
      */
@@ -1549,59 +1595,42 @@ class ImageType
      * Sets a new technicalDetails
      *
      * A Composite containing technical details of the Image.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-binaries/communicating-binaries
      *
      * @param \DedexBundle\Entity\Ern43\TechnicalImageDetailsType[] $technicalDetails
      * @return self
      */
-    public function setTechnicalDetails(array $technicalDetails)
+    public function setTechnicalDetails(?array $technicalDetails = null)
     {
         $this->technicalDetails = $technicalDetails;
         return $this;
     }
 
-    // ─── ERN 4.3 compatibility methods ───────────────────────────────
+    // --- ERN 4.3 compat methods for Simplifiers ---
 
-    /**
-     * ERN 4.3 compat: alias for getType().
-     * ERN 382 code expects getImageType()->value() returning e.g. "FrontCoverImage".
-     *
-     * @return \DedexBundle\Entity\Ern43\ImageTypeType
-     */
     public function getImageType()
     {
         return $this->type;
     }
 
-    /**
-     * ERN 4.3 compat: returns self as its own DetailsByTerritory.
-     *
-     * @return self[]
-     */
     public function getImageDetailsByTerritory()
     {
         return [$this];
     }
 
-    /**
-     * ERN 4.3 compat: returns "Worldwide" territory code.
-     *
-     * @return \DedexBundle\Entity\Ern43\Ern43CompatValue[]
-     */
-    public function getTerritoryCode()
-    {
-        return [new Ern43CompatValue("Worldwide")];
-    }
-
-    /**
-     * ERN 4.3 compat: alias for getTechnicalDetails().
-     *
-     * @return \DedexBundle\Entity\Ern43\TechnicalImageDetailsType[]
-     */
     public function getTechnicalImageDetails()
     {
         return $this->technicalDetails;
     }
 
+    public function getTerritoryCode()
+    {
+        return [new Ern43CompatValue("Worldwide")];
+    }
 
+    public function getImageId()
+    {
+        return $this->resourceId;
+    }
 }
 

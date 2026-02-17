@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class DeityType
 {
-
     /**
      * @var string $__value
      */
@@ -115,7 +114,5 @@ class DeityType
         $this->isDefault = $isDefault;
         return $this;
     }
-
-
 }
 

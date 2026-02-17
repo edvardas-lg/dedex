@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class AspectRatioType
 {
-
     /**
      * @var float $__value
      */
@@ -22,6 +21,13 @@ class AspectRatioType
      * @var string $aspectRatioType
      */
     private $aspectRatioType = null;
+
+    /**
+     * The Flag indicating whether the AspectRatio value applies to a cropped resource (=true) or not (=false). If the Flag is not set, it is assumed that this is the ratio of the un-cropped resource. This is represented in an XML schema as an XML Attribute.
+     *
+     * @var bool $appliesToCroppedResource
+     */
+    private $appliesToCroppedResource = null;
 
     /**
      * Construct
@@ -83,6 +89,30 @@ class AspectRatioType
         return $this;
     }
 
+    /**
+     * Gets as appliesToCroppedResource
+     *
+     * The Flag indicating whether the AspectRatio value applies to a cropped resource (=true) or not (=false). If the Flag is not set, it is assumed that this is the ratio of the un-cropped resource. This is represented in an XML schema as an XML Attribute.
+     *
+     * @return bool
+     */
+    public function getAppliesToCroppedResource()
+    {
+        return $this->appliesToCroppedResource;
+    }
 
+    /**
+     * Sets a new appliesToCroppedResource
+     *
+     * The Flag indicating whether the AspectRatio value applies to a cropped resource (=true) or not (=false). If the Flag is not set, it is assumed that this is the ratio of the un-cropped resource. This is represented in an XML schema as an XML Attribute.
+     *
+     * @param bool $appliesToCroppedResource
+     * @return self
+     */
+    public function setAppliesToCroppedResource($appliesToCroppedResource)
+    {
+        $this->appliesToCroppedResource = $appliesToCroppedResource;
+        return $this;
+    }
 }
 

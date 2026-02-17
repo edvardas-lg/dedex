@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class PercentageType
 {
-
     /**
      * @var float $__value
      */
@@ -82,7 +81,5 @@ class PercentageType
         $this->hasMaxValueOfOne = $hasMaxValueOfOne;
         return $this;
     }
-
-
 }
 

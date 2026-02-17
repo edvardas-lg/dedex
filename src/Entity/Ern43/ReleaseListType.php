@@ -10,6 +10,8 @@ namespace DedexBundle\Entity\Ern43;
  */
 class ReleaseListType
 {
+    // ERN 4.3 compat: party reference → name map
+    private $_partyMap = [];
 
     /**
      * A Composite containing details of a DDEX Release.
@@ -28,35 +30,39 @@ class ReleaseListType
     ];
 
     /**
-     * Pass-through: injects party map into the stored release for label name resolution.
+     * A Composite containing details of a DDEX clip Release.
      *
-     * @param array $partyMap
-     * @return self
+     * @var \DedexBundle\Entity\Ern43\ClipReleaseType[] $clipRelease
      */
-    public function setPartyMap(array $partyMap)
-    {
-        if ($this->release !== null) {
-            $this->release->setPartyMap($partyMap);
-        }
-        return $this;
-    }
+    private $clipRelease = [
+        
+    ];
 
     /**
      * Gets as release
      *
-     * ERN 4.3 compat: merges the main Release with adapted TrackReleases
-     * into a single array for ERN 382 API compatibility.
-     * ERN 382 code iterates getRelease() expecting all releases (album + tracks).
+     * A Composite containing details of a DDEX Release.
      *
-     * @return \DedexBundle\Entity\Ern43\ReleaseType[]
+     * @return \DedexBundle\Entity\Ern43\ReleaseType
      */
     public function getRelease()
     {
-        $releases = $this->release !== null ? [$this->release] : [];
-        foreach ($this->trackRelease as $tr) {
-            $releases[] = new Ern43CompatTrackRelease($tr);
+        $releases = [];
+        if ($this->release !== null) {
+            $this->release->setPartyMap($this->_partyMap);
+            $releases[] = $this->release;
+        }
+        if (is_array($this->trackRelease)) {
+            foreach ($this->trackRelease as $tr) {
+                $releases[] = new Ern43CompatTrackRelease($tr);
+            }
         }
         return $releases;
+    }
+
+    public function getRawRelease()
+    {
+        return $this->release;
     }
 
     /**
@@ -67,7 +73,7 @@ class ReleaseListType
      * @param \DedexBundle\Entity\Ern43\ReleaseType $release
      * @return self
      */
-    public function setRelease(\DedexBundle\Entity\Ern43\ReleaseType $release)
+    public function setRelease(?\DedexBundle\Entity\Ern43\ReleaseType $release = null)
     {
         $this->release = $release;
         return $this;
@@ -133,12 +139,83 @@ class ReleaseListType
      * @param \DedexBundle\Entity\Ern43\TrackReleaseType[] $trackRelease
      * @return self
      */
-    public function setTrackRelease(array $trackRelease)
+    public function setTrackRelease(?array $trackRelease = null)
     {
         $this->trackRelease = $trackRelease;
         return $this;
     }
 
+    /**
+     * Adds as clipRelease
+     *
+     * A Composite containing details of a DDEX clip Release.
+     *
+     * @return self
+     * @param \DedexBundle\Entity\Ern43\ClipReleaseType $clipRelease
+     */
+    public function addToClipRelease(\DedexBundle\Entity\Ern43\ClipReleaseType $clipRelease)
+    {
+        $this->clipRelease[] = $clipRelease;
+        return $this;
+    }
 
+    /**
+     * isset clipRelease
+     *
+     * A Composite containing details of a DDEX clip Release.
+     *
+     * @param int|string $index
+     * @return bool
+     */
+    public function issetClipRelease($index)
+    {
+        return isset($this->clipRelease[$index]);
+    }
+
+    /**
+     * unset clipRelease
+     *
+     * A Composite containing details of a DDEX clip Release.
+     *
+     * @param int|string $index
+     * @return void
+     */
+    public function unsetClipRelease($index)
+    {
+        unset($this->clipRelease[$index]);
+    }
+
+    /**
+     * Gets as clipRelease
+     *
+     * A Composite containing details of a DDEX clip Release.
+     *
+     * @return \DedexBundle\Entity\Ern43\ClipReleaseType[]
+     */
+    public function getClipRelease()
+    {
+        return $this->clipRelease;
+    }
+
+    /**
+     * Sets a new clipRelease
+     *
+     * A Composite containing details of a DDEX clip Release.
+     *
+     * @param \DedexBundle\Entity\Ern43\ClipReleaseType[] $clipRelease
+     * @return self
+     */
+    public function setClipRelease(?array $clipRelease = null)
+    {
+        $this->clipRelease = $clipRelease;
+        return $this;
+    }
+
+    // --- ERN 4.3 compat ---
+
+    public function setPartyMap(array $map)
+    {
+        $this->_partyMap = $map;
+    }
 }
 

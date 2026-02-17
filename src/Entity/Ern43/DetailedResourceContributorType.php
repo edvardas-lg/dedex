@@ -10,9 +10,9 @@ namespace DedexBundle\Entity\Ern43;
  */
 class DetailedResourceContributorType
 {
-
     /**
-     * The number indicating the order of the ResourceContributor in a group of ResourceContributors that have contributed to a Resource. This is represented in an XML schema as an XML Attribute.
+     * The number indicating the order of the ResourceContributor in a group of ResourceContributors that have contributed to a Resource. This is represented in an XML schema as an XML Attribute. 
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/sequencing-recording-artists-and-writers
      *
      * @var int $sequenceNumber
      */
@@ -29,6 +29,8 @@ class DetailedResourceContributorType
 
     /**
      * A Composite containing details of the PartyName(s).
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers
      *
      * @var \DedexBundle\Entity\Ern43\PartyNameType[] $partyName
      */
@@ -80,7 +82,8 @@ class DetailedResourceContributorType
     /**
      * Gets as sequenceNumber
      *
-     * The number indicating the order of the ResourceContributor in a group of ResourceContributors that have contributed to a Resource. This is represented in an XML schema as an XML Attribute.
+     * The number indicating the order of the ResourceContributor in a group of ResourceContributors that have contributed to a Resource. This is represented in an XML schema as an XML Attribute. 
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/sequencing-recording-artists-and-writers
      *
      * @return int
      */
@@ -92,7 +95,8 @@ class DetailedResourceContributorType
     /**
      * Sets a new sequenceNumber
      *
-     * The number indicating the order of the ResourceContributor in a group of ResourceContributors that have contributed to a Resource. This is represented in an XML schema as an XML Attribute.
+     * The number indicating the order of the ResourceContributor in a group of ResourceContributors that have contributed to a Resource. This is represented in an XML schema as an XML Attribute. 
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/sequencing-recording-artists-and-writers
      *
      * @param int $sequenceNumber
      * @return self
@@ -163,7 +167,7 @@ class DetailedResourceContributorType
      * @param \DedexBundle\Entity\Ern43\DetailedPartyIdType[] $partyId
      * @return self
      */
-    public function setPartyId(array $partyId)
+    public function setPartyId(?array $partyId = null)
     {
         $this->partyId = $partyId;
         return $this;
@@ -173,6 +177,8 @@ class DetailedResourceContributorType
      * Adds as partyName
      *
      * A Composite containing details of the PartyName(s).
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers
      *
      * @return self
      * @param \DedexBundle\Entity\Ern43\PartyNameType $partyName
@@ -187,6 +193,8 @@ class DetailedResourceContributorType
      * isset partyName
      *
      * A Composite containing details of the PartyName(s).
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers
      *
      * @param int|string $index
      * @return bool
@@ -200,6 +208,8 @@ class DetailedResourceContributorType
      * unset partyName
      *
      * A Composite containing details of the PartyName(s).
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers
      *
      * @param int|string $index
      * @return void
@@ -213,6 +223,8 @@ class DetailedResourceContributorType
      * Gets as partyName
      *
      * A Composite containing details of the PartyName(s).
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers
      *
      * @return \DedexBundle\Entity\Ern43\PartyNameType[]
      */
@@ -225,11 +237,13 @@ class DetailedResourceContributorType
      * Sets a new partyName
      *
      * A Composite containing details of the PartyName(s).
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers
      *
      * @param \DedexBundle\Entity\Ern43\PartyNameType[] $partyName
      * @return self
      */
-    public function setPartyName(array $partyName)
+    public function setPartyName(?array $partyName = null)
     {
         $this->partyName = $partyName;
         return $this;
@@ -295,7 +309,7 @@ class DetailedResourceContributorType
      * @param \DedexBundle\Entity\Ern43\ContributorRoleType[] $role
      * @return self
      */
-    public function setRole(array $role)
+    public function setRole(?array $role = null)
     {
         $this->role = $role;
         return $this;
@@ -361,7 +375,7 @@ class DetailedResourceContributorType
      * @param \DedexBundle\Entity\Ern43\InstrumentTypeType[] $instrumentType
      * @return self
      */
-    public function setInstrumentType(array $instrumentType)
+    public function setInstrumentType(?array $instrumentType = null)
     {
         $this->instrumentType = $instrumentType;
         return $this;
@@ -479,12 +493,10 @@ class DetailedResourceContributorType
      * @param \DedexBundle\Entity\Ern43\DisplayCreditsType[] $displayCredits
      * @return self
      */
-    public function setDisplayCredits(array $displayCredits)
+    public function setDisplayCredits(?array $displayCredits = null)
     {
         $this->displayCredits = $displayCredits;
         return $this;
     }
-
-
 }
 

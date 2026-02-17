@@ -5,12 +5,11 @@ namespace DedexBundle\Entity\Ern43;
 /**
  * Class representing ReleaseIdType
  *
- * A Composite containing details of a ReleaseId. If available, a GRid should always to be used. If the Release contains only one SoundRecording, the ISRC of the SoundRecording may be used instead. If the Release is an abstraction of a complete PhysicalProduct (such as a CD Album), the ICPN of the PhysicalProduct may be used instead.
+ * A Composite containing details of a ReleaseId. If available, a GRid should always to be used. If the Release is an abstraction of a complete PhysicalProduct (such as a CD Album), the ICPN of the PhysicalProduct may be used instead.
  * XSD Type: ReleaseId
  */
 class ReleaseIdType
 {
-
     /**
      * The GRid identifying the Release. This is the preferred Element and is mandatory if a GRid is available. A GRid comprises four parts: the xs:string 'A1', followed by five alphanumeric characters, ten alphanumeric characters and and one alphanumeric character. DDEX will enforce the syntax [a-zA-Z0-9]{18} using XML Schema in the future.
      *
@@ -19,14 +18,7 @@ class ReleaseIdType
     private $gRid = null;
 
     /**
-     * The ISRC (International Standard Recording Code as defined in ISO 3901) used as proxy for identification of the Release. Only applicable when the Release only contains one SoundRecording or one MusicalWorkVideo. An ISRC comprises four parts: two characters, followed by three alphanumeric characters, then two digits and five digits. DDEX will enforce the syntax [a-zA-Z]{2}[a-zA-Z0-9]{3}[0-9]{7} using XML Schema in the future.
-     *
-     * @var string $iSRC
-     */
-    private $iSRC = null;
-
-    /**
-     * An ICPN used as proxy for identification of the Release. Only applicable when the Release is an abstraction of a complete PhysicalProduct. An ICPN comprises 12 or 13 digits, depending whether it is an EAN (13) or a UPC (12). DDEX will enforce the syntax [0-9]{12,13} using XML Schema in the future.
+     * An ICPN used as proxy for identification of the Release. Only applicable when the Release is an abstraction of a complete PhysicalProduct. This can be a UPC, EAN, JAN or any other bar code identifying the PhysicalProduct.
      *
      * @var string $iCPN
      */
@@ -75,35 +67,9 @@ class ReleaseIdType
     }
 
     /**
-     * Gets as iSRC
-     *
-     * The ISRC (International Standard Recording Code as defined in ISO 3901) used as proxy for identification of the Release. Only applicable when the Release only contains one SoundRecording or one MusicalWorkVideo. An ISRC comprises four parts: two characters, followed by three alphanumeric characters, then two digits and five digits. DDEX will enforce the syntax [a-zA-Z]{2}[a-zA-Z0-9]{3}[0-9]{7} using XML Schema in the future.
-     *
-     * @return string
-     */
-    public function getISRC()
-    {
-        return $this->iSRC;
-    }
-
-    /**
-     * Sets a new iSRC
-     *
-     * The ISRC (International Standard Recording Code as defined in ISO 3901) used as proxy for identification of the Release. Only applicable when the Release only contains one SoundRecording or one MusicalWorkVideo. An ISRC comprises four parts: two characters, followed by three alphanumeric characters, then two digits and five digits. DDEX will enforce the syntax [a-zA-Z]{2}[a-zA-Z0-9]{3}[0-9]{7} using XML Schema in the future.
-     *
-     * @param string $iSRC
-     * @return self
-     */
-    public function setISRC($iSRC)
-    {
-        $this->iSRC = $iSRC;
-        return $this;
-    }
-
-    /**
      * Gets as iCPN
      *
-     * An ICPN used as proxy for identification of the Release. Only applicable when the Release is an abstraction of a complete PhysicalProduct. An ICPN comprises 12 or 13 digits, depending whether it is an EAN (13) or a UPC (12). DDEX will enforce the syntax [0-9]{12,13} using XML Schema in the future.
+     * An ICPN used as proxy for identification of the Release. Only applicable when the Release is an abstraction of a complete PhysicalProduct. This can be a UPC, EAN, JAN or any other bar code identifying the PhysicalProduct.
      *
      * @return string
      */
@@ -115,7 +81,7 @@ class ReleaseIdType
     /**
      * Sets a new iCPN
      *
-     * An ICPN used as proxy for identification of the Release. Only applicable when the Release is an abstraction of a complete PhysicalProduct. An ICPN comprises 12 or 13 digits, depending whether it is an EAN (13) or a UPC (12). DDEX will enforce the syntax [0-9]{12,13} using XML Schema in the future.
+     * An ICPN used as proxy for identification of the Release. Only applicable when the Release is an abstraction of a complete PhysicalProduct. This can be a UPC, EAN, JAN or any other bar code identifying the PhysicalProduct.
      *
      * @param string $iCPN
      * @return self
@@ -146,7 +112,7 @@ class ReleaseIdType
      * @param \DedexBundle\Entity\Ern43\CatalogNumberType $catalogNumber
      * @return self
      */
-    public function setCatalogNumber(\DedexBundle\Entity\Ern43\CatalogNumberType $catalogNumber)
+    public function setCatalogNumber(?\DedexBundle\Entity\Ern43\CatalogNumberType $catalogNumber = null)
     {
         $this->catalogNumber = $catalogNumber;
         return $this;
@@ -212,12 +178,10 @@ class ReleaseIdType
      * @param \DedexBundle\Entity\Ern43\ProprietaryIdType[] $proprietaryId
      * @return self
      */
-    public function setProprietaryId(array $proprietaryId)
+    public function setProprietaryId(?array $proprietaryId = null)
     {
         $this->proprietaryId = $proprietaryId;
         return $this;
     }
-
-
 }
 

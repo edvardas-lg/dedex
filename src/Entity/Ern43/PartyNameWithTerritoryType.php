@@ -6,11 +6,11 @@ namespace DedexBundle\Entity\Ern43;
  * Class representing PartyNameWithTerritoryType
  *
  * A Composite containing details of a PartyName. Name details for a Party typically either contain a FullName or a KeyName.
+ * Explanatory Note: This Composite is named PartyNameWithTerritory to disambiguate it from the basic PartyName Composite.
  * XSD Type: PartyNameWithTerritory
  */
 class PartyNameWithTerritoryType
 {
-
     /**
      * The Language and script for the Elements of the PartyName as defined in IETF RfC 5646. The default is the same as indicated for the containing composite. Language and Script are provided as lang[-script][-region][-variant]. This is represented in an XML schema as an XML Attribute.
      *
@@ -45,6 +45,20 @@ class PartyNameWithTerritoryType
      * @var string $applicableTerritoryCode
      */
     private $applicableTerritoryCode = null;
+
+    /**
+     * The Flag indicating whether this Composite provides default values (=true). This Flag should not be set if this is not the case. This is represented in an XML schema as an XML Attribute.
+     *
+     * @var bool $isDefault
+     */
+    private $isDefault = null;
+
+    /**
+     * The Flag indicating whether the Name is in its original Language (=true) or not (=false). This Flag should not be set if this is not the case. This is represented in an XML schema as an XML Attribute.
+     *
+     * @var bool $isInOriginalLanguage
+     */
+    private $isInOriginalLanguage = null;
 
     /**
      * A Composite containing the complete Name of the Party, in its normal form of presentation (e.g. John H. Smith, Acme Music Inc, the Beatles).
@@ -226,6 +240,58 @@ class PartyNameWithTerritoryType
     }
 
     /**
+     * Gets as isDefault
+     *
+     * The Flag indicating whether this Composite provides default values (=true). This Flag should not be set if this is not the case. This is represented in an XML schema as an XML Attribute.
+     *
+     * @return bool
+     */
+    public function getIsDefault()
+    {
+        return $this->isDefault;
+    }
+
+    /**
+     * Sets a new isDefault
+     *
+     * The Flag indicating whether this Composite provides default values (=true). This Flag should not be set if this is not the case. This is represented in an XML schema as an XML Attribute.
+     *
+     * @param bool $isDefault
+     * @return self
+     */
+    public function setIsDefault($isDefault)
+    {
+        $this->isDefault = $isDefault;
+        return $this;
+    }
+
+    /**
+     * Gets as isInOriginalLanguage
+     *
+     * The Flag indicating whether the Name is in its original Language (=true) or not (=false). This Flag should not be set if this is not the case. This is represented in an XML schema as an XML Attribute.
+     *
+     * @return bool
+     */
+    public function getIsInOriginalLanguage()
+    {
+        return $this->isInOriginalLanguage;
+    }
+
+    /**
+     * Sets a new isInOriginalLanguage
+     *
+     * The Flag indicating whether the Name is in its original Language (=true) or not (=false). This Flag should not be set if this is not the case. This is represented in an XML schema as an XML Attribute.
+     *
+     * @param bool $isInOriginalLanguage
+     * @return self
+     */
+    public function setIsInOriginalLanguage($isInOriginalLanguage)
+    {
+        $this->isInOriginalLanguage = $isInOriginalLanguage;
+        return $this;
+    }
+
+    /**
      * Gets as fullName
      *
      * A Composite containing the complete Name of the Party, in its normal form of presentation (e.g. John H. Smith, Acme Music Inc, the Beatles).
@@ -297,7 +363,7 @@ class PartyNameWithTerritoryType
      * @param \DedexBundle\Entity\Ern43\NameType $fullNameIndexed
      * @return self
      */
-    public function setFullNameIndexed(\DedexBundle\Entity\Ern43\NameType $fullNameIndexed)
+    public function setFullNameIndexed(?\DedexBundle\Entity\Ern43\NameType $fullNameIndexed = null)
     {
         $this->fullNameIndexed = $fullNameIndexed;
         return $this;
@@ -323,7 +389,7 @@ class PartyNameWithTerritoryType
      * @param \DedexBundle\Entity\Ern43\NameType $namesBeforeKeyName
      * @return self
      */
-    public function setNamesBeforeKeyName(\DedexBundle\Entity\Ern43\NameType $namesBeforeKeyName)
+    public function setNamesBeforeKeyName(?\DedexBundle\Entity\Ern43\NameType $namesBeforeKeyName = null)
     {
         $this->namesBeforeKeyName = $namesBeforeKeyName;
         return $this;
@@ -349,7 +415,7 @@ class PartyNameWithTerritoryType
      * @param \DedexBundle\Entity\Ern43\NameType $keyName
      * @return self
      */
-    public function setKeyName(\DedexBundle\Entity\Ern43\NameType $keyName)
+    public function setKeyName(?\DedexBundle\Entity\Ern43\NameType $keyName = null)
     {
         $this->keyName = $keyName;
         return $this;
@@ -375,7 +441,7 @@ class PartyNameWithTerritoryType
      * @param \DedexBundle\Entity\Ern43\NameType $namesAfterKeyName
      * @return self
      */
-    public function setNamesAfterKeyName(\DedexBundle\Entity\Ern43\NameType $namesAfterKeyName)
+    public function setNamesAfterKeyName(?\DedexBundle\Entity\Ern43\NameType $namesAfterKeyName = null)
     {
         $this->namesAfterKeyName = $namesAfterKeyName;
         return $this;
@@ -401,12 +467,10 @@ class PartyNameWithTerritoryType
      * @param \DedexBundle\Entity\Ern43\NameType $abbreviatedName
      * @return self
      */
-    public function setAbbreviatedName(\DedexBundle\Entity\Ern43\NameType $abbreviatedName)
+    public function setAbbreviatedName(?\DedexBundle\Entity\Ern43\NameType $abbreviatedName = null)
     {
         $this->abbreviatedName = $abbreviatedName;
         return $this;
     }
-
-
 }
 

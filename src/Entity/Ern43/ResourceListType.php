@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class ResourceListType
 {
-
     /**
      * A Composite containing details of a SoundRecording.
      *
@@ -125,7 +124,7 @@ class ResourceListType
      * @param \DedexBundle\Entity\Ern43\SoundRecordingType[] $soundRecording
      * @return self
      */
-    public function setSoundRecording(array $soundRecording)
+    public function setSoundRecording(?array $soundRecording = null)
     {
         $this->soundRecording = $soundRecording;
         return $this;
@@ -191,7 +190,7 @@ class ResourceListType
      * @param \DedexBundle\Entity\Ern43\VideoType[] $video
      * @return self
      */
-    public function setVideo(array $video)
+    public function setVideo(?array $video = null)
     {
         $this->video = $video;
         return $this;
@@ -257,7 +256,7 @@ class ResourceListType
      * @param \DedexBundle\Entity\Ern43\ImageType[] $image
      * @return self
      */
-    public function setImage(array $image)
+    public function setImage(?array $image = null)
     {
         $this->image = $image;
         return $this;
@@ -323,7 +322,7 @@ class ResourceListType
      * @param \DedexBundle\Entity\Ern43\TextType[] $text
      * @return self
      */
-    public function setText(array $text)
+    public function setText(?array $text = null)
     {
         $this->text = $text;
         return $this;
@@ -389,7 +388,7 @@ class ResourceListType
      * @param \DedexBundle\Entity\Ern43\SheetMusicType[] $sheetMusic
      * @return self
      */
-    public function setSheetMusic(array $sheetMusic)
+    public function setSheetMusic(?array $sheetMusic = null)
     {
         $this->sheetMusic = $sheetMusic;
         return $this;
@@ -455,12 +454,10 @@ class ResourceListType
      * @param \DedexBundle\Entity\Ern43\SoftwareType[] $software
      * @return self
      */
-    public function setSoftware(array $software)
+    public function setSoftware(?array $software = null)
     {
         $this->software = $software;
         return $this;
     }
-
-
 }
 

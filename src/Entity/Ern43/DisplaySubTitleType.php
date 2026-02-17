@@ -6,11 +6,11 @@ namespace DedexBundle\Entity\Ern43;
  * Class representing DisplaySubTitleType
  *
  * A Composite containing details of a SubTitle.
+ * Explanatory Note: This Composite is named DisplaySubTitle to disambiguate it from the basic SubTitle Composite.
  * XSD Type: DisplaySubTitle
  */
 class DisplaySubTitleType
 {
-
     /**
      * @var string $__value
      */
@@ -148,7 +148,5 @@ class DisplaySubTitleType
         $this->subTitleType = $subTitleType;
         return $this;
     }
-
-
 }
 

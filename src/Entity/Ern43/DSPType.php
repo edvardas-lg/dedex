@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class DSPType
 {
-
     /**
      * A Composite containing details of the PartyId for the Party. If no Namespace is given, the Identifier is a DdexPartyId (DPID). Note that DPIDs are not normally used to identify Artists, producers or other Creators.
      *
@@ -22,6 +21,8 @@ class DSPType
 
     /**
      * A Composite containing details of the PartyName(s).
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers
      *
      * @var \DedexBundle\Entity\Ern43\PartyNameType[] $partyName
      */
@@ -31,6 +32,7 @@ class DSPType
 
     /**
      * A Composite containing a TradingName of the DSP.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
      *
      * @var \DedexBundle\Entity\Ern43\NameType $tradingName
      */
@@ -105,7 +107,7 @@ class DSPType
      * @param \DedexBundle\Entity\Ern43\DetailedPartyIdType[] $partyId
      * @return self
      */
-    public function setPartyId(array $partyId)
+    public function setPartyId(?array $partyId = null)
     {
         $this->partyId = $partyId;
         return $this;
@@ -115,6 +117,8 @@ class DSPType
      * Adds as partyName
      *
      * A Composite containing details of the PartyName(s).
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers
      *
      * @return self
      * @param \DedexBundle\Entity\Ern43\PartyNameType $partyName
@@ -129,6 +133,8 @@ class DSPType
      * isset partyName
      *
      * A Composite containing details of the PartyName(s).
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers
      *
      * @param int|string $index
      * @return bool
@@ -142,6 +148,8 @@ class DSPType
      * unset partyName
      *
      * A Composite containing details of the PartyName(s).
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers
      *
      * @param int|string $index
      * @return void
@@ -155,6 +163,8 @@ class DSPType
      * Gets as partyName
      *
      * A Composite containing details of the PartyName(s).
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers
      *
      * @return \DedexBundle\Entity\Ern43\PartyNameType[]
      */
@@ -167,11 +177,13 @@ class DSPType
      * Sets a new partyName
      *
      * A Composite containing details of the PartyName(s).
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers
      *
      * @param \DedexBundle\Entity\Ern43\PartyNameType[] $partyName
      * @return self
      */
-    public function setPartyName(array $partyName)
+    public function setPartyName(?array $partyName = null)
     {
         $this->partyName = $partyName;
         return $this;
@@ -181,6 +193,7 @@ class DSPType
      * Gets as tradingName
      *
      * A Composite containing a TradingName of the DSP.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
      *
      * @return \DedexBundle\Entity\Ern43\NameType
      */
@@ -193,11 +206,12 @@ class DSPType
      * Sets a new tradingName
      *
      * A Composite containing a TradingName of the DSP.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
      *
      * @param \DedexBundle\Entity\Ern43\NameType $tradingName
      * @return self
      */
-    public function setTradingName(\DedexBundle\Entity\Ern43\NameType $tradingName)
+    public function setTradingName(?\DedexBundle\Entity\Ern43\NameType $tradingName = null)
     {
         $this->tradingName = $tradingName;
         return $this;
@@ -263,12 +277,10 @@ class DSPType
      * @param string[] $uRL
      * @return self
      */
-    public function setURL(array $uRL)
+    public function setURL(?array $uRL = null)
     {
         $this->uRL = $uRL;
         return $this;
     }
-
-
 }
 

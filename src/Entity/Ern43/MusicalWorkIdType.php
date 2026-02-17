@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class MusicalWorkIdType
 {
-
     /**
      * The Flag indicating whether this Identifier is old and has been replaced by a new one (=true) or not (=false). The Flag may only be set to True when the new Identifier is also provided. If the Flag is not set, this Identifier is deemed to be the current one.
      *
@@ -188,7 +187,7 @@ class MusicalWorkIdType
      * @param string[] $composerCatalogNumber
      * @return self
      */
-    public function setComposerCatalogNumber(array $composerCatalogNumber)
+    public function setComposerCatalogNumber(?array $composerCatalogNumber = null)
     {
         $this->composerCatalogNumber = $composerCatalogNumber;
         return $this;
@@ -254,12 +253,10 @@ class MusicalWorkIdType
      * @param \DedexBundle\Entity\Ern43\ProprietaryIdType[] $proprietaryId
      * @return self
      */
-    public function setProprietaryId(array $proprietaryId)
+    public function setProprietaryId(?array $proprietaryId = null)
     {
         $this->proprietaryId = $proprietaryId;
         return $this;
     }
-
-
 }
 

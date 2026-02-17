@@ -10,12 +10,7 @@ namespace DedexBundle\Entity\Ern43;
  */
 class ContributorType
 {
-
-    /**
-     * ERN 4.3 compat: contributor name set from parallel DisplayArtistName array or party resolution.
-     *
-     * @var string $_compatName
-     */
+    // ERN 4.3 compat: contributor name resolved from PartyList
     private $_compatName = null;
 
     /**
@@ -192,7 +187,7 @@ class ContributorType
      * @param \DedexBundle\Entity\Ern43\ContributorRoleType[] $role
      * @return self
      */
-    public function setRole(array $role)
+    public function setRole(?array $role = null)
     {
         $this->role = $role;
         return $this;
@@ -258,7 +253,7 @@ class ContributorType
      * @param \DedexBundle\Entity\Ern43\InstrumentTypeType[] $instrumentType
      * @return self
      */
-    public function setInstrumentType(array $instrumentType)
+    public function setInstrumentType(?array $instrumentType = null)
     {
         $this->instrumentType = $instrumentType;
         return $this;
@@ -336,7 +331,7 @@ class ContributorType
      * @param \DedexBundle\Entity\Ern43\IsCreditedType $isCredited
      * @return self
      */
-    public function setIsCredited(\DedexBundle\Entity\Ern43\IsCreditedType $isCredited)
+    public function setIsCredited(?\DedexBundle\Entity\Ern43\IsCreditedType $isCredited = null)
     {
         $this->isCredited = $isCredited;
         return $this;
@@ -402,56 +397,32 @@ class ContributorType
      * @param \DedexBundle\Entity\Ern43\DisplayCreditsType[] $displayCredits
      * @return self
      */
-    public function setDisplayCredits(array $displayCredits)
+    public function setDisplayCredits(?array $displayCredits = null)
     {
         $this->displayCredits = $displayCredits;
         return $this;
     }
 
-    /**
-     * ERN 4.3 compat: sets the contributor name from party resolution.
-     *
-     * @param string $name
-     * @return self
-     */
+    // --- ERN 4.3 compat methods for Simplifiers ---
+
     public function setCompatName($name)
     {
         $this->_compatName = $name;
-        return $this;
     }
 
-    /**
-     * ERN 4.3 compat: returns party name as array for ERN 382 API compatibility.
-     * ERN 382 code expects getPartyName()[0]->getFullName().
-     *
-     * @return \DedexBundle\Entity\Ern43\Ern43CompatPartyName[]
-     */
     public function getPartyName()
     {
-        return [new Ern43CompatPartyName($this->_compatName)];
+        return [new Ern43CompatPartyName($this->_compatName ?? '')];
     }
 
-    /**
-     * ERN 4.3 compat: returns contributor role as array for ERN 382 API compatibility.
-     * ERN 382 code expects getResourceContributorRole()[0].
-     *
-     * @return \DedexBundle\Entity\Ern43\ContributorRoleType[]
-     */
     public function getResourceContributorRole()
     {
         return $this->role;
     }
 
-    /**
-     * ERN 4.3 compat: returns empty array for indirect contributor role.
-     *
-     * @return array
-     */
     public function getIndirectResourceContributorRole()
     {
         return $this->role;
     }
-
-
 }
 

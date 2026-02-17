@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class VideoType
 {
-
     /**
      * The Language and script for the Elements of the Video as defined in IETF RfC 5646. Language and Script are provided as lang[-script][-region][-variant]. This is represented in an XML schema as an XML Attribute.
      *
@@ -24,6 +23,13 @@ class VideoType
      * @var bool $isSupplemental
      */
     private $isSupplemental = null;
+
+    /**
+     * The Flag indicating whether the Video is part of the hierarchical structure indicated by the classical release profile variant used for the Message. If the flag is set to false (or absent) the rules for the classical release profile variant do not apply. This is represented in an XML schema as an XML Attribute.
+     *
+     * @var bool $applyClassicalProfileVariant
+     */
+    private $applyClassicalProfileVariant = null;
 
     /**
      * The Identifier (specific to the Message) of the Video within the Release which contains it. This is a LocalResourceAnchor starting with the letter A.
@@ -40,11 +46,20 @@ class VideoType
     private $type = null;
 
     /**
-     * A Composite containing details of an Identifier of the Video.
+     * A Composite containing details of a Video that has been created based on the same content as the 'main' Video but specifically for a different encoding for the audio such as immersive audio. It can be the same Video (in accordance with the ISRC standard) but more likely than not will be a different Video because the sound engineer/producer will be different. If an element in this Composite is not provided, the data is assumed to be the same as for the 'main' Video.
      *
-     * @var \DedexBundle\Entity\Ern43\VideoIdType[] $resourceId
+     * @var \DedexBundle\Entity\Ern43\VideoEditionType[] $videoEdition
      */
-    private $resourceId = [
+    private $videoEdition = [
+        
+    ];
+
+    /**
+     * A Composite containing details of a Type of the Video based on its content, intended audience, format or technical characteristics.
+     *
+     * @var \DedexBundle\Entity\Ern43\RecordingFormatType[] $recordingFormat
+     */
+    private $recordingFormat = [
         
     ];
 
@@ -59,6 +74,7 @@ class VideoType
 
     /**
      * A Composite containing details of a Title of the Video as the MessageSender suggests it should be shown to the Consumer. In many instances this is the only Title to be communicated for any given Creation. Multiple instances can be supplied with an ApplicableTerritoryCode and/or LanguageAndScriptCode. One such element is required for each DisplayTitle element and its content typically provides the same information as the concatenation of the DisplayTitle's sub-elements.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
      *
      * @var \DedexBundle\Entity\Ern43\DisplayTitleTextType[] $displayTitleText
      */
@@ -85,7 +101,7 @@ class VideoType
     ];
 
     /**
-     * A Composite containing details of a Type of Version of the Video.
+     * A Composite containing details of a Type of Version given by the releasing party to characterise and differentiate one Video from another with identical or similar Title metadata. VersionTypes may be used for disambiguating a Video that has been derived from another Video by using the value EditedVersion. EditedVersion value is often combined with another VersionType such as RadioVersion.
      *
      * @var \DedexBundle\Entity\Ern43\VersionTypeType[] $versionType
      */
@@ -95,6 +111,9 @@ class VideoType
 
     /**
      * A Composite containing the Name to be used by a DSP when presenting Artist details of the Resource to a Consumer.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @var \DedexBundle\Entity\Ern43\DisplayArtistNameWithDefaultType[] $displayArtistName
      */
@@ -104,6 +123,9 @@ class VideoType
 
     /**
      * A Composite containing details of the DisplayArtist for the Video. The DisplayArtist may be described through Name, Identifier and Roles.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @var \DedexBundle\Entity\Ern43\DisplayArtistType[] $displayArtist
      */
@@ -148,24 +170,6 @@ class VideoType
     ];
 
     /**
-     * A Composite containing details of the PLine for the Video.
-     *
-     * @var \DedexBundle\Entity\Ern43\PLineWithDefaultType[] $pLine
-     */
-    private $pLine = [
-        
-    ];
-
-    /**
-     * A Composite containing details of the CLine for the Video.
-     *
-     * @var \DedexBundle\Entity\Ern43\CLineWithDefaultType[] $cLine
-     */
-    private $cLine = [
-        
-    ];
-
-    /**
      * A Composite containing an Annotation Annotation which acknowledges record companies and/or other Parties giving permission for guests Artists or others featured on the Video.
      *
      * @var \DedexBundle\Entity\Ern43\CourtesyLineWithDefaultType[] $courtesyLine
@@ -175,7 +179,7 @@ class VideoType
     ];
 
     /**
-     * The Duration of the Video (using the ISO 8601:2004 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
+     * The Duration of the Video (using the ISO 8601 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
      *
      * @var \DateInterval $duration
      */
@@ -280,7 +284,21 @@ class VideoType
     private $isCover = null;
 
     /**
-     * The Flag indicating whether the Video is instrumental (=true) or not (=false).
+     * A Flag indicating whether the Video relates to a (human) vocal Performance (=true) or not (=false).
+     *
+     * @var bool $hasVocalPerformance
+     */
+    private $hasVocalPerformance = null;
+
+    /**
+     * A Flag indicating whether the Video relates to a (human) vocal Performance that is not merely background vocals (=true) or not (=false).
+     *
+     * @var bool $hasForegroundVocalPerformance
+     */
+    private $hasForegroundVocalPerformance = null;
+
+    /**
+     * The Flag indicating whether the Video is instrumental (=true) or not (=false). This element is deprecated. DDEX advises that it may be removed at a future date and therefore recommends against using it.
      *
      * @var bool $isInstrumental
      */
@@ -310,16 +328,16 @@ class VideoType
     ];
 
     /**
-     * The original Language of the Performance recorded in the Video (represented by an ISO 639 LanguageCode).
+     * The original Language of the Performance as defined in IETF RfC 5646. Language and Script are provided as lang[-script][-region][-variant].
      *
-     * @var string[] $languageOfPerformance
+     * @var \DedexBundle\Entity\Ern43\LanguageType[] $languageOfPerformance
      */
     private $languageOfPerformance = [
         
     ];
 
     /**
-     * The Language of dubbing used in the Video (represented by an ISO 639 LanguageCode).
+     * The Language of dubbing used in the Video as defined in IETF RfC 5646. Language and Script are provided as lang[-script][-region][-variant].
      *
      * @var string[] $languageOfDubbing
      */
@@ -328,7 +346,7 @@ class VideoType
     ];
 
     /**
-     * The Language of SubTitles in the Video (represented by an ISO 639 LanguageCode).
+     * The Language of SubTitles in the Video as defined in IETF RfC 5646. Language and Script are provided as lang[-script][-region][-variant].
      *
      * @var string[] $subTitleLanguage
      */
@@ -342,15 +360,6 @@ class VideoType
      * @var \DedexBundle\Entity\Ern43\ResourceContainedResourceReferenceType[] $resourceContainedResourceReferenceList
      */
     private $resourceContainedResourceReferenceList = null;
-
-    /**
-     * A Composite containing technical details of the Video.
-     *
-     * @var \DedexBundle\Entity\Ern43\TechnicalVideoDetailsType[] $technicalDetails
-     */
-    private $technicalDetails = [
-        
-    ];
 
     /**
      * A Description of the melodic mode of a MusicalWork in the Video.
@@ -441,6 +450,32 @@ class VideoType
     }
 
     /**
+     * Gets as applyClassicalProfileVariant
+     *
+     * The Flag indicating whether the Video is part of the hierarchical structure indicated by the classical release profile variant used for the Message. If the flag is set to false (or absent) the rules for the classical release profile variant do not apply. This is represented in an XML schema as an XML Attribute.
+     *
+     * @return bool
+     */
+    public function getApplyClassicalProfileVariant()
+    {
+        return $this->applyClassicalProfileVariant;
+    }
+
+    /**
+     * Sets a new applyClassicalProfileVariant
+     *
+     * The Flag indicating whether the Video is part of the hierarchical structure indicated by the classical release profile variant used for the Message. If the flag is set to false (or absent) the rules for the classical release profile variant do not apply. This is represented in an XML schema as an XML Attribute.
+     *
+     * @param bool $applyClassicalProfileVariant
+     * @return self
+     */
+    public function setApplyClassicalProfileVariant($applyClassicalProfileVariant)
+    {
+        $this->applyClassicalProfileVariant = $applyClassicalProfileVariant;
+        return $this;
+    }
+
+    /**
      * Gets as resourceReference
      *
      * The Identifier (specific to the Message) of the Video within the Release which contains it. This is a LocalResourceAnchor starting with the letter A.
@@ -493,68 +528,134 @@ class VideoType
     }
 
     /**
-     * Adds as resourceId
+     * Adds as videoEdition
      *
-     * A Composite containing details of an Identifier of the Video.
+     * A Composite containing details of a Video that has been created based on the same content as the 'main' Video but specifically for a different encoding for the audio such as immersive audio. It can be the same Video (in accordance with the ISRC standard) but more likely than not will be a different Video because the sound engineer/producer will be different. If an element in this Composite is not provided, the data is assumed to be the same as for the 'main' Video.
      *
      * @return self
-     * @param \DedexBundle\Entity\Ern43\VideoIdType $resourceId
+     * @param \DedexBundle\Entity\Ern43\VideoEditionType $videoEdition
      */
-    public function addToResourceId(\DedexBundle\Entity\Ern43\VideoIdType $resourceId)
+    public function addToVideoEdition(\DedexBundle\Entity\Ern43\VideoEditionType $videoEdition)
     {
-        $this->resourceId[] = $resourceId;
+        $this->videoEdition[] = $videoEdition;
         return $this;
     }
 
     /**
-     * isset resourceId
+     * isset videoEdition
      *
-     * A Composite containing details of an Identifier of the Video.
+     * A Composite containing details of a Video that has been created based on the same content as the 'main' Video but specifically for a different encoding for the audio such as immersive audio. It can be the same Video (in accordance with the ISRC standard) but more likely than not will be a different Video because the sound engineer/producer will be different. If an element in this Composite is not provided, the data is assumed to be the same as for the 'main' Video.
      *
      * @param int|string $index
      * @return bool
      */
-    public function issetResourceId($index)
+    public function issetVideoEdition($index)
     {
-        return isset($this->resourceId[$index]);
+        return isset($this->videoEdition[$index]);
     }
 
     /**
-     * unset resourceId
+     * unset videoEdition
      *
-     * A Composite containing details of an Identifier of the Video.
+     * A Composite containing details of a Video that has been created based on the same content as the 'main' Video but specifically for a different encoding for the audio such as immersive audio. It can be the same Video (in accordance with the ISRC standard) but more likely than not will be a different Video because the sound engineer/producer will be different. If an element in this Composite is not provided, the data is assumed to be the same as for the 'main' Video.
      *
      * @param int|string $index
      * @return void
      */
-    public function unsetResourceId($index)
+    public function unsetVideoEdition($index)
     {
-        unset($this->resourceId[$index]);
+        unset($this->videoEdition[$index]);
     }
 
     /**
-     * Gets as resourceId
+     * Gets as videoEdition
      *
-     * A Composite containing details of an Identifier of the Video.
+     * A Composite containing details of a Video that has been created based on the same content as the 'main' Video but specifically for a different encoding for the audio such as immersive audio. It can be the same Video (in accordance with the ISRC standard) but more likely than not will be a different Video because the sound engineer/producer will be different. If an element in this Composite is not provided, the data is assumed to be the same as for the 'main' Video.
      *
-     * @return \DedexBundle\Entity\Ern43\VideoIdType[]
+     * @return \DedexBundle\Entity\Ern43\VideoEditionType[]
      */
-    public function getResourceId()
+    public function getVideoEdition()
     {
-        return $this->resourceId;
+        return $this->videoEdition;
     }
 
     /**
-     * Sets a new resourceId
+     * Sets a new videoEdition
      *
-     * A Composite containing details of an Identifier of the Video.
+     * A Composite containing details of a Video that has been created based on the same content as the 'main' Video but specifically for a different encoding for the audio such as immersive audio. It can be the same Video (in accordance with the ISRC standard) but more likely than not will be a different Video because the sound engineer/producer will be different. If an element in this Composite is not provided, the data is assumed to be the same as for the 'main' Video.
      *
-     * @param \DedexBundle\Entity\Ern43\VideoIdType[] $resourceId
+     * @param \DedexBundle\Entity\Ern43\VideoEditionType[] $videoEdition
      * @return self
      */
-    public function setResourceId(array $resourceId)
+    public function setVideoEdition(array $videoEdition)
     {
-        $this->resourceId = $resourceId;
+        $this->videoEdition = $videoEdition;
+        return $this;
+    }
+
+    /**
+     * Adds as recordingFormat
+     *
+     * A Composite containing details of a Type of the Video based on its content, intended audience, format or technical characteristics.
+     *
+     * @return self
+     * @param \DedexBundle\Entity\Ern43\RecordingFormatType $recordingFormat
+     */
+    public function addToRecordingFormat(\DedexBundle\Entity\Ern43\RecordingFormatType $recordingFormat)
+    {
+        $this->recordingFormat[] = $recordingFormat;
+        return $this;
+    }
+
+    /**
+     * isset recordingFormat
+     *
+     * A Composite containing details of a Type of the Video based on its content, intended audience, format or technical characteristics.
+     *
+     * @param int|string $index
+     * @return bool
+     */
+    public function issetRecordingFormat($index)
+    {
+        return isset($this->recordingFormat[$index]);
+    }
+
+    /**
+     * unset recordingFormat
+     *
+     * A Composite containing details of a Type of the Video based on its content, intended audience, format or technical characteristics.
+     *
+     * @param int|string $index
+     * @return void
+     */
+    public function unsetRecordingFormat($index)
+    {
+        unset($this->recordingFormat[$index]);
+    }
+
+    /**
+     * Gets as recordingFormat
+     *
+     * A Composite containing details of a Type of the Video based on its content, intended audience, format or technical characteristics.
+     *
+     * @return \DedexBundle\Entity\Ern43\RecordingFormatType[]
+     */
+    public function getRecordingFormat()
+    {
+        return $this->recordingFormat;
+    }
+
+    /**
+     * Sets a new recordingFormat
+     *
+     * A Composite containing details of a Type of the Video based on its content, intended audience, format or technical characteristics.
+     *
+     * @param \DedexBundle\Entity\Ern43\RecordingFormatType[] $recordingFormat
+     * @return self
+     */
+    public function setRecordingFormat(?array $recordingFormat = null)
+    {
+        $this->recordingFormat = $recordingFormat;
         return $this;
     }
 
@@ -618,7 +719,7 @@ class VideoType
      * @param \DedexBundle\Entity\Ern43\MusicalWorkIdType[] $workId
      * @return self
      */
-    public function setWorkId(array $workId)
+    public function setWorkId(?array $workId = null)
     {
         $this->workId = $workId;
         return $this;
@@ -628,6 +729,7 @@ class VideoType
      * Adds as displayTitleText
      *
      * A Composite containing details of a Title of the Video as the MessageSender suggests it should be shown to the Consumer. In many instances this is the only Title to be communicated for any given Creation. Multiple instances can be supplied with an ApplicableTerritoryCode and/or LanguageAndScriptCode. One such element is required for each DisplayTitle element and its content typically provides the same information as the concatenation of the DisplayTitle's sub-elements.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
      *
      * @return self
      * @param \DedexBundle\Entity\Ern43\DisplayTitleTextType $displayTitleText
@@ -642,6 +744,7 @@ class VideoType
      * isset displayTitleText
      *
      * A Composite containing details of a Title of the Video as the MessageSender suggests it should be shown to the Consumer. In many instances this is the only Title to be communicated for any given Creation. Multiple instances can be supplied with an ApplicableTerritoryCode and/or LanguageAndScriptCode. One such element is required for each DisplayTitle element and its content typically provides the same information as the concatenation of the DisplayTitle's sub-elements.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
      *
      * @param int|string $index
      * @return bool
@@ -655,6 +758,7 @@ class VideoType
      * unset displayTitleText
      *
      * A Composite containing details of a Title of the Video as the MessageSender suggests it should be shown to the Consumer. In many instances this is the only Title to be communicated for any given Creation. Multiple instances can be supplied with an ApplicableTerritoryCode and/or LanguageAndScriptCode. One such element is required for each DisplayTitle element and its content typically provides the same information as the concatenation of the DisplayTitle's sub-elements.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
      *
      * @param int|string $index
      * @return void
@@ -668,6 +772,7 @@ class VideoType
      * Gets as displayTitleText
      *
      * A Composite containing details of a Title of the Video as the MessageSender suggests it should be shown to the Consumer. In many instances this is the only Title to be communicated for any given Creation. Multiple instances can be supplied with an ApplicableTerritoryCode and/or LanguageAndScriptCode. One such element is required for each DisplayTitle element and its content typically provides the same information as the concatenation of the DisplayTitle's sub-elements.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
      *
      * @return \DedexBundle\Entity\Ern43\DisplayTitleTextType[]
      */
@@ -680,6 +785,7 @@ class VideoType
      * Sets a new displayTitleText
      *
      * A Composite containing details of a Title of the Video as the MessageSender suggests it should be shown to the Consumer. In many instances this is the only Title to be communicated for any given Creation. Multiple instances can be supplied with an ApplicableTerritoryCode and/or LanguageAndScriptCode. One such element is required for each DisplayTitle element and its content typically provides the same information as the concatenation of the DisplayTitle's sub-elements.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
      *
      * @param \DedexBundle\Entity\Ern43\DisplayTitleTextType[] $displayTitleText
      * @return self
@@ -816,7 +922,7 @@ class VideoType
      * @param \DedexBundle\Entity\Ern43\AdditionalTitleType[] $additionalTitle
      * @return self
      */
-    public function setAdditionalTitle(array $additionalTitle)
+    public function setAdditionalTitle(?array $additionalTitle = null)
     {
         $this->additionalTitle = $additionalTitle;
         return $this;
@@ -825,7 +931,7 @@ class VideoType
     /**
      * Adds as versionType
      *
-     * A Composite containing details of a Type of Version of the Video.
+     * A Composite containing details of a Type of Version given by the releasing party to characterise and differentiate one Video from another with identical or similar Title metadata. VersionTypes may be used for disambiguating a Video that has been derived from another Video by using the value EditedVersion. EditedVersion value is often combined with another VersionType such as RadioVersion.
      *
      * @return self
      * @param \DedexBundle\Entity\Ern43\VersionTypeType $versionType
@@ -839,7 +945,7 @@ class VideoType
     /**
      * isset versionType
      *
-     * A Composite containing details of a Type of Version of the Video.
+     * A Composite containing details of a Type of Version given by the releasing party to characterise and differentiate one Video from another with identical or similar Title metadata. VersionTypes may be used for disambiguating a Video that has been derived from another Video by using the value EditedVersion. EditedVersion value is often combined with another VersionType such as RadioVersion.
      *
      * @param int|string $index
      * @return bool
@@ -852,7 +958,7 @@ class VideoType
     /**
      * unset versionType
      *
-     * A Composite containing details of a Type of Version of the Video.
+     * A Composite containing details of a Type of Version given by the releasing party to characterise and differentiate one Video from another with identical or similar Title metadata. VersionTypes may be used for disambiguating a Video that has been derived from another Video by using the value EditedVersion. EditedVersion value is often combined with another VersionType such as RadioVersion.
      *
      * @param int|string $index
      * @return void
@@ -865,7 +971,7 @@ class VideoType
     /**
      * Gets as versionType
      *
-     * A Composite containing details of a Type of Version of the Video.
+     * A Composite containing details of a Type of Version given by the releasing party to characterise and differentiate one Video from another with identical or similar Title metadata. VersionTypes may be used for disambiguating a Video that has been derived from another Video by using the value EditedVersion. EditedVersion value is often combined with another VersionType such as RadioVersion.
      *
      * @return \DedexBundle\Entity\Ern43\VersionTypeType[]
      */
@@ -877,12 +983,12 @@ class VideoType
     /**
      * Sets a new versionType
      *
-     * A Composite containing details of a Type of Version of the Video.
+     * A Composite containing details of a Type of Version given by the releasing party to characterise and differentiate one Video from another with identical or similar Title metadata. VersionTypes may be used for disambiguating a Video that has been derived from another Video by using the value EditedVersion. EditedVersion value is often combined with another VersionType such as RadioVersion.
      *
      * @param \DedexBundle\Entity\Ern43\VersionTypeType[] $versionType
      * @return self
      */
-    public function setVersionType(array $versionType)
+    public function setVersionType(?array $versionType = null)
     {
         $this->versionType = $versionType;
         return $this;
@@ -892,6 +998,9 @@ class VideoType
      * Adds as displayArtistName
      *
      * A Composite containing the Name to be used by a DSP when presenting Artist details of the Resource to a Consumer.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @return self
      * @param \DedexBundle\Entity\Ern43\DisplayArtistNameWithDefaultType $displayArtistName
@@ -906,6 +1015,9 @@ class VideoType
      * isset displayArtistName
      *
      * A Composite containing the Name to be used by a DSP when presenting Artist details of the Resource to a Consumer.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @param int|string $index
      * @return bool
@@ -919,6 +1031,9 @@ class VideoType
      * unset displayArtistName
      *
      * A Composite containing the Name to be used by a DSP when presenting Artist details of the Resource to a Consumer.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @param int|string $index
      * @return void
@@ -932,6 +1047,9 @@ class VideoType
      * Gets as displayArtistName
      *
      * A Composite containing the Name to be used by a DSP when presenting Artist details of the Resource to a Consumer.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @return \DedexBundle\Entity\Ern43\DisplayArtistNameWithDefaultType[]
      */
@@ -944,6 +1062,9 @@ class VideoType
      * Sets a new displayArtistName
      *
      * A Composite containing the Name to be used by a DSP when presenting Artist details of the Resource to a Consumer.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @param \DedexBundle\Entity\Ern43\DisplayArtistNameWithDefaultType[] $displayArtistName
      * @return self
@@ -958,6 +1079,9 @@ class VideoType
      * Adds as displayArtist
      *
      * A Composite containing details of the DisplayArtist for the Video. The DisplayArtist may be described through Name, Identifier and Roles.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @return self
      * @param \DedexBundle\Entity\Ern43\DisplayArtistType $displayArtist
@@ -972,6 +1096,9 @@ class VideoType
      * isset displayArtist
      *
      * A Composite containing details of the DisplayArtist for the Video. The DisplayArtist may be described through Name, Identifier and Roles.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @param int|string $index
      * @return bool
@@ -985,6 +1112,9 @@ class VideoType
      * unset displayArtist
      *
      * A Composite containing details of the DisplayArtist for the Video. The DisplayArtist may be described through Name, Identifier and Roles.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @param int|string $index
      * @return void
@@ -998,6 +1128,9 @@ class VideoType
      * Gets as displayArtist
      *
      * A Composite containing details of the DisplayArtist for the Video. The DisplayArtist may be described through Name, Identifier and Roles.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @return \DedexBundle\Entity\Ern43\DisplayArtistType[]
      */
@@ -1010,6 +1143,9 @@ class VideoType
      * Sets a new displayArtist
      *
      * A Composite containing details of the DisplayArtist for the Video. The DisplayArtist may be described through Name, Identifier and Roles.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @param \DedexBundle\Entity\Ern43\DisplayArtistType[] $displayArtist
      * @return self
@@ -1080,7 +1216,7 @@ class VideoType
      * @param \DedexBundle\Entity\Ern43\ContributorType[] $contributor
      * @return self
      */
-    public function setContributor(array $contributor)
+    public function setContributor(?array $contributor = null)
     {
         $this->contributor = $contributor;
         return $this;
@@ -1146,7 +1282,7 @@ class VideoType
      * @param \DedexBundle\Entity\Ern43\CharacterType[] $character
      * @return self
      */
-    public function setCharacter(array $character)
+    public function setCharacter(?array $character = null)
     {
         $this->character = $character;
         return $this;
@@ -1212,7 +1348,7 @@ class VideoType
      * @param \DedexBundle\Entity\Ern43\ResourceRightsControllerType[] $resourceRightsController
      * @return self
      */
-    public function setResourceRightsController(array $resourceRightsController)
+    public function setResourceRightsController(?array $resourceRightsController = null)
     {
         $this->resourceRightsController = $resourceRightsController;
         return $this;
@@ -1278,141 +1414,9 @@ class VideoType
      * @param \DedexBundle\Entity\Ern43\WorkRightsControllerType[] $workRightsController
      * @return self
      */
-    public function setWorkRightsController(array $workRightsController)
+    public function setWorkRightsController(?array $workRightsController = null)
     {
         $this->workRightsController = $workRightsController;
-        return $this;
-    }
-
-    /**
-     * Adds as pLine
-     *
-     * A Composite containing details of the PLine for the Video.
-     *
-     * @return self
-     * @param \DedexBundle\Entity\Ern43\PLineWithDefaultType $pLine
-     */
-    public function addToPLine(\DedexBundle\Entity\Ern43\PLineWithDefaultType $pLine)
-    {
-        $this->pLine[] = $pLine;
-        return $this;
-    }
-
-    /**
-     * isset pLine
-     *
-     * A Composite containing details of the PLine for the Video.
-     *
-     * @param int|string $index
-     * @return bool
-     */
-    public function issetPLine($index)
-    {
-        return isset($this->pLine[$index]);
-    }
-
-    /**
-     * unset pLine
-     *
-     * A Composite containing details of the PLine for the Video.
-     *
-     * @param int|string $index
-     * @return void
-     */
-    public function unsetPLine($index)
-    {
-        unset($this->pLine[$index]);
-    }
-
-    /**
-     * Gets as pLine
-     *
-     * A Composite containing details of the PLine for the Video.
-     *
-     * @return \DedexBundle\Entity\Ern43\PLineWithDefaultType[]
-     */
-    public function getPLine()
-    {
-        return $this->pLine;
-    }
-
-    /**
-     * Sets a new pLine
-     *
-     * A Composite containing details of the PLine for the Video.
-     *
-     * @param \DedexBundle\Entity\Ern43\PLineWithDefaultType[] $pLine
-     * @return self
-     */
-    public function setPLine(array $pLine)
-    {
-        $this->pLine = $pLine;
-        return $this;
-    }
-
-    /**
-     * Adds as cLine
-     *
-     * A Composite containing details of the CLine for the Video.
-     *
-     * @return self
-     * @param \DedexBundle\Entity\Ern43\CLineWithDefaultType $cLine
-     */
-    public function addToCLine(\DedexBundle\Entity\Ern43\CLineWithDefaultType $cLine)
-    {
-        $this->cLine[] = $cLine;
-        return $this;
-    }
-
-    /**
-     * isset cLine
-     *
-     * A Composite containing details of the CLine for the Video.
-     *
-     * @param int|string $index
-     * @return bool
-     */
-    public function issetCLine($index)
-    {
-        return isset($this->cLine[$index]);
-    }
-
-    /**
-     * unset cLine
-     *
-     * A Composite containing details of the CLine for the Video.
-     *
-     * @param int|string $index
-     * @return void
-     */
-    public function unsetCLine($index)
-    {
-        unset($this->cLine[$index]);
-    }
-
-    /**
-     * Gets as cLine
-     *
-     * A Composite containing details of the CLine for the Video.
-     *
-     * @return \DedexBundle\Entity\Ern43\CLineWithDefaultType[]
-     */
-    public function getCLine()
-    {
-        return $this->cLine;
-    }
-
-    /**
-     * Sets a new cLine
-     *
-     * A Composite containing details of the CLine for the Video.
-     *
-     * @param \DedexBundle\Entity\Ern43\CLineWithDefaultType[] $cLine
-     * @return self
-     */
-    public function setCLine(array $cLine)
-    {
-        $this->cLine = $cLine;
         return $this;
     }
 
@@ -1476,7 +1480,7 @@ class VideoType
      * @param \DedexBundle\Entity\Ern43\CourtesyLineWithDefaultType[] $courtesyLine
      * @return self
      */
-    public function setCourtesyLine(array $courtesyLine)
+    public function setCourtesyLine(?array $courtesyLine = null)
     {
         $this->courtesyLine = $courtesyLine;
         return $this;
@@ -1485,9 +1489,9 @@ class VideoType
     /**
      * Gets as duration
      *
-     * The Duration of the Video (using the ISO 8601:2004 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
+     * The Duration of the Video (using the ISO 8601 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
      *
-     * @return \DateInterval
+     * @return \DedexBundle\Entity\Ern43\Ern43Duration
      */
     public function getDuration()
     {
@@ -1497,9 +1501,9 @@ class VideoType
     /**
      * Sets a new duration
      *
-     * The Duration of the Video (using the ISO 8601:2004 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
+     * The Duration of the Video (using the ISO 8601 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
      *
-     * @param \DateInterval $duration
+     * @param \DedexBundle\Entity\Ern43\Ern43Duration $duration
      * @return self
      */
     public function setDuration(\DateInterval $duration)
@@ -1528,7 +1532,7 @@ class VideoType
      * @param \DedexBundle\Entity\Ern43\EventDateWithoutFlagsType $creationDate
      * @return self
      */
-    public function setCreationDate(\DedexBundle\Entity\Ern43\EventDateWithoutFlagsType $creationDate)
+    public function setCreationDate(?\DedexBundle\Entity\Ern43\EventDateWithoutFlagsType $creationDate = null)
     {
         $this->creationDate = $creationDate;
         return $this;
@@ -1554,7 +1558,7 @@ class VideoType
      * @param \DedexBundle\Entity\Ern43\EventDateWithoutFlagsType $masteredDate
      * @return self
      */
-    public function setMasteredDate(\DedexBundle\Entity\Ern43\EventDateWithoutFlagsType $masteredDate)
+    public function setMasteredDate(?\DedexBundle\Entity\Ern43\EventDateWithoutFlagsType $masteredDate = null)
     {
         $this->masteredDate = $masteredDate;
         return $this;
@@ -1620,7 +1624,7 @@ class VideoType
      * @param \DedexBundle\Entity\Ern43\EventDateWithoutFlagsType[] $remasteredDate
      * @return self
      */
-    public function setRemasteredDate(array $remasteredDate)
+    public function setRemasteredDate(?array $remasteredDate = null)
     {
         $this->remasteredDate = $remasteredDate;
         return $this;
@@ -1686,7 +1690,7 @@ class VideoType
      * @param \DedexBundle\Entity\Ern43\FulfillmentDateWithTerritoryType[] $firstPublicationDate
      * @return self
      */
-    public function setFirstPublicationDate(array $firstPublicationDate)
+    public function setFirstPublicationDate(?array $firstPublicationDate = null)
     {
         $this->firstPublicationDate = $firstPublicationDate;
         return $this;
@@ -1818,7 +1822,7 @@ class VideoType
      * @param \DedexBundle\Entity\Ern43\AvRatingType[] $avRating
      * @return self
      */
-    public function setAvRating(array $avRating)
+    public function setAvRating(?array $avRating = null)
     {
         $this->avRating = $avRating;
         return $this;
@@ -1884,7 +1888,7 @@ class VideoType
      * @param \DedexBundle\Entity\Ern43\RelatedReleaseType[] $relatedRelease
      * @return self
      */
-    public function setRelatedRelease(array $relatedRelease)
+    public function setRelatedRelease(?array $relatedRelease = null)
     {
         $this->relatedRelease = $relatedRelease;
         return $this;
@@ -1950,7 +1954,7 @@ class VideoType
      * @param \DedexBundle\Entity\Ern43\RelatedResourceType[] $relatedResource
      * @return self
      */
-    public function setRelatedResource(array $relatedResource)
+    public function setRelatedResource(?array $relatedResource = null)
     {
         $this->relatedResource = $relatedResource;
         return $this;
@@ -2042,7 +2046,7 @@ class VideoType
      * @param string $videoCueSheetReference
      * @return self
      */
-    public function setVideoCueSheetReference(array $videoCueSheetReference)
+    public function setVideoCueSheetReference(?array $videoCueSheetReference = null)
     {
         $this->videoCueSheetReference = $videoCueSheetReference;
         return $this;
@@ -2068,7 +2072,7 @@ class VideoType
      * @param \DedexBundle\Entity\Ern43\ReasonType $reasonForCueSheetAbsence
      * @return self
      */
-    public function setReasonForCueSheetAbsence(\DedexBundle\Entity\Ern43\ReasonType $reasonForCueSheetAbsence)
+    public function setReasonForCueSheetAbsence(?\DedexBundle\Entity\Ern43\ReasonType $reasonForCueSheetAbsence = null)
     {
         $this->reasonForCueSheetAbsence = $reasonForCueSheetAbsence;
         return $this;
@@ -2101,9 +2105,61 @@ class VideoType
     }
 
     /**
+     * Gets as hasVocalPerformance
+     *
+     * A Flag indicating whether the Video relates to a (human) vocal Performance (=true) or not (=false).
+     *
+     * @return bool
+     */
+    public function getHasVocalPerformance()
+    {
+        return $this->hasVocalPerformance;
+    }
+
+    /**
+     * Sets a new hasVocalPerformance
+     *
+     * A Flag indicating whether the Video relates to a (human) vocal Performance (=true) or not (=false).
+     *
+     * @param bool $hasVocalPerformance
+     * @return self
+     */
+    public function setHasVocalPerformance($hasVocalPerformance)
+    {
+        $this->hasVocalPerformance = $hasVocalPerformance;
+        return $this;
+    }
+
+    /**
+     * Gets as hasForegroundVocalPerformance
+     *
+     * A Flag indicating whether the Video relates to a (human) vocal Performance that is not merely background vocals (=true) or not (=false).
+     *
+     * @return bool
+     */
+    public function getHasForegroundVocalPerformance()
+    {
+        return $this->hasForegroundVocalPerformance;
+    }
+
+    /**
+     * Sets a new hasForegroundVocalPerformance
+     *
+     * A Flag indicating whether the Video relates to a (human) vocal Performance that is not merely background vocals (=true) or not (=false).
+     *
+     * @param bool $hasForegroundVocalPerformance
+     * @return self
+     */
+    public function setHasForegroundVocalPerformance($hasForegroundVocalPerformance)
+    {
+        $this->hasForegroundVocalPerformance = $hasForegroundVocalPerformance;
+        return $this;
+    }
+
+    /**
      * Gets as isInstrumental
      *
-     * The Flag indicating whether the Video is instrumental (=true) or not (=false).
+     * The Flag indicating whether the Video is instrumental (=true) or not (=false). This element is deprecated. DDEX advises that it may be removed at a future date and therefore recommends against using it.
      *
      * @return bool
      */
@@ -2115,7 +2171,7 @@ class VideoType
     /**
      * Sets a new isInstrumental
      *
-     * The Flag indicating whether the Video is instrumental (=true) or not (=false).
+     * The Flag indicating whether the Video is instrumental (=true) or not (=false). This element is deprecated. DDEX advises that it may be removed at a future date and therefore recommends against using it.
      *
      * @param bool $isInstrumental
      * @return self
@@ -2238,7 +2294,7 @@ class VideoType
      * @param \DedexBundle\Entity\Ern43\DisplayCreditsType[] $displayCredits
      * @return self
      */
-    public function setDisplayCredits(array $displayCredits)
+    public function setDisplayCredits(?array $displayCredits = null)
     {
         $this->displayCredits = $displayCredits;
         return $this;
@@ -2247,12 +2303,12 @@ class VideoType
     /**
      * Adds as languageOfPerformance
      *
-     * The original Language of the Performance recorded in the Video (represented by an ISO 639 LanguageCode).
+     * The original Language of the Performance as defined in IETF RfC 5646. Language and Script are provided as lang[-script][-region][-variant].
      *
      * @return self
-     * @param string $languageOfPerformance
+     * @param \DedexBundle\Entity\Ern43\LanguageType $languageOfPerformance
      */
-    public function addToLanguageOfPerformance($languageOfPerformance)
+    public function addToLanguageOfPerformance(\DedexBundle\Entity\Ern43\LanguageType $languageOfPerformance)
     {
         $this->languageOfPerformance[] = $languageOfPerformance;
         return $this;
@@ -2261,7 +2317,7 @@ class VideoType
     /**
      * isset languageOfPerformance
      *
-     * The original Language of the Performance recorded in the Video (represented by an ISO 639 LanguageCode).
+     * The original Language of the Performance as defined in IETF RfC 5646. Language and Script are provided as lang[-script][-region][-variant].
      *
      * @param int|string $index
      * @return bool
@@ -2274,7 +2330,7 @@ class VideoType
     /**
      * unset languageOfPerformance
      *
-     * The original Language of the Performance recorded in the Video (represented by an ISO 639 LanguageCode).
+     * The original Language of the Performance as defined in IETF RfC 5646. Language and Script are provided as lang[-script][-region][-variant].
      *
      * @param int|string $index
      * @return void
@@ -2287,9 +2343,9 @@ class VideoType
     /**
      * Gets as languageOfPerformance
      *
-     * The original Language of the Performance recorded in the Video (represented by an ISO 639 LanguageCode).
+     * The original Language of the Performance as defined in IETF RfC 5646. Language and Script are provided as lang[-script][-region][-variant].
      *
-     * @return string[]
+     * @return \DedexBundle\Entity\Ern43\LanguageType[]
      */
     public function getLanguageOfPerformance()
     {
@@ -2299,12 +2355,12 @@ class VideoType
     /**
      * Sets a new languageOfPerformance
      *
-     * The original Language of the Performance recorded in the Video (represented by an ISO 639 LanguageCode).
+     * The original Language of the Performance as defined in IETF RfC 5646. Language and Script are provided as lang[-script][-region][-variant].
      *
-     * @param string $languageOfPerformance
+     * @param \DedexBundle\Entity\Ern43\LanguageType[] $languageOfPerformance
      * @return self
      */
-    public function setLanguageOfPerformance(array $languageOfPerformance)
+    public function setLanguageOfPerformance(?array $languageOfPerformance = null)
     {
         $this->languageOfPerformance = $languageOfPerformance;
         return $this;
@@ -2313,7 +2369,7 @@ class VideoType
     /**
      * Adds as languageOfDubbing
      *
-     * The Language of dubbing used in the Video (represented by an ISO 639 LanguageCode).
+     * The Language of dubbing used in the Video as defined in IETF RfC 5646. Language and Script are provided as lang[-script][-region][-variant].
      *
      * @return self
      * @param string $languageOfDubbing
@@ -2327,7 +2383,7 @@ class VideoType
     /**
      * isset languageOfDubbing
      *
-     * The Language of dubbing used in the Video (represented by an ISO 639 LanguageCode).
+     * The Language of dubbing used in the Video as defined in IETF RfC 5646. Language and Script are provided as lang[-script][-region][-variant].
      *
      * @param int|string $index
      * @return bool
@@ -2340,7 +2396,7 @@ class VideoType
     /**
      * unset languageOfDubbing
      *
-     * The Language of dubbing used in the Video (represented by an ISO 639 LanguageCode).
+     * The Language of dubbing used in the Video as defined in IETF RfC 5646. Language and Script are provided as lang[-script][-region][-variant].
      *
      * @param int|string $index
      * @return void
@@ -2353,7 +2409,7 @@ class VideoType
     /**
      * Gets as languageOfDubbing
      *
-     * The Language of dubbing used in the Video (represented by an ISO 639 LanguageCode).
+     * The Language of dubbing used in the Video as defined in IETF RfC 5646. Language and Script are provided as lang[-script][-region][-variant].
      *
      * @return string[]
      */
@@ -2365,12 +2421,12 @@ class VideoType
     /**
      * Sets a new languageOfDubbing
      *
-     * The Language of dubbing used in the Video (represented by an ISO 639 LanguageCode).
+     * The Language of dubbing used in the Video as defined in IETF RfC 5646. Language and Script are provided as lang[-script][-region][-variant].
      *
      * @param string $languageOfDubbing
      * @return self
      */
-    public function setLanguageOfDubbing(array $languageOfDubbing)
+    public function setLanguageOfDubbing(?array $languageOfDubbing = null)
     {
         $this->languageOfDubbing = $languageOfDubbing;
         return $this;
@@ -2379,7 +2435,7 @@ class VideoType
     /**
      * Adds as subTitleLanguage
      *
-     * The Language of SubTitles in the Video (represented by an ISO 639 LanguageCode).
+     * The Language of SubTitles in the Video as defined in IETF RfC 5646. Language and Script are provided as lang[-script][-region][-variant].
      *
      * @return self
      * @param string $subTitleLanguage
@@ -2393,7 +2449,7 @@ class VideoType
     /**
      * isset subTitleLanguage
      *
-     * The Language of SubTitles in the Video (represented by an ISO 639 LanguageCode).
+     * The Language of SubTitles in the Video as defined in IETF RfC 5646. Language and Script are provided as lang[-script][-region][-variant].
      *
      * @param int|string $index
      * @return bool
@@ -2406,7 +2462,7 @@ class VideoType
     /**
      * unset subTitleLanguage
      *
-     * The Language of SubTitles in the Video (represented by an ISO 639 LanguageCode).
+     * The Language of SubTitles in the Video as defined in IETF RfC 5646. Language and Script are provided as lang[-script][-region][-variant].
      *
      * @param int|string $index
      * @return void
@@ -2419,7 +2475,7 @@ class VideoType
     /**
      * Gets as subTitleLanguage
      *
-     * The Language of SubTitles in the Video (represented by an ISO 639 LanguageCode).
+     * The Language of SubTitles in the Video as defined in IETF RfC 5646. Language and Script are provided as lang[-script][-region][-variant].
      *
      * @return string[]
      */
@@ -2431,12 +2487,12 @@ class VideoType
     /**
      * Sets a new subTitleLanguage
      *
-     * The Language of SubTitles in the Video (represented by an ISO 639 LanguageCode).
+     * The Language of SubTitles in the Video as defined in IETF RfC 5646. Language and Script are provided as lang[-script][-region][-variant].
      *
      * @param string $subTitleLanguage
      * @return self
      */
-    public function setSubTitleLanguage(array $subTitleLanguage)
+    public function setSubTitleLanguage(?array $subTitleLanguage = null)
     {
         $this->subTitleLanguage = $subTitleLanguage;
         return $this;
@@ -2502,75 +2558,9 @@ class VideoType
      * @param \DedexBundle\Entity\Ern43\ResourceContainedResourceReferenceType[] $resourceContainedResourceReferenceList
      * @return self
      */
-    public function setResourceContainedResourceReferenceList(array $resourceContainedResourceReferenceList)
+    public function setResourceContainedResourceReferenceList(?array $resourceContainedResourceReferenceList = null)
     {
         $this->resourceContainedResourceReferenceList = $resourceContainedResourceReferenceList;
-        return $this;
-    }
-
-    /**
-     * Adds as technicalDetails
-     *
-     * A Composite containing technical details of the Video.
-     *
-     * @return self
-     * @param \DedexBundle\Entity\Ern43\TechnicalVideoDetailsType $technicalDetails
-     */
-    public function addToTechnicalDetails(\DedexBundle\Entity\Ern43\TechnicalVideoDetailsType $technicalDetails)
-    {
-        $this->technicalDetails[] = $technicalDetails;
-        return $this;
-    }
-
-    /**
-     * isset technicalDetails
-     *
-     * A Composite containing technical details of the Video.
-     *
-     * @param int|string $index
-     * @return bool
-     */
-    public function issetTechnicalDetails($index)
-    {
-        return isset($this->technicalDetails[$index]);
-    }
-
-    /**
-     * unset technicalDetails
-     *
-     * A Composite containing technical details of the Video.
-     *
-     * @param int|string $index
-     * @return void
-     */
-    public function unsetTechnicalDetails($index)
-    {
-        unset($this->technicalDetails[$index]);
-    }
-
-    /**
-     * Gets as technicalDetails
-     *
-     * A Composite containing technical details of the Video.
-     *
-     * @return \DedexBundle\Entity\Ern43\TechnicalVideoDetailsType[]
-     */
-    public function getTechnicalDetails()
-    {
-        return $this->technicalDetails;
-    }
-
-    /**
-     * Sets a new technicalDetails
-     *
-     * A Composite containing technical details of the Video.
-     *
-     * @param \DedexBundle\Entity\Ern43\TechnicalVideoDetailsType[] $technicalDetails
-     * @return self
-     */
-    public function setTechnicalDetails(array $technicalDetails)
-    {
-        $this->technicalDetails = $technicalDetails;
         return $this;
     }
 
@@ -2634,7 +2624,7 @@ class VideoType
      * @param string[] $raga
      * @return self
      */
-    public function setRaga(array $raga)
+    public function setRaga(?array $raga = null)
     {
         $this->raga = $raga;
         return $this;
@@ -2700,7 +2690,7 @@ class VideoType
      * @param string[] $tala
      * @return self
      */
-    public function setTala(array $tala)
+    public function setTala(?array $tala = null)
     {
         $this->tala = $tala;
         return $this;
@@ -2766,7 +2756,7 @@ class VideoType
      * @param string[] $deity
      * @return self
      */
-    public function setDeity(array $deity)
+    public function setDeity(?array $deity = null)
     {
         $this->deity = $deity;
         return $this;
@@ -2832,12 +2822,10 @@ class VideoType
      * @param string $videoChapterReference
      * @return self
      */
-    public function setVideoChapterReference(array $videoChapterReference)
+    public function setVideoChapterReference(?array $videoChapterReference = null)
     {
         $this->videoChapterReference = $videoChapterReference;
         return $this;
     }
-
-
 }
 

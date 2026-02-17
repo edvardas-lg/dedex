@@ -6,11 +6,11 @@ namespace DedexBundle\Entity\Ern43;
  * Class representing EventDateWithDefaultType
  *
  * A Composite containing details of the Date and Place of an Event.
+ * Explanatory Note: This Composite is named EventDateWithDefault to disambiguate it from the basic EventDate Composite.
  * XSD Type: EventDateWithDefault
  */
 class EventDateWithDefaultType
 {
-
     /**
      * @var string $__value
      */
@@ -148,7 +148,5 @@ class EventDateWithDefaultType
         $this->isDefault = $isDefault;
         return $this;
     }
-
-
 }
 

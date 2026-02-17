@@ -6,11 +6,11 @@ namespace DedexBundle\Entity\Ern43;
  * Class representing KeywordsWithTerritoryType
  *
  * A Composite containing details of a Description containing Keywords.
+ * Explanatory Note: This Composite is named KeywordsWithTerritory to disambiguate it from the basic Keywords Composite.
  * XSD Type: KeywordsWithTerritory
  */
 class KeywordsWithTerritoryType
 {
-
     /**
      * @var string $__value
      */
@@ -148,7 +148,5 @@ class KeywordsWithTerritoryType
         $this->isDefault = $isDefault;
         return $this;
     }
-
-
 }
 

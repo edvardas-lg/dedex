@@ -6,11 +6,11 @@ namespace DedexBundle\Entity\Ern43;
  * Class representing EventDateTimeWithoutFlagsType
  *
  * A Composite containing details of the DateTime and Place of an Event.
+ * Explanatory Note: This Composite is named EventDateTimeWithoutFlags to disambiguate it from the basic EventDateTime Composite.
  * XSD Type: EventDateTimeWithoutFlags
  */
 class EventDateTimeWithoutFlagsType
 {
-
     /**
      * @var \DateTime $__value
      */
@@ -181,7 +181,5 @@ class EventDateTimeWithoutFlagsType
         $this->languageAndScriptCode = $languageAndScriptCode;
         return $this;
     }
-
-
 }
 

@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class PartyRelationshipTypeType
 {
-
     /**
      * @var string $__value
      */
@@ -148,7 +147,5 @@ class PartyRelationshipTypeType
         $this->mayBeShared = $mayBeShared;
         return $this;
     }
-
-
 }
 

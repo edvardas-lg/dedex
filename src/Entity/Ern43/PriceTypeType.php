@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class PriceTypeType
 {
-
     /**
      * @var string $__value
      */
@@ -82,7 +81,5 @@ class PriceTypeType
         $this->namespace = $namespace;
         return $this;
     }
-
-
 }
 

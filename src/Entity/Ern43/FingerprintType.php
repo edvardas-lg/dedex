@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class FingerprintType
 {
-
     /**
      * A Composite containing details of the Type of Algorithm governing the Fingerprint.
      *
@@ -151,7 +150,7 @@ class FingerprintType
      * @param \DedexBundle\Entity\Ern43\FileType $file
      * @return self
      */
-    public function setFile(\DedexBundle\Entity\Ern43\FileType $file)
+    public function setFile(?\DedexBundle\Entity\Ern43\FileType $file = null)
     {
         $this->file = $file;
         return $this;
@@ -208,7 +207,5 @@ class FingerprintType
         $this->fingerprintValue = $fingerprintValue;
         return $this;
     }
-
-
 }
 

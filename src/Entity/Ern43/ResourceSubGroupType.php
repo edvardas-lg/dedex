@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class ResourceSubGroupType
 {
-
     /**
      * A Type of ResourceGroup.
      *
@@ -20,6 +19,7 @@ class ResourceSubGroupType
 
     /**
      * A Composite containing details of a Title of the ResourceGroup as the MessageSender suggests it should be shown to the Consumer. Typically this will apply to 'sub' ResourceGroups within a hierarchy, e.g., different Albums in a Set. In many instances this is the only Title to be communicated for any given Creation. Multiple instances can be supplied with an ApplicableTerritoryCode and/or LanguageAndScriptCode. One such element is required for each DisplayTitle element and its content typically provides the same information as the concatenation of the DisplayTitle's sub-elements.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
      *
      * @var \DedexBundle\Entity\Ern43\DisplayTitleTextType[] $displayTitleText
      */
@@ -68,6 +68,9 @@ class ResourceSubGroupType
 
     /**
      * A Composite containing details of the DisplayArtist for the ResourceGroup. The DisplayArtist may be described through Name, Identifier and Roles.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @var \DedexBundle\Entity\Ern43\DisplayArtistType[] $displayArtist
      */
@@ -85,7 +88,7 @@ class ResourceSubGroupType
     ];
 
     /**
-     * The Duration of the ResourceGroup, if it is a SoundRecording or Video (using the ISO 8601:2004 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
+     * The Duration of the ResourceGroup, if it is a SoundRecording or Video (using the ISO 8601 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
      *
      * @var \DateInterval $duration
      */
@@ -99,7 +102,7 @@ class ResourceSubGroupType
     private $resourceGroupReleaseReference = null;
 
     /**
-     * A Composite containing details of ReleaseIds of a Release which has the same content as the ResourceGroup. If available, a GRid has to be used. If the Release contains only one SoundRecording, the ISRC of the SoundRecording may be used instead. If the Release is an abstraction of a complete PhysicalProduct (such as a CD Album), the ICPN of the PhysicalProduct may be used instead.
+     * A Composite containing details of ReleaseIds of a Release which has the same content as the ResourceGroup. If available, a GRid has to be used. If the Release is an abstraction of a complete PhysicalProduct (such as a CD Album), the ICPN of the PhysicalProduct may be used instead.
      *
      * @var \DedexBundle\Entity\Ern43\ReleaseIdType $releaseId
      */
@@ -107,6 +110,7 @@ class ResourceSubGroupType
 
     /**
      * A ResourceGroup contained within this ResourceGroup. ResourceGroups are used to signal groupings or sequences of Resources within a Release. Examples include individual Carriers in a multi-carrier Release or classical Work groupings as well as the default order of Resources within a Release.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/sequencing-resources
      *
      * @var \DedexBundle\Entity\Ern43\ResourceSubGroupType[] $resourceGroup
      */
@@ -162,6 +166,7 @@ class ResourceSubGroupType
      * Adds as displayTitleText
      *
      * A Composite containing details of a Title of the ResourceGroup as the MessageSender suggests it should be shown to the Consumer. Typically this will apply to 'sub' ResourceGroups within a hierarchy, e.g., different Albums in a Set. In many instances this is the only Title to be communicated for any given Creation. Multiple instances can be supplied with an ApplicableTerritoryCode and/or LanguageAndScriptCode. One such element is required for each DisplayTitle element and its content typically provides the same information as the concatenation of the DisplayTitle's sub-elements.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
      *
      * @return self
      * @param \DedexBundle\Entity\Ern43\DisplayTitleTextType $displayTitleText
@@ -176,6 +181,7 @@ class ResourceSubGroupType
      * isset displayTitleText
      *
      * A Composite containing details of a Title of the ResourceGroup as the MessageSender suggests it should be shown to the Consumer. Typically this will apply to 'sub' ResourceGroups within a hierarchy, e.g., different Albums in a Set. In many instances this is the only Title to be communicated for any given Creation. Multiple instances can be supplied with an ApplicableTerritoryCode and/or LanguageAndScriptCode. One such element is required for each DisplayTitle element and its content typically provides the same information as the concatenation of the DisplayTitle's sub-elements.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
      *
      * @param int|string $index
      * @return bool
@@ -189,6 +195,7 @@ class ResourceSubGroupType
      * unset displayTitleText
      *
      * A Composite containing details of a Title of the ResourceGroup as the MessageSender suggests it should be shown to the Consumer. Typically this will apply to 'sub' ResourceGroups within a hierarchy, e.g., different Albums in a Set. In many instances this is the only Title to be communicated for any given Creation. Multiple instances can be supplied with an ApplicableTerritoryCode and/or LanguageAndScriptCode. One such element is required for each DisplayTitle element and its content typically provides the same information as the concatenation of the DisplayTitle's sub-elements.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
      *
      * @param int|string $index
      * @return void
@@ -202,6 +209,7 @@ class ResourceSubGroupType
      * Gets as displayTitleText
      *
      * A Composite containing details of a Title of the ResourceGroup as the MessageSender suggests it should be shown to the Consumer. Typically this will apply to 'sub' ResourceGroups within a hierarchy, e.g., different Albums in a Set. In many instances this is the only Title to be communicated for any given Creation. Multiple instances can be supplied with an ApplicableTerritoryCode and/or LanguageAndScriptCode. One such element is required for each DisplayTitle element and its content typically provides the same information as the concatenation of the DisplayTitle's sub-elements.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
      *
      * @return \DedexBundle\Entity\Ern43\DisplayTitleTextType[]
      */
@@ -214,11 +222,12 @@ class ResourceSubGroupType
      * Sets a new displayTitleText
      *
      * A Composite containing details of a Title of the ResourceGroup as the MessageSender suggests it should be shown to the Consumer. Typically this will apply to 'sub' ResourceGroups within a hierarchy, e.g., different Albums in a Set. In many instances this is the only Title to be communicated for any given Creation. Multiple instances can be supplied with an ApplicableTerritoryCode and/or LanguageAndScriptCode. One such element is required for each DisplayTitle element and its content typically provides the same information as the concatenation of the DisplayTitle's sub-elements.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
      *
      * @param \DedexBundle\Entity\Ern43\DisplayTitleTextType[] $displayTitleText
      * @return self
      */
-    public function setDisplayTitleText(array $displayTitleText)
+    public function setDisplayTitleText(?array $displayTitleText = null)
     {
         $this->displayTitleText = $displayTitleText;
         return $this;
@@ -284,7 +293,7 @@ class ResourceSubGroupType
      * @param \DedexBundle\Entity\Ern43\DisplayTitleType[] $displayTitle
      * @return self
      */
-    public function setDisplayTitle(array $displayTitle)
+    public function setDisplayTitle(?array $displayTitle = null)
     {
         $this->displayTitle = $displayTitle;
         return $this;
@@ -350,7 +359,7 @@ class ResourceSubGroupType
      * @param \DedexBundle\Entity\Ern43\AdditionalTitleType[] $additionalTitle
      * @return self
      */
-    public function setAdditionalTitle(array $additionalTitle)
+    public function setAdditionalTitle(?array $additionalTitle = null)
     {
         $this->additionalTitle = $additionalTitle;
         return $this;
@@ -438,6 +447,9 @@ class ResourceSubGroupType
      * Adds as displayArtist
      *
      * A Composite containing details of the DisplayArtist for the ResourceGroup. The DisplayArtist may be described through Name, Identifier and Roles.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @return self
      * @param \DedexBundle\Entity\Ern43\DisplayArtistType $displayArtist
@@ -452,6 +464,9 @@ class ResourceSubGroupType
      * isset displayArtist
      *
      * A Composite containing details of the DisplayArtist for the ResourceGroup. The DisplayArtist may be described through Name, Identifier and Roles.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @param int|string $index
      * @return bool
@@ -465,6 +480,9 @@ class ResourceSubGroupType
      * unset displayArtist
      *
      * A Composite containing details of the DisplayArtist for the ResourceGroup. The DisplayArtist may be described through Name, Identifier and Roles.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @param int|string $index
      * @return void
@@ -478,6 +496,9 @@ class ResourceSubGroupType
      * Gets as displayArtist
      *
      * A Composite containing details of the DisplayArtist for the ResourceGroup. The DisplayArtist may be described through Name, Identifier and Roles.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @return \DedexBundle\Entity\Ern43\DisplayArtistType[]
      */
@@ -490,11 +511,14 @@ class ResourceSubGroupType
      * Sets a new displayArtist
      *
      * A Composite containing details of the DisplayArtist for the ResourceGroup. The DisplayArtist may be described through Name, Identifier and Roles.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @param \DedexBundle\Entity\Ern43\DisplayArtistType[] $displayArtist
      * @return self
      */
-    public function setDisplayArtist(array $displayArtist)
+    public function setDisplayArtist(?array $displayArtist = null)
     {
         $this->displayArtist = $displayArtist;
         return $this;
@@ -560,7 +584,7 @@ class ResourceSubGroupType
      * @param \DedexBundle\Entity\Ern43\CarrierTypeType[] $carrierType
      * @return self
      */
-    public function setCarrierType(array $carrierType)
+    public function setCarrierType(?array $carrierType = null)
     {
         $this->carrierType = $carrierType;
         return $this;
@@ -569,9 +593,9 @@ class ResourceSubGroupType
     /**
      * Gets as duration
      *
-     * The Duration of the ResourceGroup, if it is a SoundRecording or Video (using the ISO 8601:2004 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
+     * The Duration of the ResourceGroup, if it is a SoundRecording or Video (using the ISO 8601 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
      *
-     * @return \DateInterval
+     * @return \DedexBundle\Entity\Ern43\Ern43Duration
      */
     public function getDuration()
     {
@@ -581,12 +605,12 @@ class ResourceSubGroupType
     /**
      * Sets a new duration
      *
-     * The Duration of the ResourceGroup, if it is a SoundRecording or Video (using the ISO 8601:2004 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
+     * The Duration of the ResourceGroup, if it is a SoundRecording or Video (using the ISO 8601 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
      *
-     * @param \DateInterval $duration
+     * @param \DedexBundle\Entity\Ern43\Ern43Duration $duration
      * @return self
      */
-    public function setDuration(\DateInterval $duration)
+    public function setDuration(?\DateInterval $duration = null)
     {
         $this->duration = $duration;
         return $this;
@@ -621,7 +645,7 @@ class ResourceSubGroupType
     /**
      * Gets as releaseId
      *
-     * A Composite containing details of ReleaseIds of a Release which has the same content as the ResourceGroup. If available, a GRid has to be used. If the Release contains only one SoundRecording, the ISRC of the SoundRecording may be used instead. If the Release is an abstraction of a complete PhysicalProduct (such as a CD Album), the ICPN of the PhysicalProduct may be used instead.
+     * A Composite containing details of ReleaseIds of a Release which has the same content as the ResourceGroup. If available, a GRid has to be used. If the Release is an abstraction of a complete PhysicalProduct (such as a CD Album), the ICPN of the PhysicalProduct may be used instead.
      *
      * @return \DedexBundle\Entity\Ern43\ReleaseIdType
      */
@@ -633,12 +657,12 @@ class ResourceSubGroupType
     /**
      * Sets a new releaseId
      *
-     * A Composite containing details of ReleaseIds of a Release which has the same content as the ResourceGroup. If available, a GRid has to be used. If the Release contains only one SoundRecording, the ISRC of the SoundRecording may be used instead. If the Release is an abstraction of a complete PhysicalProduct (such as a CD Album), the ICPN of the PhysicalProduct may be used instead.
+     * A Composite containing details of ReleaseIds of a Release which has the same content as the ResourceGroup. If available, a GRid has to be used. If the Release is an abstraction of a complete PhysicalProduct (such as a CD Album), the ICPN of the PhysicalProduct may be used instead.
      *
      * @param \DedexBundle\Entity\Ern43\ReleaseIdType $releaseId
      * @return self
      */
-    public function setReleaseId(\DedexBundle\Entity\Ern43\ReleaseIdType $releaseId)
+    public function setReleaseId(?\DedexBundle\Entity\Ern43\ReleaseIdType $releaseId = null)
     {
         $this->releaseId = $releaseId;
         return $this;
@@ -648,6 +672,7 @@ class ResourceSubGroupType
      * Adds as resourceGroup
      *
      * A ResourceGroup contained within this ResourceGroup. ResourceGroups are used to signal groupings or sequences of Resources within a Release. Examples include individual Carriers in a multi-carrier Release or classical Work groupings as well as the default order of Resources within a Release.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/sequencing-resources
      *
      * @return self
      * @param \DedexBundle\Entity\Ern43\ResourceSubGroupType $resourceGroup
@@ -662,6 +687,7 @@ class ResourceSubGroupType
      * isset resourceGroup
      *
      * A ResourceGroup contained within this ResourceGroup. ResourceGroups are used to signal groupings or sequences of Resources within a Release. Examples include individual Carriers in a multi-carrier Release or classical Work groupings as well as the default order of Resources within a Release.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/sequencing-resources
      *
      * @param int|string $index
      * @return bool
@@ -675,6 +701,7 @@ class ResourceSubGroupType
      * unset resourceGroup
      *
      * A ResourceGroup contained within this ResourceGroup. ResourceGroups are used to signal groupings or sequences of Resources within a Release. Examples include individual Carriers in a multi-carrier Release or classical Work groupings as well as the default order of Resources within a Release.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/sequencing-resources
      *
      * @param int|string $index
      * @return void
@@ -688,6 +715,7 @@ class ResourceSubGroupType
      * Gets as resourceGroup
      *
      * A ResourceGroup contained within this ResourceGroup. ResourceGroups are used to signal groupings or sequences of Resources within a Release. Examples include individual Carriers in a multi-carrier Release or classical Work groupings as well as the default order of Resources within a Release.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/sequencing-resources
      *
      * @return \DedexBundle\Entity\Ern43\ResourceSubGroupType[]
      */
@@ -700,11 +728,12 @@ class ResourceSubGroupType
      * Sets a new resourceGroup
      *
      * A ResourceGroup contained within this ResourceGroup. ResourceGroups are used to signal groupings or sequences of Resources within a Release. Examples include individual Carriers in a multi-carrier Release or classical Work groupings as well as the default order of Resources within a Release.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/sequencing-resources
      *
      * @param \DedexBundle\Entity\Ern43\ResourceSubGroupType[] $resourceGroup
      * @return self
      */
-    public function setResourceGroup(array $resourceGroup)
+    public function setResourceGroup(?array $resourceGroup = null)
     {
         $this->resourceGroup = $resourceGroup;
         return $this;
@@ -770,7 +799,7 @@ class ResourceSubGroupType
      * @param \DedexBundle\Entity\Ern43\ResourceGroupContentItemType[] $resourceGroupContentItem
      * @return self
      */
-    public function setResourceGroupContentItem(array $resourceGroupContentItem)
+    public function setResourceGroupContentItem(?array $resourceGroupContentItem = null)
     {
         $this->resourceGroupContentItem = $resourceGroupContentItem;
         return $this;
@@ -836,12 +865,10 @@ class ResourceSubGroupType
      * @param \DedexBundle\Entity\Ern43\LinkedReleaseResourceReferenceType[] $linkedReleaseResourceReference
      * @return self
      */
-    public function setLinkedReleaseResourceReference(array $linkedReleaseResourceReference)
+    public function setLinkedReleaseResourceReference(?array $linkedReleaseResourceReference = null)
     {
         $this->linkedReleaseResourceReference = $linkedReleaseResourceReference;
         return $this;
     }
-
-
 }
 

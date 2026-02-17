@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class TitleDisplayInformationType
 {
-
     /**
      * The Language and script of the Information as defined in IETF RfC 5646. The default is the same as indicated for the containing composite. Language and Script are provided as lang[-script][-region][-variant]. This is represented in an XML schema as an XML Attribute.
      *
@@ -179,12 +178,10 @@ class TitleDisplayInformationType
      * @param \DedexBundle\Entity\Ern43\PrefixType[] $prefix
      * @return self
      */
-    public function setPrefix(array $prefix)
+    public function setPrefix(?array $prefix = null)
     {
         $this->prefix = $prefix;
         return $this;
     }
-
-
 }
 

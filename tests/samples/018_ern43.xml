@@ -2,7 +2,8 @@
 <ern:NewReleaseMessage
    xmlns:ern="http://ddex.net/xml/ern/43"
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   ReleaseProfileVersionId="Audio" LanguageAndScriptCode="en">
+   ReleaseProfileVersionId="Audio" LanguageAndScriptCode="en"
+   AvsVersionId="4.3">
    <MessageHeader>
       <MessageThreadId>Test43</MessageThreadId>
       <MessageId>Test43.1</MessageId>
@@ -38,9 +39,24 @@
       <SoundRecording>
          <ResourceReference>A1</ResourceReference>
          <Type>MusicalWorkSoundRecording</Type>
-         <ResourceId>
-            <ISRC>TEST00000001</ISRC>
-         </ResourceId>
+         <SoundRecordingEdition>
+            <ResourceId>
+               <ISRC>TEST00000001</ISRC>
+            </ResourceId>
+            <PLine>
+               <Year>2024</Year>
+               <PLineText>(P) 2024 Test Label</PLineText>
+            </PLine>
+            <TechnicalDetails>
+               <TechnicalResourceDetailsReference>T1</TechnicalResourceDetailsReference>
+               <DeliveryFile>
+                  <Type>AudioFile</Type>
+                  <File>
+                     <URI>track_001.wav</URI>
+                  </File>
+               </DeliveryFile>
+            </TechnicalDetails>
+         </SoundRecordingEdition>
          <DisplayTitleText>Track One</DisplayTitleText>
          <DisplayTitle ApplicableTerritoryCode="Worldwide" IsDefault="true">
             <TitleText>Track One</TitleText>
@@ -50,25 +66,30 @@
             <ArtistPartyReference>PTestArtist</ArtistPartyReference>
             <DisplayArtistRole>MainArtist</DisplayArtistRole>
          </DisplayArtist>
-         <PLine>
-            <Year>2024</Year>
-            <PLineText>(P) 2024 Test Label</PLineText>
-         </PLine>
          <Duration>PT3M30S</Duration>
          <ParentalWarningType>NotExplicit</ParentalWarningType>
-         <TechnicalDetails>
-            <TechnicalResourceDetailsReference>T1</TechnicalResourceDetailsReference>
-            <File>
-               <URI>track_001.wav</URI>
-            </File>
-         </TechnicalDetails>
       </SoundRecording>
       <SoundRecording>
          <ResourceReference>A2</ResourceReference>
          <Type>MusicalWorkSoundRecording</Type>
-         <ResourceId>
-            <ISRC>TEST00000002</ISRC>
-         </ResourceId>
+         <SoundRecordingEdition>
+            <ResourceId>
+               <ISRC>TEST00000002</ISRC>
+            </ResourceId>
+            <PLine>
+               <Year>2024</Year>
+               <PLineText>(P) 2024 Test Label</PLineText>
+            </PLine>
+            <TechnicalDetails>
+               <TechnicalResourceDetailsReference>T2</TechnicalResourceDetailsReference>
+               <DeliveryFile>
+                  <Type>AudioFile</Type>
+                  <File>
+                     <URI>track_002.wav</URI>
+                  </File>
+               </DeliveryFile>
+            </TechnicalDetails>
+         </SoundRecordingEdition>
          <DisplayTitleText>Track Two</DisplayTitleText>
          <DisplayTitle ApplicableTerritoryCode="Worldwide" IsDefault="true">
             <TitleText>Track Two</TitleText>
@@ -78,18 +99,8 @@
             <ArtistPartyReference>PTestArtist</ArtistPartyReference>
             <DisplayArtistRole>MainArtist</DisplayArtistRole>
          </DisplayArtist>
-         <PLine>
-            <Year>2024</Year>
-            <PLineText>(P) 2024 Test Label</PLineText>
-         </PLine>
          <Duration>PT4M15S</Duration>
          <ParentalWarningType>NotExplicit</ParentalWarningType>
-         <TechnicalDetails>
-            <TechnicalResourceDetailsReference>T2</TechnicalResourceDetailsReference>
-            <File>
-               <URI>track_002.wav</URI>
-            </File>
-         </TechnicalDetails>
       </SoundRecording>
       <Image>
          <ResourceReference>A3</ResourceReference>
@@ -123,9 +134,6 @@
             <DisplayArtistRole>MainArtist</DisplayArtistRole>
          </DisplayArtist>
          <ReleaseLabelReference ApplicableTerritoryCode="Worldwide">PLabel1</ReleaseLabelReference>
-         <Genre ApplicableTerritoryCode="Worldwide">
-            <GenreText>Pop</GenreText>
-         </Genre>
          <PLine>
             <Year>2024</Year>
             <PLineText>(P) 2024 Test Label</PLineText>
@@ -134,8 +142,11 @@
             <Year>2024</Year>
             <CLineText>(C) 2024 Test Label</CLineText>
          </CLine>
-         <ParentalWarningType>NotExplicit</ParentalWarningType>
+         <Genre ApplicableTerritoryCode="Worldwide">
+            <GenreText>Pop</GenreText>
+         </Genre>
          <OriginalReleaseDate>2024-01-15</OriginalReleaseDate>
+         <ParentalWarningType>NotExplicit</ParentalWarningType>
          <ResourceGroup>
             <SequenceNumber>1</SequenceNumber>
             <ResourceGroupContentItem>

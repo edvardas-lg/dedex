@@ -6,11 +6,11 @@ namespace DedexBundle\Entity\Ern43;
  * Class representing DetailedPartyIdType
  *
  * A Composite containing details of a PartyId.
+ * Explanatory Note: This Composite is named DetailedPartyId to disambiguate it from the basic PartyId Composite.
  * XSD Type: DetailedPartyId
  */
 class DetailedPartyIdType
 {
-
     /**
      * An International Standard Name Identifier, the ISO 27729 Standard Identifier for names. DDEX will enforce the syntax [0-9]{15}[X0-9] using XML Schema in the future.
      *
@@ -245,12 +245,10 @@ class DetailedPartyIdType
      * @param \DedexBundle\Entity\Ern43\ProprietaryIdType[] $proprietaryId
      * @return self
      */
-    public function setProprietaryId(array $proprietaryId)
+    public function setProprietaryId(?array $proprietaryId = null)
     {
         $this->proprietaryId = $proprietaryId;
         return $this;
     }
-
-
 }
 

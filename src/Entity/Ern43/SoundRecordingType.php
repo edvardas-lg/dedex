@@ -10,6 +10,8 @@ namespace DedexBundle\Entity\Ern43;
  */
 class SoundRecordingType
 {
+    // ERN 4.3 compat: party reference → name map
+    private $_partyMap = [];
 
     /**
      * The Language and script for the Elements of the SoundRecording as defined in IETF RfC 5646. Language and Script are provided as lang[-script][-region][-variant]. This is represented in an XML schema as an XML Attribute.
@@ -26,6 +28,13 @@ class SoundRecordingType
     private $isSupplemental = null;
 
     /**
+     * The Flag indicating whether the SoundRecording is part of the hierarchical structure indicated by the classical release profile variant used for the Message. If the flag is set to false (or absent) the rules for the classical release profile variant do not apply. This is represented in an XML schema as an XML Attribute.
+     *
+     * @var bool $applyClassicalProfileVariant
+     */
+    private $applyClassicalProfileVariant = null;
+
+    /**
      * The Identifier (specific to the Message) of the SoundRecording within the Release which contains it. This is a LocalResourceAnchor starting with the letter A.
      *
      * @var string $resourceReference
@@ -40,11 +49,20 @@ class SoundRecordingType
     private $type = null;
 
     /**
-     * A Composite containing details of a SoundRecordingId.
+     * A Composite containing details of a SoundRecording that has been created based on the same content as the 'main' SoundRecording but specifically for a different encoding such as immersive audio. It can be the same SoundRecording (in accordance with the ISRC standard) but more likely than not will be a different SoundRecording because the sound engineer/producer will be different. If an element in this Composite is not provided, the data is assumed to be the same as for the 'main' SoundRecording.
      *
-     * @var \DedexBundle\Entity\Ern43\SoundRecordingIdType[] $resourceId
+     * @var \DedexBundle\Entity\Ern43\SoundRecordingEditionType[] $soundRecordingEdition
      */
-    private $resourceId = [
+    private $soundRecordingEdition = [
+        
+    ];
+
+    /**
+     * A Composite containing details of a Type of the SoundRecording based on its content, intended audience, format or technical characteristics.
+     *
+     * @var \DedexBundle\Entity\Ern43\RecordingFormatType[] $recordingFormat
+     */
+    private $recordingFormat = [
         
     ];
 
@@ -59,6 +77,7 @@ class SoundRecordingType
 
     /**
      * A Composite containing details of a Title of the SoundRecording as the MessageSender suggests it should be shown to the Consumer. In many instances this is the only Title to be communicated for any given Creation. Multiple instances can be supplied with an ApplicableTerritoryCode and/or LanguageAndScriptCode. One such element is required for each DisplayTitle element and its content typically provides the same information as the concatenation of the DisplayTitle's sub-elements.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
      *
      * @var \DedexBundle\Entity\Ern43\DisplayTitleTextType[] $displayTitleText
      */
@@ -85,7 +104,7 @@ class SoundRecordingType
     ];
 
     /**
-     * A Composite containing details of a Type of Version of the SoundRecording.
+     * A Composite containing details of a Type of Version given by the releasing party to characterise and differentiate one SoundRecording from another with identical or similar Title metadata. VersionTypes may be used for disambiguating a SoundRecording that has been derived from another SoundRecording by using the value EditedVersion. EditedVersion value is often combined with another VersionType such as RadioVersion.
      *
      * @var \DedexBundle\Entity\Ern43\VersionTypeType[] $versionType
      */
@@ -95,6 +114,9 @@ class SoundRecordingType
 
     /**
      * A Composite containing the Name to be used by a DSP when presenting Artist details of the Resource to a Consumer.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @var \DedexBundle\Entity\Ern43\DisplayArtistNameWithDefaultType[] $displayArtistName
      */
@@ -104,6 +126,9 @@ class SoundRecordingType
 
     /**
      * A Composite containing details of the DisplayArtist for the SoundRecording. The DisplayArtist may be described through Name, Identifier and Roles.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @var \DedexBundle\Entity\Ern43\DisplayArtistType[] $displayArtist
      */
@@ -148,15 +173,6 @@ class SoundRecordingType
     ];
 
     /**
-     * A Composite containing details of the PLine for the SoundRecording.
-     *
-     * @var \DedexBundle\Entity\Ern43\PLineWithDefaultType[] $pLine
-     */
-    private $pLine = [
-        
-    ];
-
-    /**
      * A Composite containing an Annotation which acknowledges record companies and/or other Parties giving permission for guests Artists or others featured on the SoundRecording.
      *
      * @var \DedexBundle\Entity\Ern43\CourtesyLineWithDefaultType[] $courtesyLine
@@ -166,7 +182,7 @@ class SoundRecordingType
     ];
 
     /**
-     * The Duration of the SoundRecording (using the ISO 8601:2004 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
+     * The Duration of the SoundRecording (using the ISO 8601 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
      *
      * @var \DateInterval $duration
      */
@@ -199,6 +215,15 @@ class SoundRecordingType
      * @var \DedexBundle\Entity\Ern43\FirstPublicationDateType[] $firstPublicationDate
      */
     private $firstPublicationDate = [
+        
+    ];
+
+    /**
+     * A Composite containing details of a RecordingSession.
+     *
+     * @var \DedexBundle\Entity\Ern43\LocationAndDateOfSessionType[] $locationAndDateOfSession
+     */
+    private $locationAndDateOfSession = [
         
     ];
 
@@ -244,7 +269,21 @@ class SoundRecordingType
     private $isCover = null;
 
     /**
-     * The Flag indicating whether the SoundRecording is instrumental (=true) or not (=false).
+     * A Flag indicating whether the SoundRecording relates to a (human) vocal Performance (=true) or not (=false).
+     *
+     * @var bool $hasVocalPerformance
+     */
+    private $hasVocalPerformance = null;
+
+    /**
+     * A Flag indicating whether the SoundRecording relates to a (human) vocal Performance that is not merely background vocals (=true) or not (=false).
+     *
+     * @var bool $hasForegroundVocalPerformance
+     */
+    private $hasForegroundVocalPerformance = null;
+
+    /**
+     * The Flag indicating whether the SoundRecording is instrumental (=true) or not (=false). This element is deprecated. DDEX advises that it may be removed at a future date and therefore recommends against using it.
      *
      * @var bool $isInstrumental
      */
@@ -272,6 +311,20 @@ class SoundRecordingType
     private $isHiResMusic = null;
 
     /**
+     * A Flag indicating to a DSP whether the SoundRecording should not be crossfaded from/into another SoundRecording (=true) or not (=false).
+     *
+     * @var bool $disableCrossfade
+     */
+    private $disableCrossfade = null;
+
+    /**
+     * A Flag indicating to a DSP whether the SoundRecording should not be included in any search results (=true) or not (=false). Note that exclusion from search results implies that the SoundRecording should not appear in any recommendations.
+     *
+     * @var bool $disableSearch
+     */
+    private $disableSearch = null;
+
+    /**
      * A Role and instrumentation for which a Party is credited.
      *
      * @var \DedexBundle\Entity\Ern43\DisplayCreditsType[] $displayCredits
@@ -281,37 +334,12 @@ class SoundRecordingType
     ];
 
     /**
-     * The Language of the Performance recorded in the SoundRecording (represented by an ISO 639 LanguageCode).
+     * The Language of the Performance recorded in the SoundRecording as defined in IETF RfC 5646. Language and Script are provided as lang[-script][-region][-variant].
      *
-     * @var string[] $languageOfPerformance
+     * @var \DedexBundle\Entity\Ern43\LanguageType[] $languageOfPerformance
      */
     private $languageOfPerformance = [
         
-    ];
-
-    /**
-     * A configuration of audio channels.
-     *
-     * @var string $audioChannelConfiguration
-     */
-    private $audioChannelConfiguration = null;
-
-    /**
-     * A Composite containing technical details of the SoundRecording.
-     *
-     * @var \DedexBundle\Entity\Ern43\TechnicalSoundRecordingDetailsType[] $technicalDetails
-     */
-    private $technicalDetails = [
-
-    ];
-
-    /**
-     * A Composite containing details of a SoundRecordingEdition.
-     *
-     * @var \DedexBundle\Entity\Ern43\SoundRecordingEditionType[] $soundRecordingEdition
-     */
-    private $soundRecordingEdition = [
-
     ];
 
     /**
@@ -403,6 +431,32 @@ class SoundRecordingType
     }
 
     /**
+     * Gets as applyClassicalProfileVariant
+     *
+     * The Flag indicating whether the SoundRecording is part of the hierarchical structure indicated by the classical release profile variant used for the Message. If the flag is set to false (or absent) the rules for the classical release profile variant do not apply. This is represented in an XML schema as an XML Attribute.
+     *
+     * @return bool
+     */
+    public function getApplyClassicalProfileVariant()
+    {
+        return $this->applyClassicalProfileVariant;
+    }
+
+    /**
+     * Sets a new applyClassicalProfileVariant
+     *
+     * The Flag indicating whether the SoundRecording is part of the hierarchical structure indicated by the classical release profile variant used for the Message. If the flag is set to false (or absent) the rules for the classical release profile variant do not apply. This is represented in an XML schema as an XML Attribute.
+     *
+     * @param bool $applyClassicalProfileVariant
+     * @return self
+     */
+    public function setApplyClassicalProfileVariant($applyClassicalProfileVariant)
+    {
+        $this->applyClassicalProfileVariant = $applyClassicalProfileVariant;
+        return $this;
+    }
+
+    /**
      * Gets as resourceReference
      *
      * The Identifier (specific to the Message) of the SoundRecording within the Release which contains it. This is a LocalResourceAnchor starting with the letter A.
@@ -455,68 +509,134 @@ class SoundRecordingType
     }
 
     /**
-     * Adds as resourceId
+     * Adds as soundRecordingEdition
      *
-     * A Composite containing details of a SoundRecordingId.
+     * A Composite containing details of a SoundRecording that has been created based on the same content as the 'main' SoundRecording but specifically for a different encoding such as immersive audio. It can be the same SoundRecording (in accordance with the ISRC standard) but more likely than not will be a different SoundRecording because the sound engineer/producer will be different. If an element in this Composite is not provided, the data is assumed to be the same as for the 'main' SoundRecording.
      *
      * @return self
-     * @param \DedexBundle\Entity\Ern43\SoundRecordingIdType $resourceId
+     * @param \DedexBundle\Entity\Ern43\SoundRecordingEditionType $soundRecordingEdition
      */
-    public function addToResourceId(\DedexBundle\Entity\Ern43\SoundRecordingIdType $resourceId)
+    public function addToSoundRecordingEdition(\DedexBundle\Entity\Ern43\SoundRecordingEditionType $soundRecordingEdition)
     {
-        $this->resourceId[] = $resourceId;
+        $this->soundRecordingEdition[] = $soundRecordingEdition;
         return $this;
     }
 
     /**
-     * isset resourceId
+     * isset soundRecordingEdition
      *
-     * A Composite containing details of a SoundRecordingId.
+     * A Composite containing details of a SoundRecording that has been created based on the same content as the 'main' SoundRecording but specifically for a different encoding such as immersive audio. It can be the same SoundRecording (in accordance with the ISRC standard) but more likely than not will be a different SoundRecording because the sound engineer/producer will be different. If an element in this Composite is not provided, the data is assumed to be the same as for the 'main' SoundRecording.
      *
      * @param int|string $index
      * @return bool
      */
-    public function issetResourceId($index)
+    public function issetSoundRecordingEdition($index)
     {
-        return isset($this->resourceId[$index]);
+        return isset($this->soundRecordingEdition[$index]);
     }
 
     /**
-     * unset resourceId
+     * unset soundRecordingEdition
      *
-     * A Composite containing details of a SoundRecordingId.
+     * A Composite containing details of a SoundRecording that has been created based on the same content as the 'main' SoundRecording but specifically for a different encoding such as immersive audio. It can be the same SoundRecording (in accordance with the ISRC standard) but more likely than not will be a different SoundRecording because the sound engineer/producer will be different. If an element in this Composite is not provided, the data is assumed to be the same as for the 'main' SoundRecording.
      *
      * @param int|string $index
      * @return void
      */
-    public function unsetResourceId($index)
+    public function unsetSoundRecordingEdition($index)
     {
-        unset($this->resourceId[$index]);
+        unset($this->soundRecordingEdition[$index]);
     }
 
     /**
-     * Gets as resourceId
+     * Gets as soundRecordingEdition
      *
-     * A Composite containing details of a SoundRecordingId.
+     * A Composite containing details of a SoundRecording that has been created based on the same content as the 'main' SoundRecording but specifically for a different encoding such as immersive audio. It can be the same SoundRecording (in accordance with the ISRC standard) but more likely than not will be a different SoundRecording because the sound engineer/producer will be different. If an element in this Composite is not provided, the data is assumed to be the same as for the 'main' SoundRecording.
      *
-     * @return \DedexBundle\Entity\Ern43\SoundRecordingIdType[]
+     * @return \DedexBundle\Entity\Ern43\SoundRecordingEditionType[]
      */
-    public function getResourceId()
+    public function getSoundRecordingEdition()
     {
-        return $this->resourceId;
+        return $this->soundRecordingEdition;
     }
 
     /**
-     * Sets a new resourceId
+     * Sets a new soundRecordingEdition
      *
-     * A Composite containing details of a SoundRecordingId.
+     * A Composite containing details of a SoundRecording that has been created based on the same content as the 'main' SoundRecording but specifically for a different encoding such as immersive audio. It can be the same SoundRecording (in accordance with the ISRC standard) but more likely than not will be a different SoundRecording because the sound engineer/producer will be different. If an element in this Composite is not provided, the data is assumed to be the same as for the 'main' SoundRecording.
      *
-     * @param \DedexBundle\Entity\Ern43\SoundRecordingIdType[] $resourceId
+     * @param \DedexBundle\Entity\Ern43\SoundRecordingEditionType[] $soundRecordingEdition
      * @return self
      */
-    public function setResourceId(array $resourceId)
+    public function setSoundRecordingEdition(array $soundRecordingEdition)
     {
-        $this->resourceId = $resourceId;
+        $this->soundRecordingEdition = $soundRecordingEdition;
+        return $this;
+    }
+
+    /**
+     * Adds as recordingFormat
+     *
+     * A Composite containing details of a Type of the SoundRecording based on its content, intended audience, format or technical characteristics.
+     *
+     * @return self
+     * @param \DedexBundle\Entity\Ern43\RecordingFormatType $recordingFormat
+     */
+    public function addToRecordingFormat(\DedexBundle\Entity\Ern43\RecordingFormatType $recordingFormat)
+    {
+        $this->recordingFormat[] = $recordingFormat;
+        return $this;
+    }
+
+    /**
+     * isset recordingFormat
+     *
+     * A Composite containing details of a Type of the SoundRecording based on its content, intended audience, format or technical characteristics.
+     *
+     * @param int|string $index
+     * @return bool
+     */
+    public function issetRecordingFormat($index)
+    {
+        return isset($this->recordingFormat[$index]);
+    }
+
+    /**
+     * unset recordingFormat
+     *
+     * A Composite containing details of a Type of the SoundRecording based on its content, intended audience, format or technical characteristics.
+     *
+     * @param int|string $index
+     * @return void
+     */
+    public function unsetRecordingFormat($index)
+    {
+        unset($this->recordingFormat[$index]);
+    }
+
+    /**
+     * Gets as recordingFormat
+     *
+     * A Composite containing details of a Type of the SoundRecording based on its content, intended audience, format or technical characteristics.
+     *
+     * @return \DedexBundle\Entity\Ern43\RecordingFormatType[]
+     */
+    public function getRecordingFormat()
+    {
+        return $this->recordingFormat;
+    }
+
+    /**
+     * Sets a new recordingFormat
+     *
+     * A Composite containing details of a Type of the SoundRecording based on its content, intended audience, format or technical characteristics.
+     *
+     * @param \DedexBundle\Entity\Ern43\RecordingFormatType[] $recordingFormat
+     * @return self
+     */
+    public function setRecordingFormat(?array $recordingFormat = null)
+    {
+        $this->recordingFormat = $recordingFormat;
         return $this;
     }
 
@@ -580,7 +700,7 @@ class SoundRecordingType
      * @param \DedexBundle\Entity\Ern43\MusicalWorkIdType[] $workId
      * @return self
      */
-    public function setWorkId(array $workId)
+    public function setWorkId(?array $workId = null)
     {
         $this->workId = $workId;
         return $this;
@@ -590,6 +710,7 @@ class SoundRecordingType
      * Adds as displayTitleText
      *
      * A Composite containing details of a Title of the SoundRecording as the MessageSender suggests it should be shown to the Consumer. In many instances this is the only Title to be communicated for any given Creation. Multiple instances can be supplied with an ApplicableTerritoryCode and/or LanguageAndScriptCode. One such element is required for each DisplayTitle element and its content typically provides the same information as the concatenation of the DisplayTitle's sub-elements.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
      *
      * @return self
      * @param \DedexBundle\Entity\Ern43\DisplayTitleTextType $displayTitleText
@@ -604,6 +725,7 @@ class SoundRecordingType
      * isset displayTitleText
      *
      * A Composite containing details of a Title of the SoundRecording as the MessageSender suggests it should be shown to the Consumer. In many instances this is the only Title to be communicated for any given Creation. Multiple instances can be supplied with an ApplicableTerritoryCode and/or LanguageAndScriptCode. One such element is required for each DisplayTitle element and its content typically provides the same information as the concatenation of the DisplayTitle's sub-elements.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
      *
      * @param int|string $index
      * @return bool
@@ -617,6 +739,7 @@ class SoundRecordingType
      * unset displayTitleText
      *
      * A Composite containing details of a Title of the SoundRecording as the MessageSender suggests it should be shown to the Consumer. In many instances this is the only Title to be communicated for any given Creation. Multiple instances can be supplied with an ApplicableTerritoryCode and/or LanguageAndScriptCode. One such element is required for each DisplayTitle element and its content typically provides the same information as the concatenation of the DisplayTitle's sub-elements.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
      *
      * @param int|string $index
      * @return void
@@ -630,6 +753,7 @@ class SoundRecordingType
      * Gets as displayTitleText
      *
      * A Composite containing details of a Title of the SoundRecording as the MessageSender suggests it should be shown to the Consumer. In many instances this is the only Title to be communicated for any given Creation. Multiple instances can be supplied with an ApplicableTerritoryCode and/or LanguageAndScriptCode. One such element is required for each DisplayTitle element and its content typically provides the same information as the concatenation of the DisplayTitle's sub-elements.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
      *
      * @return \DedexBundle\Entity\Ern43\DisplayTitleTextType[]
      */
@@ -642,6 +766,7 @@ class SoundRecordingType
      * Sets a new displayTitleText
      *
      * A Composite containing details of a Title of the SoundRecording as the MessageSender suggests it should be shown to the Consumer. In many instances this is the only Title to be communicated for any given Creation. Multiple instances can be supplied with an ApplicableTerritoryCode and/or LanguageAndScriptCode. One such element is required for each DisplayTitle element and its content typically provides the same information as the concatenation of the DisplayTitle's sub-elements.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
      *
      * @param \DedexBundle\Entity\Ern43\DisplayTitleTextType[] $displayTitleText
      * @return self
@@ -778,7 +903,7 @@ class SoundRecordingType
      * @param \DedexBundle\Entity\Ern43\AdditionalTitleType[] $additionalTitle
      * @return self
      */
-    public function setAdditionalTitle(array $additionalTitle)
+    public function setAdditionalTitle(?array $additionalTitle = null)
     {
         $this->additionalTitle = $additionalTitle;
         return $this;
@@ -787,7 +912,7 @@ class SoundRecordingType
     /**
      * Adds as versionType
      *
-     * A Composite containing details of a Type of Version of the SoundRecording.
+     * A Composite containing details of a Type of Version given by the releasing party to characterise and differentiate one SoundRecording from another with identical or similar Title metadata. VersionTypes may be used for disambiguating a SoundRecording that has been derived from another SoundRecording by using the value EditedVersion. EditedVersion value is often combined with another VersionType such as RadioVersion.
      *
      * @return self
      * @param \DedexBundle\Entity\Ern43\VersionTypeType $versionType
@@ -801,7 +926,7 @@ class SoundRecordingType
     /**
      * isset versionType
      *
-     * A Composite containing details of a Type of Version of the SoundRecording.
+     * A Composite containing details of a Type of Version given by the releasing party to characterise and differentiate one SoundRecording from another with identical or similar Title metadata. VersionTypes may be used for disambiguating a SoundRecording that has been derived from another SoundRecording by using the value EditedVersion. EditedVersion value is often combined with another VersionType such as RadioVersion.
      *
      * @param int|string $index
      * @return bool
@@ -814,7 +939,7 @@ class SoundRecordingType
     /**
      * unset versionType
      *
-     * A Composite containing details of a Type of Version of the SoundRecording.
+     * A Composite containing details of a Type of Version given by the releasing party to characterise and differentiate one SoundRecording from another with identical or similar Title metadata. VersionTypes may be used for disambiguating a SoundRecording that has been derived from another SoundRecording by using the value EditedVersion. EditedVersion value is often combined with another VersionType such as RadioVersion.
      *
      * @param int|string $index
      * @return void
@@ -827,7 +952,7 @@ class SoundRecordingType
     /**
      * Gets as versionType
      *
-     * A Composite containing details of a Type of Version of the SoundRecording.
+     * A Composite containing details of a Type of Version given by the releasing party to characterise and differentiate one SoundRecording from another with identical or similar Title metadata. VersionTypes may be used for disambiguating a SoundRecording that has been derived from another SoundRecording by using the value EditedVersion. EditedVersion value is often combined with another VersionType such as RadioVersion.
      *
      * @return \DedexBundle\Entity\Ern43\VersionTypeType[]
      */
@@ -839,12 +964,12 @@ class SoundRecordingType
     /**
      * Sets a new versionType
      *
-     * A Composite containing details of a Type of Version of the SoundRecording.
+     * A Composite containing details of a Type of Version given by the releasing party to characterise and differentiate one SoundRecording from another with identical or similar Title metadata. VersionTypes may be used for disambiguating a SoundRecording that has been derived from another SoundRecording by using the value EditedVersion. EditedVersion value is often combined with another VersionType such as RadioVersion.
      *
      * @param \DedexBundle\Entity\Ern43\VersionTypeType[] $versionType
      * @return self
      */
-    public function setVersionType(array $versionType)
+    public function setVersionType(?array $versionType = null)
     {
         $this->versionType = $versionType;
         return $this;
@@ -854,6 +979,9 @@ class SoundRecordingType
      * Adds as displayArtistName
      *
      * A Composite containing the Name to be used by a DSP when presenting Artist details of the Resource to a Consumer.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @return self
      * @param \DedexBundle\Entity\Ern43\DisplayArtistNameWithDefaultType $displayArtistName
@@ -868,6 +996,9 @@ class SoundRecordingType
      * isset displayArtistName
      *
      * A Composite containing the Name to be used by a DSP when presenting Artist details of the Resource to a Consumer.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @param int|string $index
      * @return bool
@@ -881,6 +1012,9 @@ class SoundRecordingType
      * unset displayArtistName
      *
      * A Composite containing the Name to be used by a DSP when presenting Artist details of the Resource to a Consumer.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @param int|string $index
      * @return void
@@ -894,6 +1028,9 @@ class SoundRecordingType
      * Gets as displayArtistName
      *
      * A Composite containing the Name to be used by a DSP when presenting Artist details of the Resource to a Consumer.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @return \DedexBundle\Entity\Ern43\DisplayArtistNameWithDefaultType[]
      */
@@ -906,6 +1043,9 @@ class SoundRecordingType
      * Sets a new displayArtistName
      *
      * A Composite containing the Name to be used by a DSP when presenting Artist details of the Resource to a Consumer.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @param \DedexBundle\Entity\Ern43\DisplayArtistNameWithDefaultType[] $displayArtistName
      * @return self
@@ -920,6 +1060,9 @@ class SoundRecordingType
      * Adds as displayArtist
      *
      * A Composite containing details of the DisplayArtist for the SoundRecording. The DisplayArtist may be described through Name, Identifier and Roles.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @return self
      * @param \DedexBundle\Entity\Ern43\DisplayArtistType $displayArtist
@@ -934,6 +1077,9 @@ class SoundRecordingType
      * isset displayArtist
      *
      * A Composite containing details of the DisplayArtist for the SoundRecording. The DisplayArtist may be described through Name, Identifier and Roles.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @param int|string $index
      * @return bool
@@ -947,6 +1093,9 @@ class SoundRecordingType
      * unset displayArtist
      *
      * A Composite containing details of the DisplayArtist for the SoundRecording. The DisplayArtist may be described through Name, Identifier and Roles.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @param int|string $index
      * @return void
@@ -960,25 +1109,25 @@ class SoundRecordingType
      * Gets as displayArtist
      *
      * A Composite containing details of the DisplayArtist for the SoundRecording. The DisplayArtist may be described through Name, Identifier and Roles.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @return \DedexBundle\Entity\Ern43\DisplayArtistType[]
      */
     public function getDisplayArtist()
     {
-        // ERN 4.3 compat: pair names from displayArtistName with displayArtist entries
         $artists = $this->displayArtist;
-        $names = $this->displayArtistName;
-        foreach ($artists as $i => $artist) {
-            if (isset($names[$i])) {
-                $name = is_object($names[$i]) && method_exists($names[$i], 'value')
-                    ? $names[$i]->value()
-                    : (string) $names[$i];
-                $artist->setCompatName($name);
-            } else {
-                // Fallback: resolve from PartyList via ArtistPartyReference
-                $ref = $artist->getArtistPartyReference();
-                if ($ref && isset($this->_partyMap[$ref])) {
-                    $artist->setCompatName($this->_partyMap[$ref]);
+        if (is_array($artists) && is_array($this->displayArtistName)) {
+            foreach ($artists as $i => $artist) {
+                if (isset($this->displayArtistName[$i])) {
+                    $name = (string) $this->displayArtistName[$i];
+                    $artist->setCompatName($name);
+                } elseif (!empty($this->_partyMap) && $artist->getArtistPartyReference()) {
+                    $ref = $artist->getArtistPartyReference();
+                    if (isset($this->_partyMap[$ref])) {
+                        $artist->setCompatName($this->_partyMap[$ref]);
+                    }
                 }
             }
         }
@@ -989,6 +1138,9 @@ class SoundRecordingType
      * Sets a new displayArtist
      *
      * A Composite containing details of the DisplayArtist for the SoundRecording. The DisplayArtist may be described through Name, Identifier and Roles.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @param \DedexBundle\Entity\Ern43\DisplayArtistType[] $displayArtist
      * @return self
@@ -1059,8 +1211,7 @@ class SoundRecordingType
      * @param \DedexBundle\Entity\Ern43\ContributorType[] $contributor
      * @return self
      */
-    
-    public function setContributor(array $contributor)
+    public function setContributor(?array $contributor = null)
     {
         $this->contributor = $contributor;
         return $this;
@@ -1126,7 +1277,7 @@ class SoundRecordingType
      * @param \DedexBundle\Entity\Ern43\CharacterType[] $character
      * @return self
      */
-    public function setCharacter(array $character)
+    public function setCharacter(?array $character = null)
     {
         $this->character = $character;
         return $this;
@@ -1192,7 +1343,7 @@ class SoundRecordingType
      * @param \DedexBundle\Entity\Ern43\ResourceRightsControllerType[] $resourceRightsController
      * @return self
      */
-    public function setResourceRightsController(array $resourceRightsController)
+    public function setResourceRightsController(?array $resourceRightsController = null)
     {
         $this->resourceRightsController = $resourceRightsController;
         return $this;
@@ -1258,81 +1409,9 @@ class SoundRecordingType
      * @param \DedexBundle\Entity\Ern43\WorkRightsControllerType[] $workRightsController
      * @return self
      */
-    public function setWorkRightsController(array $workRightsController)
+    public function setWorkRightsController(?array $workRightsController = null)
     {
         $this->workRightsController = $workRightsController;
-        return $this;
-    }
-
-    /**
-     * Adds as pLine
-     *
-     * A Composite containing details of the PLine for the SoundRecording.
-     *
-     * @return self
-     * @param \DedexBundle\Entity\Ern43\PLineWithDefaultType $pLine
-     */
-    public function addToPLine(\DedexBundle\Entity\Ern43\PLineWithDefaultType $pLine)
-    {
-        $this->pLine[] = $pLine;
-        return $this;
-    }
-
-    /**
-     * isset pLine
-     *
-     * A Composite containing details of the PLine for the SoundRecording.
-     *
-     * @param int|string $index
-     * @return bool
-     */
-    public function issetPLine($index)
-    {
-        return isset($this->pLine[$index]);
-    }
-
-    /**
-     * unset pLine
-     *
-     * A Composite containing details of the PLine for the SoundRecording.
-     *
-     * @param int|string $index
-     * @return void
-     */
-    public function unsetPLine($index)
-    {
-        unset($this->pLine[$index]);
-    }
-
-    /**
-     * Gets as pLine
-     *
-     * A Composite containing details of the PLine for the SoundRecording.
-     *
-     * @return \DedexBundle\Entity\Ern43\PLineWithDefaultType[]
-     */
-    public function getPLine()
-    {
-        if (!empty($this->pLine)) {
-            return $this->pLine;
-        }
-        if (!empty($this->soundRecordingEdition)) {
-            return $this->soundRecordingEdition[0]->getPLine();
-        }
-        return $this->pLine;
-    }
-
-    /**
-     * Sets a new pLine
-     *
-     * A Composite containing details of the PLine for the SoundRecording.
-     *
-     * @param \DedexBundle\Entity\Ern43\PLineWithDefaultType[] $pLine
-     * @return self
-     */
-    public function setPLine(array $pLine)
-    {
-        $this->pLine = $pLine;
         return $this;
     }
 
@@ -1396,7 +1475,7 @@ class SoundRecordingType
      * @param \DedexBundle\Entity\Ern43\CourtesyLineWithDefaultType[] $courtesyLine
      * @return self
      */
-    public function setCourtesyLine(array $courtesyLine)
+    public function setCourtesyLine(?array $courtesyLine = null)
     {
         $this->courtesyLine = $courtesyLine;
         return $this;
@@ -1405,9 +1484,9 @@ class SoundRecordingType
     /**
      * Gets as duration
      *
-     * The Duration of the SoundRecording (using the ISO 8601:2004 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
+     * The Duration of the SoundRecording (using the ISO 8601 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
      *
-     * @return \DateInterval
+     * @return \DedexBundle\Entity\Ern43\Ern43Duration
      */
     public function getDuration()
     {
@@ -1417,9 +1496,9 @@ class SoundRecordingType
     /**
      * Sets a new duration
      *
-     * The Duration of the SoundRecording (using the ISO 8601:2004 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
+     * The Duration of the SoundRecording (using the ISO 8601 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
      *
-     * @param \DateInterval $duration
+     * @param \DedexBundle\Entity\Ern43\Ern43Duration $duration
      * @return self
      */
     public function setDuration(\DateInterval $duration)
@@ -1448,7 +1527,7 @@ class SoundRecordingType
      * @param \DedexBundle\Entity\Ern43\EventDateWithoutFlagsType $creationDate
      * @return self
      */
-    public function setCreationDate(\DedexBundle\Entity\Ern43\EventDateWithoutFlagsType $creationDate)
+    public function setCreationDate(?\DedexBundle\Entity\Ern43\EventDateWithoutFlagsType $creationDate = null)
     {
         $this->creationDate = $creationDate;
         return $this;
@@ -1474,7 +1553,7 @@ class SoundRecordingType
      * @param \DedexBundle\Entity\Ern43\EventDateWithoutFlagsType $masteredDate
      * @return self
      */
-    public function setMasteredDate(\DedexBundle\Entity\Ern43\EventDateWithoutFlagsType $masteredDate)
+    public function setMasteredDate(?\DedexBundle\Entity\Ern43\EventDateWithoutFlagsType $masteredDate = null)
     {
         $this->masteredDate = $masteredDate;
         return $this;
@@ -1500,7 +1579,7 @@ class SoundRecordingType
      * @param \DedexBundle\Entity\Ern43\EventDateWithoutFlagsType $remasteredDate
      * @return self
      */
-    public function setRemasteredDate(\DedexBundle\Entity\Ern43\EventDateWithoutFlagsType $remasteredDate)
+    public function setRemasteredDate(?\DedexBundle\Entity\Ern43\EventDateWithoutFlagsType $remasteredDate = null)
     {
         $this->remasteredDate = $remasteredDate;
         return $this;
@@ -1566,9 +1645,75 @@ class SoundRecordingType
      * @param \DedexBundle\Entity\Ern43\FirstPublicationDateType[] $firstPublicationDate
      * @return self
      */
-    public function setFirstPublicationDate(array $firstPublicationDate)
+    public function setFirstPublicationDate(?array $firstPublicationDate = null)
     {
         $this->firstPublicationDate = $firstPublicationDate;
+        return $this;
+    }
+
+    /**
+     * Adds as locationAndDateOfSession
+     *
+     * A Composite containing details of a RecordingSession.
+     *
+     * @return self
+     * @param \DedexBundle\Entity\Ern43\LocationAndDateOfSessionType $locationAndDateOfSession
+     */
+    public function addToLocationAndDateOfSession(\DedexBundle\Entity\Ern43\LocationAndDateOfSessionType $locationAndDateOfSession)
+    {
+        $this->locationAndDateOfSession[] = $locationAndDateOfSession;
+        return $this;
+    }
+
+    /**
+     * isset locationAndDateOfSession
+     *
+     * A Composite containing details of a RecordingSession.
+     *
+     * @param int|string $index
+     * @return bool
+     */
+    public function issetLocationAndDateOfSession($index)
+    {
+        return isset($this->locationAndDateOfSession[$index]);
+    }
+
+    /**
+     * unset locationAndDateOfSession
+     *
+     * A Composite containing details of a RecordingSession.
+     *
+     * @param int|string $index
+     * @return void
+     */
+    public function unsetLocationAndDateOfSession($index)
+    {
+        unset($this->locationAndDateOfSession[$index]);
+    }
+
+    /**
+     * Gets as locationAndDateOfSession
+     *
+     * A Composite containing details of a RecordingSession.
+     *
+     * @return \DedexBundle\Entity\Ern43\LocationAndDateOfSessionType[]
+     */
+    public function getLocationAndDateOfSession()
+    {
+        return $this->locationAndDateOfSession;
+    }
+
+    /**
+     * Sets a new locationAndDateOfSession
+     *
+     * A Composite containing details of a RecordingSession.
+     *
+     * @param \DedexBundle\Entity\Ern43\LocationAndDateOfSessionType[] $locationAndDateOfSession
+     * @return self
+     */
+    public function setLocationAndDateOfSession(?array $locationAndDateOfSession = null)
+    {
+        $this->locationAndDateOfSession = $locationAndDateOfSession;
         return $this;
     }
 
@@ -1698,7 +1843,7 @@ class SoundRecordingType
      * @param \DedexBundle\Entity\Ern43\RelatedReleaseType[] $relatedRelease
      * @return self
      */
-    public function setRelatedRelease(array $relatedRelease)
+    public function setRelatedRelease(?array $relatedRelease = null)
     {
         $this->relatedRelease = $relatedRelease;
         return $this;
@@ -1764,7 +1909,7 @@ class SoundRecordingType
      * @param \DedexBundle\Entity\Ern43\RelatedResourceType[] $relatedResource
      * @return self
      */
-    public function setRelatedResource(array $relatedResource)
+    public function setRelatedResource(?array $relatedResource = null)
     {
         $this->relatedResource = $relatedResource;
         return $this;
@@ -1823,9 +1968,61 @@ class SoundRecordingType
     }
 
     /**
+     * Gets as hasVocalPerformance
+     *
+     * A Flag indicating whether the SoundRecording relates to a (human) vocal Performance (=true) or not (=false).
+     *
+     * @return bool
+     */
+    public function getHasVocalPerformance()
+    {
+        return $this->hasVocalPerformance;
+    }
+
+    /**
+     * Sets a new hasVocalPerformance
+     *
+     * A Flag indicating whether the SoundRecording relates to a (human) vocal Performance (=true) or not (=false).
+     *
+     * @param bool $hasVocalPerformance
+     * @return self
+     */
+    public function setHasVocalPerformance($hasVocalPerformance)
+    {
+        $this->hasVocalPerformance = $hasVocalPerformance;
+        return $this;
+    }
+
+    /**
+     * Gets as hasForegroundVocalPerformance
+     *
+     * A Flag indicating whether the SoundRecording relates to a (human) vocal Performance that is not merely background vocals (=true) or not (=false).
+     *
+     * @return bool
+     */
+    public function getHasForegroundVocalPerformance()
+    {
+        return $this->hasForegroundVocalPerformance;
+    }
+
+    /**
+     * Sets a new hasForegroundVocalPerformance
+     *
+     * A Flag indicating whether the SoundRecording relates to a (human) vocal Performance that is not merely background vocals (=true) or not (=false).
+     *
+     * @param bool $hasForegroundVocalPerformance
+     * @return self
+     */
+    public function setHasForegroundVocalPerformance($hasForegroundVocalPerformance)
+    {
+        $this->hasForegroundVocalPerformance = $hasForegroundVocalPerformance;
+        return $this;
+    }
+
+    /**
      * Gets as isInstrumental
      *
-     * The Flag indicating whether the SoundRecording is instrumental (=true) or not (=false).
+     * The Flag indicating whether the SoundRecording is instrumental (=true) or not (=false). This element is deprecated. DDEX advises that it may be removed at a future date and therefore recommends against using it.
      *
      * @return bool
      */
@@ -1837,7 +2034,7 @@ class SoundRecordingType
     /**
      * Sets a new isInstrumental
      *
-     * The Flag indicating whether the SoundRecording is instrumental (=true) or not (=false).
+     * The Flag indicating whether the SoundRecording is instrumental (=true) or not (=false). This element is deprecated. DDEX advises that it may be removed at a future date and therefore recommends against using it.
      *
      * @param bool $isInstrumental
      * @return self
@@ -1927,6 +2124,58 @@ class SoundRecordingType
     }
 
     /**
+     * Gets as disableCrossfade
+     *
+     * A Flag indicating to a DSP whether the SoundRecording should not be crossfaded from/into another SoundRecording (=true) or not (=false).
+     *
+     * @return bool
+     */
+    public function getDisableCrossfade()
+    {
+        return $this->disableCrossfade;
+    }
+
+    /**
+     * Sets a new disableCrossfade
+     *
+     * A Flag indicating to a DSP whether the SoundRecording should not be crossfaded from/into another SoundRecording (=true) or not (=false).
+     *
+     * @param bool $disableCrossfade
+     * @return self
+     */
+    public function setDisableCrossfade($disableCrossfade)
+    {
+        $this->disableCrossfade = $disableCrossfade;
+        return $this;
+    }
+
+    /**
+     * Gets as disableSearch
+     *
+     * A Flag indicating to a DSP whether the SoundRecording should not be included in any search results (=true) or not (=false). Note that exclusion from search results implies that the SoundRecording should not appear in any recommendations.
+     *
+     * @return bool
+     */
+    public function getDisableSearch()
+    {
+        return $this->disableSearch;
+    }
+
+    /**
+     * Sets a new disableSearch
+     *
+     * A Flag indicating to a DSP whether the SoundRecording should not be included in any search results (=true) or not (=false). Note that exclusion from search results implies that the SoundRecording should not appear in any recommendations.
+     *
+     * @param bool $disableSearch
+     * @return self
+     */
+    public function setDisableSearch($disableSearch)
+    {
+        $this->disableSearch = $disableSearch;
+        return $this;
+    }
+
+    /**
      * Adds as displayCredits
      *
      * A Role and instrumentation for which a Party is credited.
@@ -1986,7 +2235,7 @@ class SoundRecordingType
      * @param \DedexBundle\Entity\Ern43\DisplayCreditsType[] $displayCredits
      * @return self
      */
-    public function setDisplayCredits(array $displayCredits)
+    public function setDisplayCredits(?array $displayCredits = null)
     {
         $this->displayCredits = $displayCredits;
         return $this;
@@ -1995,12 +2244,12 @@ class SoundRecordingType
     /**
      * Adds as languageOfPerformance
      *
-     * The Language of the Performance recorded in the SoundRecording (represented by an ISO 639 LanguageCode).
+     * The Language of the Performance recorded in the SoundRecording as defined in IETF RfC 5646. Language and Script are provided as lang[-script][-region][-variant].
      *
      * @return self
-     * @param string $languageOfPerformance
+     * @param \DedexBundle\Entity\Ern43\LanguageType $languageOfPerformance
      */
-    public function addToLanguageOfPerformance($languageOfPerformance)
+    public function addToLanguageOfPerformance(\DedexBundle\Entity\Ern43\LanguageType $languageOfPerformance)
     {
         $this->languageOfPerformance[] = $languageOfPerformance;
         return $this;
@@ -2009,7 +2258,7 @@ class SoundRecordingType
     /**
      * isset languageOfPerformance
      *
-     * The Language of the Performance recorded in the SoundRecording (represented by an ISO 639 LanguageCode).
+     * The Language of the Performance recorded in the SoundRecording as defined in IETF RfC 5646. Language and Script are provided as lang[-script][-region][-variant].
      *
      * @param int|string $index
      * @return bool
@@ -2022,7 +2271,7 @@ class SoundRecordingType
     /**
      * unset languageOfPerformance
      *
-     * The Language of the Performance recorded in the SoundRecording (represented by an ISO 639 LanguageCode).
+     * The Language of the Performance recorded in the SoundRecording as defined in IETF RfC 5646. Language and Script are provided as lang[-script][-region][-variant].
      *
      * @param int|string $index
      * @return void
@@ -2035,9 +2284,9 @@ class SoundRecordingType
     /**
      * Gets as languageOfPerformance
      *
-     * The Language of the Performance recorded in the SoundRecording (represented by an ISO 639 LanguageCode).
+     * The Language of the Performance recorded in the SoundRecording as defined in IETF RfC 5646. Language and Script are provided as lang[-script][-region][-variant].
      *
-     * @return string[]
+     * @return \DedexBundle\Entity\Ern43\LanguageType[]
      */
     public function getLanguageOfPerformance()
     {
@@ -2047,106 +2296,14 @@ class SoundRecordingType
     /**
      * Sets a new languageOfPerformance
      *
-     * The Language of the Performance recorded in the SoundRecording (represented by an ISO 639 LanguageCode).
+     * The Language of the Performance recorded in the SoundRecording as defined in IETF RfC 5646. Language and Script are provided as lang[-script][-region][-variant].
      *
-     * @param string $languageOfPerformance
+     * @param \DedexBundle\Entity\Ern43\LanguageType[] $languageOfPerformance
      * @return self
      */
-    public function setLanguageOfPerformance(array $languageOfPerformance)
+    public function setLanguageOfPerformance(?array $languageOfPerformance = null)
     {
         $this->languageOfPerformance = $languageOfPerformance;
-        return $this;
-    }
-
-    /**
-     * Gets as audioChannelConfiguration
-     *
-     * A configuration of audio channels.
-     *
-     * @return string
-     */
-    public function getAudioChannelConfiguration()
-    {
-        return $this->audioChannelConfiguration;
-    }
-
-    /**
-     * Sets a new audioChannelConfiguration
-     *
-     * A configuration of audio channels.
-     *
-     * @param string $audioChannelConfiguration
-     * @return self
-     */
-    public function setAudioChannelConfiguration($audioChannelConfiguration)
-    {
-        $this->audioChannelConfiguration = $audioChannelConfiguration;
-        return $this;
-    }
-
-    /**
-     * Adds as technicalDetails
-     *
-     * A Composite containing technical details of the SoundRecording.
-     *
-     * @return self
-     * @param \DedexBundle\Entity\Ern43\TechnicalSoundRecordingDetailsType $technicalDetails
-     */
-    public function addToTechnicalDetails(\DedexBundle\Entity\Ern43\TechnicalSoundRecordingDetailsType $technicalDetails)
-    {
-        $this->technicalDetails[] = $technicalDetails;
-        return $this;
-    }
-
-    /**
-     * isset technicalDetails
-     *
-     * A Composite containing technical details of the SoundRecording.
-     *
-     * @param int|string $index
-     * @return bool
-     */
-    public function issetTechnicalDetails($index)
-    {
-        return isset($this->technicalDetails[$index]);
-    }
-
-    /**
-     * unset technicalDetails
-     *
-     * A Composite containing technical details of the SoundRecording.
-     *
-     * @param int|string $index
-     * @return void
-     */
-    public function unsetTechnicalDetails($index)
-    {
-        unset($this->technicalDetails[$index]);
-    }
-
-    /**
-     * Gets as technicalDetails
-     *
-     * A Composite containing technical details of the SoundRecording.
-     *
-     * @return \DedexBundle\Entity\Ern43\TechnicalSoundRecordingDetailsType[]
-     */
-    public function getTechnicalDetails()
-    {
-        return $this->technicalDetails;
-    }
-
-    /**
-     * Sets a new technicalDetails
-     *
-     * A Composite containing technical details of the SoundRecording.
-     *
-     * @param \DedexBundle\Entity\Ern43\TechnicalSoundRecordingDetailsType[] $technicalDetails
-     * @return self
-     */
-    public function setTechnicalDetails(array $technicalDetails)
-    {
-        $this->technicalDetails = $technicalDetails;
         return $this;
     }
 
@@ -2210,7 +2367,7 @@ class SoundRecordingType
      * @param \DedexBundle\Entity\Ern43\RagaType[] $raga
      * @return self
      */
-    public function setRaga(array $raga)
+    public function setRaga(?array $raga = null)
     {
         $this->raga = $raga;
         return $this;
@@ -2276,7 +2433,7 @@ class SoundRecordingType
      * @param \DedexBundle\Entity\Ern43\TalaType[] $tala
      * @return self
      */
-    public function setTala(array $tala)
+    public function setTala(?array $tala = null)
     {
         $this->tala = $tala;
         return $this;
@@ -2342,7 +2499,7 @@ class SoundRecordingType
      * @param \DedexBundle\Entity\Ern43\DeityType[] $deity
      * @return self
      */
-    public function setDeity(array $deity)
+    public function setDeity(?array $deity = null)
     {
         $this->deity = $deity;
         return $this;
@@ -2408,229 +2565,101 @@ class SoundRecordingType
      * @param string $audioChapterReference
      * @return self
      */
-    public function setAudioChapterReference(array $audioChapterReference)
+    public function setAudioChapterReference(?array $audioChapterReference = null)
     {
         $this->audioChapterReference = $audioChapterReference;
         return $this;
     }
 
-    /**
-     * ERN 4.3 compat: party reference to name map from PartyList.
-     *
-     * @var array
-     */
-    private $_partyMap = [];
+    // --- ERN 4.3 compat methods for Simplifiers ---
 
-    // ─── ERN 4.3 compatibility methods ───────────────────────────────
-
-    /**
-     * ERN 4.3 compat: sets the party reference to name map.
-     * Used to resolve ContributorPartyReference and ArtistPartyReference.
-     *
-     * @param array $partyMap
-     * @return self
-     */
-    public function setPartyMap(array $partyMap)
+    public function setPartyMap(array $map)
     {
-        $this->_partyMap = $partyMap;
-        return $this;
+        $this->_partyMap = $map;
+        // Also inject into contributors
+        if (is_array($this->contributor)) {
+            foreach ($this->contributor as $c) {
+                $ref = $c->getContributorPartyReference();
+                if ($ref && isset($map[$ref])) {
+                    $c->setCompatName($map[$ref]);
+                }
+            }
+        }
     }
 
-    /**
-     * ERN 4.3 compat: alias for getResourceId().
-     * ERN 382 code expects getSoundRecordingId()[0]->getISRC().
-     *
-     * @return \DedexBundle\Entity\Ern43\SoundRecordingIdType[]
-     */
-    public function getSoundRecordingId()
-    {
-        if (!empty($this->resourceId)) {
-            return $this->resourceId;
-        }
-        if (!empty($this->soundRecordingEdition)) {
-            return $this->soundRecordingEdition[0]->getResourceId();
-        }
-        return $this->resourceId;
-    }
-
-    /**
-     * ERN 4.3 compat: returns self as its own DetailsByTerritory.
-     * ERN 382 has separate SoundRecordingDetailsByTerritory objects;
-     * in ERN 4.3 all properties are directly on SoundRecordingType.
-     *
-     * @return self[]
-     */
     public function getSoundRecordingDetailsByTerritory()
     {
         return [$this];
     }
 
-    /**
-     * ERN 4.3 compat: returns "Worldwide" territory code.
-     *
-     * @return \DedexBundle\Entity\Ern43\Ern43CompatValue[]
-     */
     public function getTerritoryCode()
     {
         return [new Ern43CompatValue("Worldwide")];
     }
 
-    /**
-     * ERN 4.3 compat: alias for getTechnicalDetails().
-     *
-     * @return \DedexBundle\Entity\Ern43\TechnicalSoundRecordingDetailsType[]
-     */
+    public function getSoundRecordingId()
+    {
+        if (!empty($this->soundRecordingEdition) && $this->soundRecordingEdition[0]) {
+            return $this->soundRecordingEdition[0]->getResourceId();
+        }
+        return [];
+    }
+
+    public function getSoundRecordingType()
+    {
+        return $this->type;
+    }
+
     public function getTechnicalSoundRecordingDetails()
     {
-        if (!empty($this->technicalDetails)) {
-            return $this->technicalDetails;
-        }
-        if (!empty($this->soundRecordingEdition)) {
+        if (!empty($this->soundRecordingEdition) && $this->soundRecordingEdition[0]) {
             return $this->soundRecordingEdition[0]->getTechnicalDetails();
         }
-        return $this->technicalDetails;
+        return [];
     }
 
-    /**
-     * ERN 4.3 compat: builds ReferenceTitle from first DisplayTitleText.
-     *
-     * @return \DedexBundle\Entity\Ern43\Ern43CompatReferenceTitle|null
-     */
     public function getReferenceTitle()
     {
+        $text = null;
         if (!empty($this->displayTitleText)) {
-            $text = $this->displayTitleText[0];
-            $val = is_object($text) && method_exists($text, 'value') ? $text->value() : (string) $text;
-            return new Ern43CompatReferenceTitle($val);
+            $text = (string) $this->displayTitleText[0];
+        } elseif (!empty($this->displayTitle) && $this->displayTitle[0]->getTitleText()) {
+            $text = $this->displayTitle[0]->getTitleText();
         }
-        return null;
+        return $text !== null ? new Ern43CompatReferenceTitle($text) : null;
     }
 
-    /**
-     * ERN 4.3 compat: alias for getDisplayTitle().
-     * ERN 382 code iterates getTitle() for title objects with getTitleType()/getTitleText().
-     *
-     * @return \DedexBundle\Entity\Ern43\DisplayTitleType[]
-     */
     public function getTitle()
     {
-        return $this->displayTitle;
+        return [];
     }
 
-    /**
-     * ERN 4.3 compat: alias for getContributor().
-     * Resolves contributor names from PartyList via ContributorPartyReference.
-     *
-     * @return \DedexBundle\Entity\Ern43\ContributorType[]
-     */
+    public function getPLine()
+    {
+        if (!empty($this->soundRecordingEdition) && $this->soundRecordingEdition[0]) {
+            return $this->soundRecordingEdition[0]->getPLine();
+        }
+        return [];
+    }
+
     public function getResourceContributor()
     {
-        $contributors = $this->contributor;
-        foreach ($contributors as $contributor) {
-            $ref = $contributor->getContributorPartyReference();
-            if ($ref && isset($this->_partyMap[$ref])) {
-                $contributor->setCompatName($this->_partyMap[$ref]);
-            }
-        }
-        return $contributors;
+        return $this->contributor;
     }
 
-    /**
-     * ERN 4.3 compat: returns empty array (no indirect contributors in ERN 4.3).
-     *
-     * @return array
-     */
     public function getIndirectResourceContributor()
     {
         return [];
     }
 
-    /**
-     * ERN 4.3 compat: returns empty array (no label name at recording level).
-     *
-     * @return array
-     */
     public function getLabelName()
     {
         return [];
     }
 
-    /**
-     * ERN 4.3 compat: returns empty array (no genre at recording level in ERN 4.3).
-     *
-     * @return array
-     */
     public function getGenre()
     {
         return [];
     }
-
-    /**
-     * Adds as soundRecordingEdition
-     *
-     * A Composite containing details of a SoundRecordingEdition.
-     *
-     * @return self
-     * @param \DedexBundle\Entity\Ern43\SoundRecordingEditionType $soundRecordingEdition
-     */
-    public function addToSoundRecordingEdition(\DedexBundle\Entity\Ern43\SoundRecordingEditionType $soundRecordingEdition)
-    {
-        $this->soundRecordingEdition[] = $soundRecordingEdition;
-        return $this;
-    }
-
-    /**
-     * isset soundRecordingEdition
-     *
-     * A Composite containing details of a SoundRecordingEdition.
-     *
-     * @param int|string $index
-     * @return bool
-     */
-    public function issetSoundRecordingEdition($index)
-    {
-        return isset($this->soundRecordingEdition[$index]);
-    }
-
-    /**
-     * unset soundRecordingEdition
-     *
-     * A Composite containing details of a SoundRecordingEdition.
-     *
-     * @param int|string $index
-     * @return void
-     */
-    public function unsetSoundRecordingEdition($index)
-    {
-        unset($this->soundRecordingEdition[$index]);
-    }
-
-    /**
-     * Gets as soundRecordingEdition
-     *
-     * A Composite containing details of a SoundRecordingEdition.
-     *
-     * @return \DedexBundle\Entity\Ern43\SoundRecordingEditionType[]
-     */
-    public function getSoundRecordingEdition()
-    {
-        return $this->soundRecordingEdition;
-    }
-
-    /**
-     * Sets a new soundRecordingEdition
-     *
-     * A Composite containing details of a SoundRecordingEdition.
-     *
-     * @param \DedexBundle\Entity\Ern43\SoundRecordingEditionType[] $soundRecordingEdition
-     * @return self
-     */
-    public function setSoundRecordingEdition(array $soundRecordingEdition)
-    {
-        $this->soundRecordingEdition = $soundRecordingEdition;
-        return $this;
-    }
-
-
 }
 

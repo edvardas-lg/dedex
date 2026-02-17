@@ -6,11 +6,11 @@ namespace DedexBundle\Entity\Ern43;
  * Class representing DisplayArtistNameWithDefaultType
  *
  * A Composite containing details of a DisplayArtistName.
+ * Explanatory Note: This Composite is named DisplayArtistNameWithDefault to disambiguate it from the basic DisplayArtistName Composite.
  * XSD Type: DisplayArtistNameWithDefault
  */
 class DisplayArtistNameWithDefaultType
 {
-
     /**
      * @var string $__value
      */
@@ -22,6 +22,13 @@ class DisplayArtistNameWithDefaultType
      * @var string $languageAndScriptCode
      */
     private $languageAndScriptCode = null;
+
+    /**
+     * The Flag indicating whether the Name is in its original Language (=true) or not (=false). This Flag should not be set if this is not the case. This is represented in an XML schema as an XML Attribute.
+     *
+     * @var bool $isInOriginalLanguage
+     */
+    private $isInOriginalLanguage = null;
 
     /**
      * A Territory to which the Name applies. The use of ISO TerritoryCodes (or the term 'Worldwide') is strongly encouraged; TIS TerritoryCodes should only be used if both MessageSender and MessageRecipient are familiar with this standard.
@@ -98,6 +105,32 @@ class DisplayArtistNameWithDefaultType
     }
 
     /**
+     * Gets as isInOriginalLanguage
+     *
+     * The Flag indicating whether the Name is in its original Language (=true) or not (=false). This Flag should not be set if this is not the case. This is represented in an XML schema as an XML Attribute.
+     *
+     * @return bool
+     */
+    public function getIsInOriginalLanguage()
+    {
+        return $this->isInOriginalLanguage;
+    }
+
+    /**
+     * Sets a new isInOriginalLanguage
+     *
+     * The Flag indicating whether the Name is in its original Language (=true) or not (=false). This Flag should not be set if this is not the case. This is represented in an XML schema as an XML Attribute.
+     *
+     * @param bool $isInOriginalLanguage
+     * @return self
+     */
+    public function setIsInOriginalLanguage($isInOriginalLanguage)
+    {
+        $this->isInOriginalLanguage = $isInOriginalLanguage;
+        return $this;
+    }
+
+    /**
      * Gets as applicableTerritoryCode
      *
      * A Territory to which the Name applies. The use of ISO TerritoryCodes (or the term 'Worldwide') is strongly encouraged; TIS TerritoryCodes should only be used if both MessageSender and MessageRecipient are familiar with this standard.
@@ -148,7 +181,5 @@ class DisplayArtistNameWithDefaultType
         $this->isDefault = $isDefault;
         return $this;
     }
-
-
 }
 

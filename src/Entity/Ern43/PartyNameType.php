@@ -6,11 +6,12 @@ namespace DedexBundle\Entity\Ern43;
  * Class representing PartyNameType
  *
  * A Composite containing details of a PartyName. Name details for a Party typically either contain a FullName or a KeyName.
+ * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
+ * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers
  * XSD Type: PartyName
  */
 class PartyNameType
 {
-
     /**
      * The Language and script for the Elements of the PartyName as defined in IETF RfC 5646. The default is the same as indicated for the containing composite. Language and Script are provided as lang[-script][-region][-variant]. This is represented in an XML schema as an XML Attribute.
      *
@@ -165,7 +166,7 @@ class PartyNameType
      * @param \DedexBundle\Entity\Ern43\NameType $fullNameIndexed
      * @return self
      */
-    public function setFullNameIndexed(\DedexBundle\Entity\Ern43\NameType $fullNameIndexed)
+    public function setFullNameIndexed(?\DedexBundle\Entity\Ern43\NameType $fullNameIndexed = null)
     {
         $this->fullNameIndexed = $fullNameIndexed;
         return $this;
@@ -191,7 +192,7 @@ class PartyNameType
      * @param \DedexBundle\Entity\Ern43\NameType $namesBeforeKeyName
      * @return self
      */
-    public function setNamesBeforeKeyName(\DedexBundle\Entity\Ern43\NameType $namesBeforeKeyName)
+    public function setNamesBeforeKeyName(?\DedexBundle\Entity\Ern43\NameType $namesBeforeKeyName = null)
     {
         $this->namesBeforeKeyName = $namesBeforeKeyName;
         return $this;
@@ -217,7 +218,7 @@ class PartyNameType
      * @param \DedexBundle\Entity\Ern43\NameType $keyName
      * @return self
      */
-    public function setKeyName(\DedexBundle\Entity\Ern43\NameType $keyName)
+    public function setKeyName(?\DedexBundle\Entity\Ern43\NameType $keyName = null)
     {
         $this->keyName = $keyName;
         return $this;
@@ -243,7 +244,7 @@ class PartyNameType
      * @param \DedexBundle\Entity\Ern43\NameType $namesAfterKeyName
      * @return self
      */
-    public function setNamesAfterKeyName(\DedexBundle\Entity\Ern43\NameType $namesAfterKeyName)
+    public function setNamesAfterKeyName(?\DedexBundle\Entity\Ern43\NameType $namesAfterKeyName = null)
     {
         $this->namesAfterKeyName = $namesAfterKeyName;
         return $this;
@@ -269,12 +270,10 @@ class PartyNameType
      * @param \DedexBundle\Entity\Ern43\NameType $abbreviatedName
      * @return self
      */
-    public function setAbbreviatedName(\DedexBundle\Entity\Ern43\NameType $abbreviatedName)
+    public function setAbbreviatedName(?\DedexBundle\Entity\Ern43\NameType $abbreviatedName = null)
     {
         $this->abbreviatedName = $abbreviatedName;
         return $this;
     }
-
-
 }
 

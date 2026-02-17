@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class CoreAreaType
 {
-
     /**
      * The position of the top left corner of the core area measured in Pixels. The position is given as two coordinate values separated by a comma, the top left pixel being 0,0.
      *
@@ -76,7 +75,5 @@ class CoreAreaType
         $this->bottomRightCorner = $bottomRightCorner;
         return $this;
     }
-
-
 }
 

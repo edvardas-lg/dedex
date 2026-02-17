@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class CarrierTypeType
 {
-
     /**
      * @var string $__value
      */
@@ -115,7 +114,5 @@ class CarrierTypeType
         $this->userDefinedValue = $userDefinedValue;
         return $this;
     }
-
-
 }
 

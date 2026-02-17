@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class ChapterListType
 {
-
     /**
      * The Language and script for the Elements of the ChapterList as defined in IETF RfC 5646. The default is the same as indicated for the containing composite. Language and Script are provided as lang[-script][-region][-variant]. This is represented in an XML schema as an XML Attribute.
      *
@@ -118,7 +117,5 @@ class ChapterListType
         $this->chapter = $chapter;
         return $this;
     }
-
-
 }
 

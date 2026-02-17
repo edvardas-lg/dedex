@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class MarketingCommentType
 {
-
     /**
      * @var string $__value
      */
@@ -148,7 +147,5 @@ class MarketingCommentType
         $this->isDefault = $isDefault;
         return $this;
     }
-
-
 }
 

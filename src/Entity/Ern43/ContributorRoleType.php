@@ -5,12 +5,11 @@ namespace DedexBundle\Entity\Ern43;
 /**
  * Class representing ContributorRoleType
  *
- * A Composite containing details of a ContributorRole. Note: This can be used in a DdexMessage in relation to any Work, Performance or Fixation any of which may form the whole or part of the Resource itself.
+ * A Composite containing details of a ContributorRole. Note: this can be used in a DdexMessage in relation to any Work, Performance or Fixation any of which may form the whole or part of the Resource itself.
  * XSD Type: ContributorRole
  */
 class ContributorRoleType
 {
-
     /**
      * @var string $__value
      */
@@ -115,7 +114,5 @@ class ContributorRoleType
         $this->userDefinedValue = $userDefinedValue;
         return $this;
     }
-
-
 }
 

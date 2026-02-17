@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class PriceType
 {
-
     /**
      * @var float $__value
      */
@@ -82,7 +81,5 @@ class PriceType
         $this->currencyCode = $currencyCode;
         return $this;
     }
-
-
 }
 

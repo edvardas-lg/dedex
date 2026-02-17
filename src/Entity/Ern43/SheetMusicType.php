@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class SheetMusicType
 {
-
     /**
      * The Language and script for the Elements of the SheetMusic as defined in IETF RfC 5646. Language and Script are provided as lang[-script][-region][-variant]. This is represented in an XML schema as an XML Attribute.
      *
@@ -59,6 +58,7 @@ class SheetMusicType
 
     /**
      * A Composite containing details of a Title of the SheetMusic as the MessageSender suggests it should be shown to the Consumer. In many instances this is the only Title to be communicated for any given Creation. Multiple instances can be supplied with an ApplicableTerritoryCode and/or LanguageAndScriptCode. One such element is required for each DisplayTitle element and its content typically provides the same information as the concatenation of the DisplayTitle's sub-elements.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
      *
      * @var \DedexBundle\Entity\Ern43\DisplayTitleTextType[] $displayTitleText
      */
@@ -85,7 +85,7 @@ class SheetMusicType
     ];
 
     /**
-     * A Composite containing details of a Type of Version of the SheetMusic.
+     * A Composite containing details of a Type of Version given by the releasing party to characterise and differentiate one SheetMusic from another with identical or similar Title metadata. VersionTypes may be used for disambiguating a SheetMusic that has been derived from another SheetMusic by using the value EditedVersion. EditedVersion value is often combined with another VersionType such as RadioVersion.
      *
      * @var \DedexBundle\Entity\Ern43\VersionTypeType[] $versionType
      */
@@ -95,6 +95,9 @@ class SheetMusicType
 
     /**
      * A Composite containing the Name to be used by a DSP when presenting Artist details of the Resource to a Consumer.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @var \DedexBundle\Entity\Ern43\DisplayArtistNameWithDefaultType[] $displayArtistName
      */
@@ -104,6 +107,9 @@ class SheetMusicType
 
     /**
      * A Composite containing details of the DisplayArtist for the SheetMusic. The DisplayArtist may be described through Name, Identifier and Roles.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @var \DedexBundle\Entity\Ern43\DisplayArtistType[] $displayArtist
      */
@@ -207,7 +213,7 @@ class SheetMusicType
     private $containsHiddenContent = null;
 
     /**
-     * The Language of the Lyrics of the SheetMusic (represented by an ISO 639 LanguageCode).
+     * The Language of the Lyrics of the SheetMusic as defined in IETF RfC 5646. Language and Script are provided as lang[-script][-region][-variant].
      *
      * @var string $languageOfLyrics
      */
@@ -222,6 +228,7 @@ class SheetMusicType
 
     /**
      * A Composite containing technical details of the SheetMusic.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-binaries/communicating-binaries
      *
      * @var \DedexBundle\Entity\Ern43\TechnicalSheetMusicDetailsType[] $technicalDetails
      */
@@ -459,7 +466,7 @@ class SheetMusicType
      * @param \DedexBundle\Entity\Ern43\MusicalWorkIdType[] $workId
      * @return self
      */
-    public function setWorkId(array $workId)
+    public function setWorkId(?array $workId = null)
     {
         $this->workId = $workId;
         return $this;
@@ -469,6 +476,7 @@ class SheetMusicType
      * Adds as displayTitleText
      *
      * A Composite containing details of a Title of the SheetMusic as the MessageSender suggests it should be shown to the Consumer. In many instances this is the only Title to be communicated for any given Creation. Multiple instances can be supplied with an ApplicableTerritoryCode and/or LanguageAndScriptCode. One such element is required for each DisplayTitle element and its content typically provides the same information as the concatenation of the DisplayTitle's sub-elements.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
      *
      * @return self
      * @param \DedexBundle\Entity\Ern43\DisplayTitleTextType $displayTitleText
@@ -483,6 +491,7 @@ class SheetMusicType
      * isset displayTitleText
      *
      * A Composite containing details of a Title of the SheetMusic as the MessageSender suggests it should be shown to the Consumer. In many instances this is the only Title to be communicated for any given Creation. Multiple instances can be supplied with an ApplicableTerritoryCode and/or LanguageAndScriptCode. One such element is required for each DisplayTitle element and its content typically provides the same information as the concatenation of the DisplayTitle's sub-elements.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
      *
      * @param int|string $index
      * @return bool
@@ -496,6 +505,7 @@ class SheetMusicType
      * unset displayTitleText
      *
      * A Composite containing details of a Title of the SheetMusic as the MessageSender suggests it should be shown to the Consumer. In many instances this is the only Title to be communicated for any given Creation. Multiple instances can be supplied with an ApplicableTerritoryCode and/or LanguageAndScriptCode. One such element is required for each DisplayTitle element and its content typically provides the same information as the concatenation of the DisplayTitle's sub-elements.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
      *
      * @param int|string $index
      * @return void
@@ -509,6 +519,7 @@ class SheetMusicType
      * Gets as displayTitleText
      *
      * A Composite containing details of a Title of the SheetMusic as the MessageSender suggests it should be shown to the Consumer. In many instances this is the only Title to be communicated for any given Creation. Multiple instances can be supplied with an ApplicableTerritoryCode and/or LanguageAndScriptCode. One such element is required for each DisplayTitle element and its content typically provides the same information as the concatenation of the DisplayTitle's sub-elements.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
      *
      * @return \DedexBundle\Entity\Ern43\DisplayTitleTextType[]
      */
@@ -521,11 +532,12 @@ class SheetMusicType
      * Sets a new displayTitleText
      *
      * A Composite containing details of a Title of the SheetMusic as the MessageSender suggests it should be shown to the Consumer. In many instances this is the only Title to be communicated for any given Creation. Multiple instances can be supplied with an ApplicableTerritoryCode and/or LanguageAndScriptCode. One such element is required for each DisplayTitle element and its content typically provides the same information as the concatenation of the DisplayTitle's sub-elements.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
      *
      * @param \DedexBundle\Entity\Ern43\DisplayTitleTextType[] $displayTitleText
      * @return self
      */
-    public function setDisplayTitleText(array $displayTitleText)
+    public function setDisplayTitleText(?array $displayTitleText = null)
     {
         $this->displayTitleText = $displayTitleText;
         return $this;
@@ -591,7 +603,7 @@ class SheetMusicType
      * @param \DedexBundle\Entity\Ern43\DisplayTitleType[] $displayTitle
      * @return self
      */
-    public function setDisplayTitle(array $displayTitle)
+    public function setDisplayTitle(?array $displayTitle = null)
     {
         $this->displayTitle = $displayTitle;
         return $this;
@@ -657,7 +669,7 @@ class SheetMusicType
      * @param \DedexBundle\Entity\Ern43\AdditionalTitleType[] $additionalTitle
      * @return self
      */
-    public function setAdditionalTitle(array $additionalTitle)
+    public function setAdditionalTitle(?array $additionalTitle = null)
     {
         $this->additionalTitle = $additionalTitle;
         return $this;
@@ -666,7 +678,7 @@ class SheetMusicType
     /**
      * Adds as versionType
      *
-     * A Composite containing details of a Type of Version of the SheetMusic.
+     * A Composite containing details of a Type of Version given by the releasing party to characterise and differentiate one SheetMusic from another with identical or similar Title metadata. VersionTypes may be used for disambiguating a SheetMusic that has been derived from another SheetMusic by using the value EditedVersion. EditedVersion value is often combined with another VersionType such as RadioVersion.
      *
      * @return self
      * @param \DedexBundle\Entity\Ern43\VersionTypeType $versionType
@@ -680,7 +692,7 @@ class SheetMusicType
     /**
      * isset versionType
      *
-     * A Composite containing details of a Type of Version of the SheetMusic.
+     * A Composite containing details of a Type of Version given by the releasing party to characterise and differentiate one SheetMusic from another with identical or similar Title metadata. VersionTypes may be used for disambiguating a SheetMusic that has been derived from another SheetMusic by using the value EditedVersion. EditedVersion value is often combined with another VersionType such as RadioVersion.
      *
      * @param int|string $index
      * @return bool
@@ -693,7 +705,7 @@ class SheetMusicType
     /**
      * unset versionType
      *
-     * A Composite containing details of a Type of Version of the SheetMusic.
+     * A Composite containing details of a Type of Version given by the releasing party to characterise and differentiate one SheetMusic from another with identical or similar Title metadata. VersionTypes may be used for disambiguating a SheetMusic that has been derived from another SheetMusic by using the value EditedVersion. EditedVersion value is often combined with another VersionType such as RadioVersion.
      *
      * @param int|string $index
      * @return void
@@ -706,7 +718,7 @@ class SheetMusicType
     /**
      * Gets as versionType
      *
-     * A Composite containing details of a Type of Version of the SheetMusic.
+     * A Composite containing details of a Type of Version given by the releasing party to characterise and differentiate one SheetMusic from another with identical or similar Title metadata. VersionTypes may be used for disambiguating a SheetMusic that has been derived from another SheetMusic by using the value EditedVersion. EditedVersion value is often combined with another VersionType such as RadioVersion.
      *
      * @return \DedexBundle\Entity\Ern43\VersionTypeType[]
      */
@@ -718,12 +730,12 @@ class SheetMusicType
     /**
      * Sets a new versionType
      *
-     * A Composite containing details of a Type of Version of the SheetMusic.
+     * A Composite containing details of a Type of Version given by the releasing party to characterise and differentiate one SheetMusic from another with identical or similar Title metadata. VersionTypes may be used for disambiguating a SheetMusic that has been derived from another SheetMusic by using the value EditedVersion. EditedVersion value is often combined with another VersionType such as RadioVersion.
      *
      * @param \DedexBundle\Entity\Ern43\VersionTypeType[] $versionType
      * @return self
      */
-    public function setVersionType(array $versionType)
+    public function setVersionType(?array $versionType = null)
     {
         $this->versionType = $versionType;
         return $this;
@@ -733,6 +745,9 @@ class SheetMusicType
      * Adds as displayArtistName
      *
      * A Composite containing the Name to be used by a DSP when presenting Artist details of the Resource to a Consumer.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @return self
      * @param \DedexBundle\Entity\Ern43\DisplayArtistNameWithDefaultType $displayArtistName
@@ -747,6 +762,9 @@ class SheetMusicType
      * isset displayArtistName
      *
      * A Composite containing the Name to be used by a DSP when presenting Artist details of the Resource to a Consumer.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @param int|string $index
      * @return bool
@@ -760,6 +778,9 @@ class SheetMusicType
      * unset displayArtistName
      *
      * A Composite containing the Name to be used by a DSP when presenting Artist details of the Resource to a Consumer.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @param int|string $index
      * @return void
@@ -773,6 +794,9 @@ class SheetMusicType
      * Gets as displayArtistName
      *
      * A Composite containing the Name to be used by a DSP when presenting Artist details of the Resource to a Consumer.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @return \DedexBundle\Entity\Ern43\DisplayArtistNameWithDefaultType[]
      */
@@ -785,6 +809,9 @@ class SheetMusicType
      * Sets a new displayArtistName
      *
      * A Composite containing the Name to be used by a DSP when presenting Artist details of the Resource to a Consumer.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @param \DedexBundle\Entity\Ern43\DisplayArtistNameWithDefaultType[] $displayArtistName
      * @return self
@@ -799,6 +826,9 @@ class SheetMusicType
      * Adds as displayArtist
      *
      * A Composite containing details of the DisplayArtist for the SheetMusic. The DisplayArtist may be described through Name, Identifier and Roles.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @return self
      * @param \DedexBundle\Entity\Ern43\DisplayArtistType $displayArtist
@@ -813,6 +843,9 @@ class SheetMusicType
      * isset displayArtist
      *
      * A Composite containing details of the DisplayArtist for the SheetMusic. The DisplayArtist may be described through Name, Identifier and Roles.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @param int|string $index
      * @return bool
@@ -826,6 +859,9 @@ class SheetMusicType
      * unset displayArtist
      *
      * A Composite containing details of the DisplayArtist for the SheetMusic. The DisplayArtist may be described through Name, Identifier and Roles.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @param int|string $index
      * @return void
@@ -839,6 +875,9 @@ class SheetMusicType
      * Gets as displayArtist
      *
      * A Composite containing details of the DisplayArtist for the SheetMusic. The DisplayArtist may be described through Name, Identifier and Roles.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @return \DedexBundle\Entity\Ern43\DisplayArtistType[]
      */
@@ -851,11 +890,14 @@ class SheetMusicType
      * Sets a new displayArtist
      *
      * A Composite containing details of the DisplayArtist for the SheetMusic. The DisplayArtist may be described through Name, Identifier and Roles.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @param \DedexBundle\Entity\Ern43\DisplayArtistType[] $displayArtist
      * @return self
      */
-    public function setDisplayArtist(array $displayArtist)
+    public function setDisplayArtist(?array $displayArtist = null)
     {
         $this->displayArtist = $displayArtist;
         return $this;
@@ -921,7 +963,7 @@ class SheetMusicType
      * @param \DedexBundle\Entity\Ern43\ContributorType[] $contributor
      * @return self
      */
-    public function setContributor(array $contributor)
+    public function setContributor(?array $contributor = null)
     {
         $this->contributor = $contributor;
         return $this;
@@ -987,7 +1029,7 @@ class SheetMusicType
      * @param \DedexBundle\Entity\Ern43\ResourceRightsControllerType[] $resourceRightsController
      * @return self
      */
-    public function setResourceRightsController(array $resourceRightsController)
+    public function setResourceRightsController(?array $resourceRightsController = null)
     {
         $this->resourceRightsController = $resourceRightsController;
         return $this;
@@ -1053,7 +1095,7 @@ class SheetMusicType
      * @param \DedexBundle\Entity\Ern43\WorkRightsControllerType[] $workRightsController
      * @return self
      */
-    public function setWorkRightsController(array $workRightsController)
+    public function setWorkRightsController(?array $workRightsController = null)
     {
         $this->workRightsController = $workRightsController;
         return $this;
@@ -1119,7 +1161,7 @@ class SheetMusicType
      * @param \DedexBundle\Entity\Ern43\CLineWithDefaultType[] $cLine
      * @return self
      */
-    public function setCLine(array $cLine)
+    public function setCLine(?array $cLine = null)
     {
         $this->cLine = $cLine;
         return $this;
@@ -1185,7 +1227,7 @@ class SheetMusicType
      * @param \DedexBundle\Entity\Ern43\CourtesyLineWithDefaultType[] $courtesyLine
      * @return self
      */
-    public function setCourtesyLine(array $courtesyLine)
+    public function setCourtesyLine(?array $courtesyLine = null)
     {
         $this->courtesyLine = $courtesyLine;
         return $this;
@@ -1211,7 +1253,7 @@ class SheetMusicType
      * @param \DedexBundle\Entity\Ern43\EventDateWithoutFlagsType $creationDate
      * @return self
      */
-    public function setCreationDate(\DedexBundle\Entity\Ern43\EventDateWithoutFlagsType $creationDate)
+    public function setCreationDate(?\DedexBundle\Entity\Ern43\EventDateWithoutFlagsType $creationDate = null)
     {
         $this->creationDate = $creationDate;
         return $this;
@@ -1277,7 +1319,7 @@ class SheetMusicType
      * @param \DedexBundle\Entity\Ern43\FulfillmentDateWithTerritoryType[] $firstPublicationDate
      * @return self
      */
-    public function setFirstPublicationDate(array $firstPublicationDate)
+    public function setFirstPublicationDate(?array $firstPublicationDate = null)
     {
         $this->firstPublicationDate = $firstPublicationDate;
         return $this;
@@ -1343,7 +1385,7 @@ class SheetMusicType
      * @param \DedexBundle\Entity\Ern43\ParentalWarningTypeWithTerritoryType[] $parentalWarningType
      * @return self
      */
-    public function setParentalWarningType(array $parentalWarningType)
+    public function setParentalWarningType(?array $parentalWarningType = null)
     {
         $this->parentalWarningType = $parentalWarningType;
         return $this;
@@ -1409,7 +1451,7 @@ class SheetMusicType
      * @param \DedexBundle\Entity\Ern43\RelatedReleaseType[] $relatedRelease
      * @return self
      */
-    public function setRelatedRelease(array $relatedRelease)
+    public function setRelatedRelease(?array $relatedRelease = null)
     {
         $this->relatedRelease = $relatedRelease;
         return $this;
@@ -1475,7 +1517,7 @@ class SheetMusicType
      * @param \DedexBundle\Entity\Ern43\RelatedResourceType[] $relatedResource
      * @return self
      */
-    public function setRelatedResource(array $relatedResource)
+    public function setRelatedResource(?array $relatedResource = null)
     {
         $this->relatedResource = $relatedResource;
         return $this;
@@ -1510,7 +1552,7 @@ class SheetMusicType
     /**
      * Gets as languageOfLyrics
      *
-     * The Language of the Lyrics of the SheetMusic (represented by an ISO 639 LanguageCode).
+     * The Language of the Lyrics of the SheetMusic as defined in IETF RfC 5646. Language and Script are provided as lang[-script][-region][-variant].
      *
      * @return string
      */
@@ -1522,7 +1564,7 @@ class SheetMusicType
     /**
      * Sets a new languageOfLyrics
      *
-     * The Language of the Lyrics of the SheetMusic (represented by an ISO 639 LanguageCode).
+     * The Language of the Lyrics of the SheetMusic as defined in IETF RfC 5646. Language and Script are provided as lang[-script][-region][-variant].
      *
      * @param string $languageOfLyrics
      * @return self
@@ -1593,7 +1635,7 @@ class SheetMusicType
      * @param \DedexBundle\Entity\Ern43\ResourceContainedResourceReferenceType[] $resourceContainedResourceReferenceList
      * @return self
      */
-    public function setResourceContainedResourceReferenceList(array $resourceContainedResourceReferenceList)
+    public function setResourceContainedResourceReferenceList(?array $resourceContainedResourceReferenceList = null)
     {
         $this->resourceContainedResourceReferenceList = $resourceContainedResourceReferenceList;
         return $this;
@@ -1603,6 +1645,7 @@ class SheetMusicType
      * Adds as technicalDetails
      *
      * A Composite containing technical details of the SheetMusic.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-binaries/communicating-binaries
      *
      * @return self
      * @param \DedexBundle\Entity\Ern43\TechnicalSheetMusicDetailsType $technicalDetails
@@ -1617,6 +1660,7 @@ class SheetMusicType
      * isset technicalDetails
      *
      * A Composite containing technical details of the SheetMusic.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-binaries/communicating-binaries
      *
      * @param int|string $index
      * @return bool
@@ -1630,6 +1674,7 @@ class SheetMusicType
      * unset technicalDetails
      *
      * A Composite containing technical details of the SheetMusic.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-binaries/communicating-binaries
      *
      * @param int|string $index
      * @return void
@@ -1643,6 +1688,7 @@ class SheetMusicType
      * Gets as technicalDetails
      *
      * A Composite containing technical details of the SheetMusic.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-binaries/communicating-binaries
      *
      * @return \DedexBundle\Entity\Ern43\TechnicalSheetMusicDetailsType[]
      */
@@ -1655,16 +1701,15 @@ class SheetMusicType
      * Sets a new technicalDetails
      *
      * A Composite containing technical details of the SheetMusic.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-binaries/communicating-binaries
      *
      * @param \DedexBundle\Entity\Ern43\TechnicalSheetMusicDetailsType[] $technicalDetails
      * @return self
      */
-    public function setTechnicalDetails(array $technicalDetails)
+    public function setTechnicalDetails(?array $technicalDetails = null)
     {
         $this->technicalDetails = $technicalDetails;
         return $this;
     }
-
-
 }
 

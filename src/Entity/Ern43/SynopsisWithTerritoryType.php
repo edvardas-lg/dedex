@@ -6,11 +6,11 @@ namespace DedexBundle\Entity\Ern43;
  * Class representing SynopsisWithTerritoryType
  *
  * A Composite containing details of a Synopsis.
+ * Explanatory Note: This Composite is named SynopsisWithTerritory to disambiguate it from the basic Synopsis Composite.
  * XSD Type: SynopsisWithTerritory
  */
 class SynopsisWithTerritoryType
 {
-
     /**
      * @var string $__value
      */
@@ -181,7 +181,5 @@ class SynopsisWithTerritoryType
         $this->isShortSynopsis = $isShortSynopsis;
         return $this;
     }
-
-
 }
 

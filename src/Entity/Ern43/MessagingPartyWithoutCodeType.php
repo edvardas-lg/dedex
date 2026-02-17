@@ -6,11 +6,11 @@ namespace DedexBundle\Entity\Ern43;
  * Class representing MessagingPartyWithoutCodeType
  *
  * A Composite containing details of a MessagingParty.
+ * Explanatory Note: This Composite is named MessagingPartyWithoutCode to disambiguate it from the basic MessagingParty Composite.
  * XSD Type: MessagingPartyWithoutCode
  */
 class MessagingPartyWithoutCodeType
 {
-
     /**
      * An Identifier of a Party according to the DdexPartyId standard DDEX-DPID.
      *
@@ -20,6 +20,8 @@ class MessagingPartyWithoutCodeType
 
     /**
      * A Composite containing details of the PartyNames for the Party handling the Message.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers
      *
      * @var \DedexBundle\Entity\Ern43\PartyNameWithoutCodeType $partyName
      */
@@ -27,6 +29,7 @@ class MessagingPartyWithoutCodeType
 
     /**
      * A Composite containing a TradingName for the Party handling the Message.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
      *
      * @var string $tradingName
      */
@@ -62,6 +65,8 @@ class MessagingPartyWithoutCodeType
      * Gets as partyName
      *
      * A Composite containing details of the PartyNames for the Party handling the Message.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers
      *
      * @return \DedexBundle\Entity\Ern43\PartyNameWithoutCodeType
      */
@@ -74,11 +79,13 @@ class MessagingPartyWithoutCodeType
      * Sets a new partyName
      *
      * A Composite containing details of the PartyNames for the Party handling the Message.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers
      *
      * @param \DedexBundle\Entity\Ern43\PartyNameWithoutCodeType $partyName
      * @return self
      */
-    public function setPartyName(\DedexBundle\Entity\Ern43\PartyNameWithoutCodeType $partyName)
+    public function setPartyName(?\DedexBundle\Entity\Ern43\PartyNameWithoutCodeType $partyName = null)
     {
         $this->partyName = $partyName;
         return $this;
@@ -88,6 +95,7 @@ class MessagingPartyWithoutCodeType
      * Gets as tradingName
      *
      * A Composite containing a TradingName for the Party handling the Message.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
      *
      * @return string
      */
@@ -100,6 +108,7 @@ class MessagingPartyWithoutCodeType
      * Sets a new tradingName
      *
      * A Composite containing a TradingName for the Party handling the Message.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
      *
      * @param string $tradingName
      * @return self
@@ -109,7 +118,5 @@ class MessagingPartyWithoutCodeType
         $this->tradingName = $tradingName;
         return $this;
     }
-
-
 }
 

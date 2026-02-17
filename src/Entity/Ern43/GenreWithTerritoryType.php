@@ -6,11 +6,11 @@ namespace DedexBundle\Entity\Ern43;
  * Class representing GenreWithTerritoryType
  *
  * A Composite containing details of a Genre.
+ * Explanatory Note: This Composite is named GenreWithTerritory to disambiguate it from the basic Genre Composite.
  * XSD Type: GenreWithTerritory
  */
 class GenreWithTerritoryType
 {
-
     /**
      * The Language and script for the Elements of the Genre as defined in IETF RfC 5646. The default is the same as indicated for the containing composite. Language and Script are provided as lang[-script][-region][-variant]. This is represented in an XML schema as an XML Attribute.
      *
@@ -45,6 +45,22 @@ class GenreWithTerritoryType
      * @var string $subGenre
      */
     private $subGenre = null;
+
+    /**
+     * A Composite containing details of a Genre Category to which the Release belongs.
+     *
+     * @var \DedexBundle\Entity\Ern43\GenreCategoryType[] $genreCategory
+     */
+    private $genreCategory = [
+        
+    ];
+
+    /**
+     * A Composite containing details of a sub-genre of the Release.
+     *
+     * @var \DedexBundle\Entity\Ern43\SubGenreCategoryValueType[] $subGenreCategory
+     */
+    private $subGenreCategory = null;
 
     /**
      * Gets as languageAndScriptCode
@@ -133,7 +149,7 @@ class GenreWithTerritoryType
      */
     public function getGenreText()
     {
-        return new Ern43CompatValue($this->genreText);
+        return $this->genreText !== null ? new Ern43CompatValue($this->genreText) : null;
     }
 
     /**
@@ -159,7 +175,7 @@ class GenreWithTerritoryType
      */
     public function getSubGenre()
     {
-        return new Ern43CompatValue($this->subGenre);
+        return $this->subGenre !== null ? new Ern43CompatValue($this->subGenre) : null;
     }
 
     /**
@@ -176,6 +192,136 @@ class GenreWithTerritoryType
         return $this;
     }
 
+    /**
+     * Adds as genreCategory
+     *
+     * A Composite containing details of a Genre Category to which the Release belongs.
+     *
+     * @return self
+     * @param \DedexBundle\Entity\Ern43\GenreCategoryType $genreCategory
+     */
+    public function addToGenreCategory(\DedexBundle\Entity\Ern43\GenreCategoryType $genreCategory)
+    {
+        $this->genreCategory[] = $genreCategory;
+        return $this;
+    }
 
+    /**
+     * isset genreCategory
+     *
+     * A Composite containing details of a Genre Category to which the Release belongs.
+     *
+     * @param int|string $index
+     * @return bool
+     */
+    public function issetGenreCategory($index)
+    {
+        return isset($this->genreCategory[$index]);
+    }
+
+    /**
+     * unset genreCategory
+     *
+     * A Composite containing details of a Genre Category to which the Release belongs.
+     *
+     * @param int|string $index
+     * @return void
+     */
+    public function unsetGenreCategory($index)
+    {
+        unset($this->genreCategory[$index]);
+    }
+
+    /**
+     * Gets as genreCategory
+     *
+     * A Composite containing details of a Genre Category to which the Release belongs.
+     *
+     * @return \DedexBundle\Entity\Ern43\GenreCategoryType[]
+     */
+    public function getGenreCategory()
+    {
+        return $this->genreCategory;
+    }
+
+    /**
+     * Sets a new genreCategory
+     *
+     * A Composite containing details of a Genre Category to which the Release belongs.
+     *
+     * @param \DedexBundle\Entity\Ern43\GenreCategoryType[] $genreCategory
+     * @return self
+     */
+    public function setGenreCategory(?array $genreCategory = null)
+    {
+        $this->genreCategory = $genreCategory;
+        return $this;
+    }
+
+    /**
+     * Adds as value
+     *
+     * A Composite containing details of a sub-genre of the Release.
+     *
+     * @return self
+     * @param \DedexBundle\Entity\Ern43\SubGenreCategoryValueType $value
+     */
+    public function addToSubGenreCategory(\DedexBundle\Entity\Ern43\SubGenreCategoryValueType $value)
+    {
+        $this->subGenreCategory[] = $value;
+        return $this;
+    }
+
+    /**
+     * isset subGenreCategory
+     *
+     * A Composite containing details of a sub-genre of the Release.
+     *
+     * @param int|string $index
+     * @return bool
+     */
+    public function issetSubGenreCategory($index)
+    {
+        return isset($this->subGenreCategory[$index]);
+    }
+
+    /**
+     * unset subGenreCategory
+     *
+     * A Composite containing details of a sub-genre of the Release.
+     *
+     * @param int|string $index
+     * @return void
+     */
+    public function unsetSubGenreCategory($index)
+    {
+        unset($this->subGenreCategory[$index]);
+    }
+
+    /**
+     * Gets as subGenreCategory
+     *
+     * A Composite containing details of a sub-genre of the Release.
+     *
+     * @return \DedexBundle\Entity\Ern43\SubGenreCategoryValueType[]
+     */
+    public function getSubGenreCategory()
+    {
+        return $this->subGenreCategory;
+    }
+
+    /**
+     * Sets a new subGenreCategory
+     *
+     * A Composite containing details of a sub-genre of the Release.
+     *
+     * @param \DedexBundle\Entity\Ern43\SubGenreCategoryValueType[] $subGenreCategory
+     * @return self
+     */
+    public function setSubGenreCategory(?array $subGenreCategory = null)
+    {
+        $this->subGenreCategory = $subGenreCategory;
+        return $this;
+    }
 }
 

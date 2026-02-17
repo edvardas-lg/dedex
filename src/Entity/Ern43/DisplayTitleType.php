@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class DisplayTitleType
 {
-
     /**
      * The Language and script for the Elements of the Title as defined in IETF RfC 5646. The default is the same as indicated for the containing composite. Language and Script are provided as lang[-script][-region][-variant]. This is represented in an XML schema as an XML Attribute.
      *
@@ -33,7 +32,15 @@ class DisplayTitleType
     private $isDefault = null;
 
     /**
+     * The Flag indicating whether the Title is in its original Language (=true) or not (=false). This Flag should not be set if this is not the case. This is represented in an XML schema as an XML Attribute.
+     *
+     * @var bool $isInOriginalLanguage
+     */
+    private $isInOriginalLanguage = null;
+
+    /**
      * The text of the Title.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
      *
      * @var string $titleText
      */
@@ -127,32 +134,49 @@ class DisplayTitleType
     }
 
     /**
+     * Gets as isInOriginalLanguage
+     *
+     * The Flag indicating whether the Title is in its original Language (=true) or not (=false). This Flag should not be set if this is not the case. This is represented in an XML schema as an XML Attribute.
+     *
+     * @return bool
+     */
+    public function getIsInOriginalLanguage()
+    {
+        return $this->isInOriginalLanguage;
+    }
+
+    /**
+     * Sets a new isInOriginalLanguage
+     *
+     * The Flag indicating whether the Title is in its original Language (=true) or not (=false). This Flag should not be set if this is not the case. This is represented in an XML schema as an XML Attribute.
+     *
+     * @param bool $isInOriginalLanguage
+     * @return self
+     */
+    public function setIsInOriginalLanguage($isInOriginalLanguage)
+    {
+        $this->isInOriginalLanguage = $isInOriginalLanguage;
+        return $this;
+    }
+
+    /**
      * Gets as titleText
      *
      * The text of the Title.
-     * ERN 4.3 compat: wraps string in Ern43CompatValue for value() access.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
      *
      * @return string
      */
     public function getTitleText()
     {
-        return new Ern43CompatValue($this->titleText);
-    }
-
-    /**
-     * ERN 4.3 compat: returns "DisplayTitle" as title type for ERN 382 API compatibility.
-     *
-     * @return string
-     */
-    public function getTitleType()
-    {
-        return "DisplayTitle";
+        return $this->titleText;
     }
 
     /**
      * Sets a new titleText
      *
      * The text of the Title.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
      *
      * @param string $titleText
      * @return self
@@ -223,12 +247,10 @@ class DisplayTitleType
      * @param \DedexBundle\Entity\Ern43\DisplaySubTitleType[] $subTitle
      * @return self
      */
-    public function setSubTitle(array $subTitle)
+    public function setSubTitle(?array $subTitle = null)
     {
         $this->subTitle = $subTitle;
         return $this;
     }
-
-
 }
 

@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class RelatedResourceType
 {
-
     /**
      * A Type of relationship between two Resources.
      *
@@ -26,11 +25,11 @@ class RelatedResourceType
     private $resourceRelatedResourceReference = null;
 
     /**
-     * A Composite containing details of ReleaseIds, which allows referencing a related Release that is not in this message. If available, a GRid shall always to be used. If the Release contains only one SoundRecording, the ISRC of the SoundRecording may be used instead. If the Release is an abstraction of a complete PhysicalProduct (such as a CD Album), the ICPN of the PhysicalProduct may be used instead. More than one of these identifiers may be provided.
+     * A Composite containing details of ResourceIds, which allows referencing a related Resource that is not in this message.
      *
-     * @var \DedexBundle\Entity\Ern43\ReleaseIdType $releaseId
+     * @var \DedexBundle\Entity\Ern43\ResourceIdType $resourceId
      */
-    private $releaseId = null;
+    private $resourceId = null;
 
     /**
      * A Composite containing details of a StartTime and/or a Duration of the related Resource.
@@ -94,28 +93,28 @@ class RelatedResourceType
     }
 
     /**
-     * Gets as releaseId
+     * Gets as resourceId
      *
-     * A Composite containing details of ReleaseIds, which allows referencing a related Release that is not in this message. If available, a GRid shall always to be used. If the Release contains only one SoundRecording, the ISRC of the SoundRecording may be used instead. If the Release is an abstraction of a complete PhysicalProduct (such as a CD Album), the ICPN of the PhysicalProduct may be used instead. More than one of these identifiers may be provided.
+     * A Composite containing details of ResourceIds, which allows referencing a related Resource that is not in this message.
      *
-     * @return \DedexBundle\Entity\Ern43\ReleaseIdType
+     * @return \DedexBundle\Entity\Ern43\ResourceIdType
      */
-    public function getReleaseId()
+    public function getResourceId()
     {
-        return $this->releaseId;
+        return $this->resourceId;
     }
 
     /**
-     * Sets a new releaseId
+     * Sets a new resourceId
      *
-     * A Composite containing details of ReleaseIds, which allows referencing a related Release that is not in this message. If available, a GRid shall always to be used. If the Release contains only one SoundRecording, the ISRC of the SoundRecording may be used instead. If the Release is an abstraction of a complete PhysicalProduct (such as a CD Album), the ICPN of the PhysicalProduct may be used instead. More than one of these identifiers may be provided.
+     * A Composite containing details of ResourceIds, which allows referencing a related Resource that is not in this message.
      *
-     * @param \DedexBundle\Entity\Ern43\ReleaseIdType $releaseId
+     * @param \DedexBundle\Entity\Ern43\ResourceIdType $resourceId
      * @return self
      */
-    public function setReleaseId(\DedexBundle\Entity\Ern43\ReleaseIdType $releaseId)
+    public function setResourceId(?\DedexBundle\Entity\Ern43\ResourceIdType $resourceId = null)
     {
-        $this->releaseId = $releaseId;
+        $this->resourceId = $resourceId;
         return $this;
     }
 
@@ -179,12 +178,10 @@ class RelatedResourceType
      * @param \DedexBundle\Entity\Ern43\TimingType[] $timing
      * @return self
      */
-    public function setTiming(array $timing)
+    public function setTiming(?array $timing = null)
     {
         $this->timing = $timing;
         return $this;
     }
-
-
 }
 

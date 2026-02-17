@@ -10,21 +10,20 @@ namespace DedexBundle\Entity\Ern43;
  */
 class CueVisualPerceptionTypeType
 {
-
     /**
      * @var string $__value
      */
     private $__value = null;
 
     /**
-     * The Namespace of the CueVisualPerceptionType. This is represented in an XML schema as an XML Attribute.
+     * The Namespace of the VisualPerceptionType. This is represented in an XML schema as an XML Attribute.
      *
      * @var string $namespace
      */
     private $namespace = null;
 
     /**
-     * A UserDefined value of the CueVisualPerceptionType. This is represented in an XML schema as an XML Attribute.
+     * A UserDefined value of the VisualPerceptionType. This is represented in an XML schema as an XML Attribute.
      *
      * @var string $userDefinedValue
      */
@@ -67,7 +66,7 @@ class CueVisualPerceptionTypeType
     /**
      * Gets as namespace
      *
-     * The Namespace of the CueVisualPerceptionType. This is represented in an XML schema as an XML Attribute.
+     * The Namespace of the VisualPerceptionType. This is represented in an XML schema as an XML Attribute.
      *
      * @return string
      */
@@ -79,7 +78,7 @@ class CueVisualPerceptionTypeType
     /**
      * Sets a new namespace
      *
-     * The Namespace of the CueVisualPerceptionType. This is represented in an XML schema as an XML Attribute.
+     * The Namespace of the VisualPerceptionType. This is represented in an XML schema as an XML Attribute.
      *
      * @param string $namespace
      * @return self
@@ -93,7 +92,7 @@ class CueVisualPerceptionTypeType
     /**
      * Gets as userDefinedValue
      *
-     * A UserDefined value of the CueVisualPerceptionType. This is represented in an XML schema as an XML Attribute.
+     * A UserDefined value of the VisualPerceptionType. This is represented in an XML schema as an XML Attribute.
      *
      * @return string
      */
@@ -105,7 +104,7 @@ class CueVisualPerceptionTypeType
     /**
      * Sets a new userDefinedValue
      *
-     * A UserDefined value of the CueVisualPerceptionType. This is represented in an XML schema as an XML Attribute.
+     * A UserDefined value of the VisualPerceptionType. This is represented in an XML schema as an XML Attribute.
      *
      * @param string $userDefinedValue
      * @return self
@@ -115,7 +114,5 @@ class CueVisualPerceptionTypeType
         $this->userDefinedValue = $userDefinedValue;
         return $this;
     }
-
-
 }
 

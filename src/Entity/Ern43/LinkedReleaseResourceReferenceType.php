@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class LinkedReleaseResourceReferenceType
 {
-
     /**
      * @var string $__value
      */
@@ -43,6 +42,20 @@ class LinkedReleaseResourceReferenceType
      * @var string $userDefinedValue
      */
     private $userDefinedValue = null;
+
+    /**
+     * The number indicating the order of the Resource in a group of Resources within the Release. This is represented in an XML schema as an XML Attribute.
+     *
+     * @var int $sequenceNumber
+     */
+    private $sequenceNumber = null;
+
+    /**
+     * The Flag indicating whether the reference is part of a set of references to multiple files (=true) or not (=false). If the Flag is not set, the reference is assumed not to be a multi-file reference. This is represented in an XML schema as an XML Attribute.
+     *
+     * @var bool $isMultiFile
+     */
+    private $isMultiFile = null;
 
     /**
      * Construct
@@ -182,6 +195,56 @@ class LinkedReleaseResourceReferenceType
         return $this;
     }
 
+    /**
+     * Gets as sequenceNumber
+     *
+     * The number indicating the order of the Resource in a group of Resources within the Release. This is represented in an XML schema as an XML Attribute.
+     *
+     * @return int
+     */
+    public function getSequenceNumber()
+    {
+        return $this->sequenceNumber;
+    }
 
+    /**
+     * Sets a new sequenceNumber
+     *
+     * The number indicating the order of the Resource in a group of Resources within the Release. This is represented in an XML schema as an XML Attribute.
+     *
+     * @param int $sequenceNumber
+     * @return self
+     */
+    public function setSequenceNumber($sequenceNumber)
+    {
+        $this->sequenceNumber = $sequenceNumber;
+        return $this;
+    }
+
+    /**
+     * Gets as isMultiFile
+     *
+     * The Flag indicating whether the reference is part of a set of references to multiple files (=true) or not (=false). If the Flag is not set, the reference is assumed not to be a multi-file reference. This is represented in an XML schema as an XML Attribute.
+     *
+     * @return bool
+     */
+    public function getIsMultiFile()
+    {
+        return $this->isMultiFile;
+    }
+
+    /**
+     * Sets a new isMultiFile
+     *
+     * The Flag indicating whether the reference is part of a set of references to multiple files (=true) or not (=false). If the Flag is not set, the reference is assumed not to be a multi-file reference. This is represented in an XML schema as an XML Attribute.
+     *
+     * @param bool $isMultiFile
+     * @return self
+     */
+    public function setIsMultiFile($isMultiFile)
+    {
+        $this->isMultiFile = $isMultiFile;
+        return $this;
+    }
 }
 

@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class AffiliationType
 {
-
     /**
      * The Name of the company.
      *
@@ -52,6 +51,7 @@ class AffiliationType
 
     /**
      * A Composite containing details about the Period of Time for which the society affiliation is valid.
+     * Further Reading: https://kb.ddex.net/general-implementation-guidance/licensing-the-standards/ddex-party-identifier-(dpid)
      *
      * @var \DedexBundle\Entity\Ern43\ValidityPeriodType $validityPeriod
      */
@@ -60,7 +60,7 @@ class AffiliationType
     /**
      * A Composite containing details of a rights type.
      *
-     * @var \DedexBundle\Entity\Ern43\SimpleRightsTypeType[] $rightsType
+     * @var \DedexBundle\Entity\Ern43\RightsTypeType[] $rightsType
      */
     private $rightsType = [
         
@@ -211,7 +211,7 @@ class AffiliationType
      * @param \DedexBundle\Entity\Ern43\CurrentTerritoryCodeType[] $territoryCode
      * @return self
      */
-    public function setTerritoryCode(array $territoryCode)
+    public function setTerritoryCode(?array $territoryCode = null)
     {
         $this->territoryCode = $territoryCode;
         return $this;
@@ -277,7 +277,7 @@ class AffiliationType
      * @param \DedexBundle\Entity\Ern43\CurrentTerritoryCodeType[] $excludedTerritoryCode
      * @return self
      */
-    public function setExcludedTerritoryCode(array $excludedTerritoryCode)
+    public function setExcludedTerritoryCode(?array $excludedTerritoryCode = null)
     {
         $this->excludedTerritoryCode = $excludedTerritoryCode;
         return $this;
@@ -287,6 +287,7 @@ class AffiliationType
      * Gets as validityPeriod
      *
      * A Composite containing details about the Period of Time for which the society affiliation is valid.
+     * Further Reading: https://kb.ddex.net/general-implementation-guidance/licensing-the-standards/ddex-party-identifier-(dpid)
      *
      * @return \DedexBundle\Entity\Ern43\ValidityPeriodType
      */
@@ -299,11 +300,12 @@ class AffiliationType
      * Sets a new validityPeriod
      *
      * A Composite containing details about the Period of Time for which the society affiliation is valid.
+     * Further Reading: https://kb.ddex.net/general-implementation-guidance/licensing-the-standards/ddex-party-identifier-(dpid)
      *
      * @param \DedexBundle\Entity\Ern43\ValidityPeriodType $validityPeriod
      * @return self
      */
-    public function setValidityPeriod(\DedexBundle\Entity\Ern43\ValidityPeriodType $validityPeriod)
+    public function setValidityPeriod(?\DedexBundle\Entity\Ern43\ValidityPeriodType $validityPeriod = null)
     {
         $this->validityPeriod = $validityPeriod;
         return $this;
@@ -315,9 +317,9 @@ class AffiliationType
      * A Composite containing details of a rights type.
      *
      * @return self
-     * @param \DedexBundle\Entity\Ern43\SimpleRightsTypeType $rightsType
+     * @param \DedexBundle\Entity\Ern43\RightsTypeType $rightsType
      */
-    public function addToRightsType(\DedexBundle\Entity\Ern43\SimpleRightsTypeType $rightsType)
+    public function addToRightsType(\DedexBundle\Entity\Ern43\RightsTypeType $rightsType)
     {
         $this->rightsType[] = $rightsType;
         return $this;
@@ -354,7 +356,7 @@ class AffiliationType
      *
      * A Composite containing details of a rights type.
      *
-     * @return \DedexBundle\Entity\Ern43\SimpleRightsTypeType[]
+     * @return \DedexBundle\Entity\Ern43\RightsTypeType[]
      */
     public function getRightsType()
     {
@@ -366,10 +368,10 @@ class AffiliationType
      *
      * A Composite containing details of a rights type.
      *
-     * @param \DedexBundle\Entity\Ern43\SimpleRightsTypeType[] $rightsType
+     * @param \DedexBundle\Entity\Ern43\RightsTypeType[] $rightsType
      * @return self
      */
-    public function setRightsType(array $rightsType)
+    public function setRightsType(?array $rightsType = null)
     {
         $this->rightsType = $rightsType;
         return $this;
@@ -400,7 +402,5 @@ class AffiliationType
         $this->percentageOfRightsAssignment = $percentageOfRightsAssignment;
         return $this;
     }
-
-
 }
 

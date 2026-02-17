@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class ReleaseDealType
 {
-
     /**
      * The Identifier (specific to the Message) of a Release in the Deal. This is a LocalReleaseAnchorReference starting with the letter R.
      *
@@ -22,6 +21,7 @@ class ReleaseDealType
 
     /**
      * A Composite containing details of a Deal governing the Usage of all Releases identified in the ReleaseDeal Composite.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/deals-and-commercial-aspects/no-takedown-in-initial-deal
      *
      * @var \DedexBundle\Entity\Ern43\DealType[] $deal
      */
@@ -99,6 +99,7 @@ class ReleaseDealType
      * Adds as deal
      *
      * A Composite containing details of a Deal governing the Usage of all Releases identified in the ReleaseDeal Composite.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/deals-and-commercial-aspects/no-takedown-in-initial-deal
      *
      * @return self
      * @param \DedexBundle\Entity\Ern43\DealType $deal
@@ -113,6 +114,7 @@ class ReleaseDealType
      * isset deal
      *
      * A Composite containing details of a Deal governing the Usage of all Releases identified in the ReleaseDeal Composite.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/deals-and-commercial-aspects/no-takedown-in-initial-deal
      *
      * @param int|string $index
      * @return bool
@@ -126,6 +128,7 @@ class ReleaseDealType
      * unset deal
      *
      * A Composite containing details of a Deal governing the Usage of all Releases identified in the ReleaseDeal Composite.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/deals-and-commercial-aspects/no-takedown-in-initial-deal
      *
      * @param int|string $index
      * @return void
@@ -139,6 +142,7 @@ class ReleaseDealType
      * Gets as deal
      *
      * A Composite containing details of a Deal governing the Usage of all Releases identified in the ReleaseDeal Composite.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/deals-and-commercial-aspects/no-takedown-in-initial-deal
      *
      * @return \DedexBundle\Entity\Ern43\DealType[]
      */
@@ -151,6 +155,7 @@ class ReleaseDealType
      * Sets a new deal
      *
      * A Composite containing details of a Deal governing the Usage of all Releases identified in the ReleaseDeal Composite.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/deals-and-commercial-aspects/no-takedown-in-initial-deal
      *
      * @param \DedexBundle\Entity\Ern43\DealType[] $deal
      * @return self
@@ -160,7 +165,5 @@ class ReleaseDealType
         $this->deal = $deal;
         return $this;
     }
-
-
 }
 

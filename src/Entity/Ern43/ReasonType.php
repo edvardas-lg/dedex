@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class ReasonType
 {
-
     /**
      * @var string $__value
      */
@@ -82,7 +81,5 @@ class ReasonType
         $this->languageAndScriptCode = $languageAndScriptCode;
         return $this;
     }
-
-
 }
 

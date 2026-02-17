@@ -6,11 +6,11 @@ namespace DedexBundle\Entity\Ern43;
  * Class representing ReleaseTypeForReleaseNotificationType
  *
  * A Composite containing details of a ReleaseType.
+ * Explanatory Note: This Composite is named ReleaseTypeForReleaseNotification to disambiguate it from the basic ReleaseType Composite. The name indicates that it is ERN specific.
  * XSD Type: ReleaseTypeForReleaseNotification
  */
 class ReleaseTypeForReleaseNotificationType
 {
-
     /**
      * @var string $__value
      */
@@ -115,7 +115,5 @@ class ReleaseTypeForReleaseNotificationType
         $this->userDefinedValue = $userDefinedValue;
         return $this;
     }
-
-
 }
 

@@ -9,6 +9,12 @@ namespace DedexBundle\Entity\Ern43;
  */
 class PurgeReleaseMessage
 {
+    /**
+     * The Identifier of the Version of the AllowedValueSets used for the Message. This is represented in an XML schema as an XML Attribute.
+     *
+     * @var string $avsVersionId
+     */
+    private $avsVersionId = null;
 
     /**
      * The Language and script for the Elements of this Message as defined in IETF RfC 5646. Language and Script are provided as lang[-script][-region][-variant]. This is represented in an XML schema as an XML Attribute.
@@ -30,6 +36,32 @@ class PurgeReleaseMessage
      * @var \DedexBundle\Entity\Ern43\PurgedReleaseType $purgedRelease
      */
     private $purgedRelease = null;
+
+    /**
+     * Gets as avsVersionId
+     *
+     * The Identifier of the Version of the AllowedValueSets used for the Message. This is represented in an XML schema as an XML Attribute.
+     *
+     * @return string
+     */
+    public function getAvsVersionId()
+    {
+        return $this->avsVersionId;
+    }
+
+    /**
+     * Sets a new avsVersionId
+     *
+     * The Identifier of the Version of the AllowedValueSets used for the Message. This is represented in an XML schema as an XML Attribute.
+     *
+     * @param string $avsVersionId
+     * @return self
+     */
+    public function setAvsVersionId($avsVersionId)
+    {
+        $this->avsVersionId = $avsVersionId;
+        return $this;
+    }
 
     /**
      * Gets as languageAndScriptCode
@@ -108,7 +140,4 @@ class PurgeReleaseMessage
         $this->purgedRelease = $purgedRelease;
         return $this;
     }
-
-
 }
-

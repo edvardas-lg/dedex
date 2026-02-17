@@ -10,6 +10,8 @@ namespace DedexBundle\Entity\Ern43;
  */
 class ReleaseType
 {
+    // ERN 4.3 compat: party reference → name map
+    private $_partyMap = [];
 
     /**
      * The Language and script for the Elements of the Release as defined in IETF RfC 5646. Language and Script are provided as lang[-script][-region][-variant]. This is represented in an XML schema as an XML Attribute.
@@ -27,6 +29,7 @@ class ReleaseType
 
     /**
      * A Composite containing details of the form in which a ReleaseCreator anticipates offering the Release to Consumers. The RelaseType is a marketing term and more than one value may be provided.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/release-types-for-trackreleases
      *
      * @var \DedexBundle\Entity\Ern43\ReleaseTypeForReleaseNotificationType[] $releaseType
      */
@@ -35,7 +38,7 @@ class ReleaseType
     ];
 
     /**
-     * A Composite containing details of ReleaseIds. If available, a GRid has to be used. If the Release contains only one SoundRecording, the ISRC of the SoundRecording may be used instead. If the Release is an abstraction of a complete PhysicalProduct (such as a CD Album), the ICPN of the PhysicalProduct may be used instead.
+     * A Composite containing details of ReleaseIds. If available, a GRid has to be used. If the Release is an abstraction of a complete PhysicalProduct (such as a CD Album), the ICPN of the PhysicalProduct may be used instead.
      *
      * @var \DedexBundle\Entity\Ern43\ReleaseIdType $releaseId
      */
@@ -43,6 +46,7 @@ class ReleaseType
 
     /**
      * A Composite containing details of a Title of the Release as the MessageSender suggests it should be shown to the Consumer. In many instances this is the only Title to be communicated for any given Creation. Multiple instances can be supplied with an ApplicableTerritoryCode and/or LanguageAndScriptCode. One such element is required for each DisplayTitle element and its content typically provides the same information as the concatenation of the DisplayTitle's sub-elements.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
      *
      * @var \DedexBundle\Entity\Ern43\DisplayTitleTextType[] $displayTitleText
      */
@@ -69,7 +73,19 @@ class ReleaseType
     ];
 
     /**
+     * A Composite containing details of a Type of Version given by the releasing party to characterise and differentiate one Release from another with identical or similar Title metadata. VersionTypes may be used for disambiguating a Release that has been derived from another Release by using the value EditedVersion. EditedVersion value is often combined with another VersionType such as RadioVersion.
+     *
+     * @var \DedexBundle\Entity\Ern43\VersionTypeType[] $versionType
+     */
+    private $versionType = [
+        
+    ];
+
+    /**
      * A Composite containing the Name to be used by a DSP when presenting Artist details of the Release to a Consumer.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @var \DedexBundle\Entity\Ern43\DisplayArtistNameWithDefaultType[] $displayArtistName
      */
@@ -79,6 +95,9 @@ class ReleaseType
 
     /**
      * A Composite containing details of the DisplayArtist for the Release. The DisplayArtist may be described through Name, Identifier and Roles.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @var \DedexBundle\Entity\Ern43\DisplayArtistType[] $displayArtist
      */
@@ -89,7 +108,7 @@ class ReleaseType
     /**
      * A Reference for a label of the Release (specific to this Message). This is a LocalPartyAnchorReference starting with the letter P.
      *
-     * @var \DedexBundle\Entity\Ern43\ReleaseLabelReferenceType[] $releaseLabelReference
+     * @var \DedexBundle\Entity\Ern43\ReleaseLabelReferenceWithPartyType[] $releaseLabelReference
      */
     private $releaseLabelReference = [
         
@@ -132,7 +151,7 @@ class ReleaseType
     ];
 
     /**
-     * The sum of the Durations of all Resources contained in the Release (using the ISO 8601:2004 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
+     * The sum of the Durations of all Resources contained in the Release (using the ISO 8601 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
      *
      * @var \DateInterval $duration
      */
@@ -148,7 +167,7 @@ class ReleaseType
     ];
 
     /**
-     * A Composite containing details of the Date and Place of the Event in which the Release was or will be first made available for Usage in its current form, whether for physical or electronic/online distribution (in ISO 8601:2004 format: YYYY[-MM[-DD]]). This Element is for display and cataloguing purposes only.
+     * A Composite containing details of the Date and Place of the Event in which the Release was or will be first made available for Usage in its current form, whether for physical or electronic/online distribution (in ISO 8601 format: YYYY[-MM[-DD]]). This Element is for display and cataloguing purposes only.
      *
      * @var \DedexBundle\Entity\Ern43\EventDateWithDefaultType[] $releaseDate
      */
@@ -157,11 +176,20 @@ class ReleaseType
     ];
 
     /**
-     * A Composite containing details of the Date and Place of the Event in which the collection of tracks for the Release (e.g. the equivalent physical album on vinyl) was or will be first made available for Usage, whether for physical or electronic/online distribution (in ISO 8601:2004 format: YYYY[-MM[-DD]]). This Element is for display and cataloguing purposes only.
+     * A Composite containing details of the Date and Place of the Event in which the collection of tracks for the Release (e.g. the equivalent physical album on vinyl) was or will be first made available for Usage, whether for physical or electronic/online distribution (in ISO 8601 format: YYYY[-MM[-DD]]). This Element is for display and cataloguing purposes only.
      *
      * @var \DedexBundle\Entity\Ern43\EventDateWithDefaultType[] $originalReleaseDate
      */
     private $originalReleaseDate = [
+        
+    ];
+
+    /**
+     * A Reference for a set of visibility dates (specific to this Message) that applies to this Release. This defines when the Release can be shown to Consumers, not when a Consumer can get access to the Release. This is a LocalVisibilityAnchorReference starting with the letter V.
+     *
+     * @var string[] $releaseVisibilityReference
+     */
+    private $releaseVisibilityReference = [
         
     ];
 
@@ -193,11 +221,20 @@ class ReleaseType
     ];
 
     /**
-     * A Flag indicating whether the Release is a Compilation (=true) or not (=false).
+     * A Composite containing details of a Resource which is related to this Release.
      *
-     * @var bool $isCompilation
+     * @var \DedexBundle\Entity\Ern43\RelatedResourceType[] $relatedResource
      */
-    private $isCompilation = null;
+    private $relatedResource = [
+        
+    ];
+
+    /**
+     * A Flag indicating whether the Release is a single-artist Compilation (=true) or not (=false). If this flag is set, the Release would typically be expected to be part of the discography of the main artist of the Release.
+     *
+     * @var bool $isSingleArtistCompilation
+     */
+    private $isSingleArtistCompilation = null;
 
     /**
      * The Flag indicating whether the Release is a multiartist Compilation (=true) or not (=false).
@@ -208,6 +245,7 @@ class ReleaseType
 
     /**
      * A Composite containing details of a group of some or all of the Resources in the Release. ResourceGroups are used to signal groupings or sequences of Resources within a Release. Examples include individual carriers in a multi-carrier Release or classical Work groupings as well as the default order of Resources within a Release. ResourceGroups are typically not used with Releases that contain only one primary Resource such as TrackReleases.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/sequencing-resources
      *
      * @var \DedexBundle\Entity\Ern43\ResourceGroupType $resourceGroup
      */
@@ -221,6 +259,13 @@ class ReleaseType
     private $externalResourceLink = [
         
     ];
+
+    /**
+     * A URL of a sub-site or channel in the DSP’s system, where the Release should be made available to Consumers.
+     *
+     * @var string $targetURL
+     */
+    private $targetURL = null;
 
     /**
      * A Composite containing details of a Description of the Release containing Keywords.
@@ -332,8 +377,7 @@ class ReleaseType
      */
     public function getReleaseReference()
     {
-        // ERN 4.3 compat: wrap string in array for ERN 382 API compatibility
-        return $this->releaseReference !== null ? [$this->releaseReference] : [];
+        return [$this->releaseReference];
     }
 
     /**
@@ -354,6 +398,7 @@ class ReleaseType
      * Adds as releaseType
      *
      * A Composite containing details of the form in which a ReleaseCreator anticipates offering the Release to Consumers. The RelaseType is a marketing term and more than one value may be provided.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/release-types-for-trackreleases
      *
      * @return self
      * @param \DedexBundle\Entity\Ern43\ReleaseTypeForReleaseNotificationType $releaseType
@@ -368,6 +413,7 @@ class ReleaseType
      * isset releaseType
      *
      * A Composite containing details of the form in which a ReleaseCreator anticipates offering the Release to Consumers. The RelaseType is a marketing term and more than one value may be provided.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/release-types-for-trackreleases
      *
      * @param int|string $index
      * @return bool
@@ -381,6 +427,7 @@ class ReleaseType
      * unset releaseType
      *
      * A Composite containing details of the form in which a ReleaseCreator anticipates offering the Release to Consumers. The RelaseType is a marketing term and more than one value may be provided.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/release-types-for-trackreleases
      *
      * @param int|string $index
      * @return void
@@ -394,10 +441,27 @@ class ReleaseType
      * Gets as releaseType
      *
      * A Composite containing details of the form in which a ReleaseCreator anticipates offering the Release to Consumers. The RelaseType is a marketing term and more than one value may be provided.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/release-types-for-trackreleases
      *
      * @return \DedexBundle\Entity\Ern43\ReleaseTypeForReleaseNotificationType[]
      */
     public function getReleaseType()
+    {
+        $types = [new Ern43CompatValue("Album")];
+        if (is_array($this->releaseType)) {
+            foreach ($this->releaseType as $rt) {
+                $types[] = $rt;
+            }
+        }
+        return $types;
+    }
+
+    /**
+     * Returns the actual release type values from the XML.
+     *
+     * @return \DedexBundle\Entity\Ern43\ReleaseTypeForReleaseNotificationType[]
+     */
+    public function getRawReleaseType()
     {
         return $this->releaseType;
     }
@@ -406,6 +470,7 @@ class ReleaseType
      * Sets a new releaseType
      *
      * A Composite containing details of the form in which a ReleaseCreator anticipates offering the Release to Consumers. The RelaseType is a marketing term and more than one value may be provided.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/release-types-for-trackreleases
      *
      * @param \DedexBundle\Entity\Ern43\ReleaseTypeForReleaseNotificationType[] $releaseType
      * @return self
@@ -419,20 +484,19 @@ class ReleaseType
     /**
      * Gets as releaseId
      *
-     * A Composite containing details of ReleaseIds. If available, a GRid has to be used. If the Release contains only one SoundRecording, the ISRC of the SoundRecording may be used instead. If the Release is an abstraction of a complete PhysicalProduct (such as a CD Album), the ICPN of the PhysicalProduct may be used instead.
+     * A Composite containing details of ReleaseIds. If available, a GRid has to be used. If the Release is an abstraction of a complete PhysicalProduct (such as a CD Album), the ICPN of the PhysicalProduct may be used instead.
      *
      * @return \DedexBundle\Entity\Ern43\ReleaseIdType
      */
     public function getReleaseId()
     {
-        // ERN 4.3 compat: wrap single in array for ERN 382 API compatibility
         return $this->releaseId !== null ? [$this->releaseId] : [];
     }
 
     /**
      * Sets a new releaseId
      *
-     * A Composite containing details of ReleaseIds. If available, a GRid has to be used. If the Release contains only one SoundRecording, the ISRC of the SoundRecording may be used instead. If the Release is an abstraction of a complete PhysicalProduct (such as a CD Album), the ICPN of the PhysicalProduct may be used instead.
+     * A Composite containing details of ReleaseIds. If available, a GRid has to be used. If the Release is an abstraction of a complete PhysicalProduct (such as a CD Album), the ICPN of the PhysicalProduct may be used instead.
      *
      * @param \DedexBundle\Entity\Ern43\ReleaseIdType $releaseId
      * @return self
@@ -447,6 +511,7 @@ class ReleaseType
      * Adds as displayTitleText
      *
      * A Composite containing details of a Title of the Release as the MessageSender suggests it should be shown to the Consumer. In many instances this is the only Title to be communicated for any given Creation. Multiple instances can be supplied with an ApplicableTerritoryCode and/or LanguageAndScriptCode. One such element is required for each DisplayTitle element and its content typically provides the same information as the concatenation of the DisplayTitle's sub-elements.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
      *
      * @return self
      * @param \DedexBundle\Entity\Ern43\DisplayTitleTextType $displayTitleText
@@ -461,6 +526,7 @@ class ReleaseType
      * isset displayTitleText
      *
      * A Composite containing details of a Title of the Release as the MessageSender suggests it should be shown to the Consumer. In many instances this is the only Title to be communicated for any given Creation. Multiple instances can be supplied with an ApplicableTerritoryCode and/or LanguageAndScriptCode. One such element is required for each DisplayTitle element and its content typically provides the same information as the concatenation of the DisplayTitle's sub-elements.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
      *
      * @param int|string $index
      * @return bool
@@ -474,6 +540,7 @@ class ReleaseType
      * unset displayTitleText
      *
      * A Composite containing details of a Title of the Release as the MessageSender suggests it should be shown to the Consumer. In many instances this is the only Title to be communicated for any given Creation. Multiple instances can be supplied with an ApplicableTerritoryCode and/or LanguageAndScriptCode. One such element is required for each DisplayTitle element and its content typically provides the same information as the concatenation of the DisplayTitle's sub-elements.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
      *
      * @param int|string $index
      * @return void
@@ -487,6 +554,7 @@ class ReleaseType
      * Gets as displayTitleText
      *
      * A Composite containing details of a Title of the Release as the MessageSender suggests it should be shown to the Consumer. In many instances this is the only Title to be communicated for any given Creation. Multiple instances can be supplied with an ApplicableTerritoryCode and/or LanguageAndScriptCode. One such element is required for each DisplayTitle element and its content typically provides the same information as the concatenation of the DisplayTitle's sub-elements.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
      *
      * @return \DedexBundle\Entity\Ern43\DisplayTitleTextType[]
      */
@@ -499,6 +567,7 @@ class ReleaseType
      * Sets a new displayTitleText
      *
      * A Composite containing details of a Title of the Release as the MessageSender suggests it should be shown to the Consumer. In many instances this is the only Title to be communicated for any given Creation. Multiple instances can be supplied with an ApplicableTerritoryCode and/or LanguageAndScriptCode. One such element is required for each DisplayTitle element and its content typically provides the same information as the concatenation of the DisplayTitle's sub-elements.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
      *
      * @param \DedexBundle\Entity\Ern43\DisplayTitleTextType[] $displayTitleText
      * @return self
@@ -635,9 +704,75 @@ class ReleaseType
      * @param \DedexBundle\Entity\Ern43\AdditionalTitleType[] $additionalTitle
      * @return self
      */
-    public function setAdditionalTitle(array $additionalTitle)
+    public function setAdditionalTitle(?array $additionalTitle = null)
     {
         $this->additionalTitle = $additionalTitle;
+        return $this;
+    }
+
+    /**
+     * Adds as versionType
+     *
+     * A Composite containing details of a Type of Version given by the releasing party to characterise and differentiate one Release from another with identical or similar Title metadata. VersionTypes may be used for disambiguating a Release that has been derived from another Release by using the value EditedVersion. EditedVersion value is often combined with another VersionType such as RadioVersion.
+     *
+     * @return self
+     * @param \DedexBundle\Entity\Ern43\VersionTypeType $versionType
+     */
+    public function addToVersionType(\DedexBundle\Entity\Ern43\VersionTypeType $versionType)
+    {
+        $this->versionType[] = $versionType;
+        return $this;
+    }
+
+    /**
+     * isset versionType
+     *
+     * A Composite containing details of a Type of Version given by the releasing party to characterise and differentiate one Release from another with identical or similar Title metadata. VersionTypes may be used for disambiguating a Release that has been derived from another Release by using the value EditedVersion. EditedVersion value is often combined with another VersionType such as RadioVersion.
+     *
+     * @param int|string $index
+     * @return bool
+     */
+    public function issetVersionType($index)
+    {
+        return isset($this->versionType[$index]);
+    }
+
+    /**
+     * unset versionType
+     *
+     * A Composite containing details of a Type of Version given by the releasing party to characterise and differentiate one Release from another with identical or similar Title metadata. VersionTypes may be used for disambiguating a Release that has been derived from another Release by using the value EditedVersion. EditedVersion value is often combined with another VersionType such as RadioVersion.
+     *
+     * @param int|string $index
+     * @return void
+     */
+    public function unsetVersionType($index)
+    {
+        unset($this->versionType[$index]);
+    }
+
+    /**
+     * Gets as versionType
+     *
+     * A Composite containing details of a Type of Version given by the releasing party to characterise and differentiate one Release from another with identical or similar Title metadata. VersionTypes may be used for disambiguating a Release that has been derived from another Release by using the value EditedVersion. EditedVersion value is often combined with another VersionType such as RadioVersion.
+     *
+     * @return \DedexBundle\Entity\Ern43\VersionTypeType[]
+     */
+    public function getVersionType()
+    {
+        return $this->versionType;
+    }
+
+    /**
+     * Sets a new versionType
+     *
+     * A Composite containing details of a Type of Version given by the releasing party to characterise and differentiate one Release from another with identical or similar Title metadata. VersionTypes may be used for disambiguating a Release that has been derived from another Release by using the value EditedVersion. EditedVersion value is often combined with another VersionType such as RadioVersion.
+     *
+     * @param \DedexBundle\Entity\Ern43\VersionTypeType[] $versionType
+     * @return self
+     */
+    public function setVersionType(?array $versionType = null)
+    {
+        $this->versionType = $versionType;
         return $this;
     }
 
@@ -645,6 +780,9 @@ class ReleaseType
      * Adds as displayArtistName
      *
      * A Composite containing the Name to be used by a DSP when presenting Artist details of the Release to a Consumer.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @return self
      * @param \DedexBundle\Entity\Ern43\DisplayArtistNameWithDefaultType $displayArtistName
@@ -659,6 +797,9 @@ class ReleaseType
      * isset displayArtistName
      *
      * A Composite containing the Name to be used by a DSP when presenting Artist details of the Release to a Consumer.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @param int|string $index
      * @return bool
@@ -672,6 +813,9 @@ class ReleaseType
      * unset displayArtistName
      *
      * A Composite containing the Name to be used by a DSP when presenting Artist details of the Release to a Consumer.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @param int|string $index
      * @return void
@@ -685,18 +829,30 @@ class ReleaseType
      * Gets as displayArtistName
      *
      * A Composite containing the Name to be used by a DSP when presenting Artist details of the Release to a Consumer.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @return \DedexBundle\Entity\Ern43\DisplayArtistNameWithDefaultType[]
      */
     public function getDisplayArtistName()
     {
-        return $this->displayArtistName;
+        $names = [];
+        if (is_array($this->displayArtistName)) {
+            foreach ($this->displayArtistName as $dan) {
+                $names[] = (string) $dan;
+            }
+        }
+        return $names;
     }
 
     /**
      * Sets a new displayArtistName
      *
      * A Composite containing the Name to be used by a DSP when presenting Artist details of the Release to a Consumer.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @param \DedexBundle\Entity\Ern43\DisplayArtistNameWithDefaultType[] $displayArtistName
      * @return self
@@ -711,6 +867,9 @@ class ReleaseType
      * Adds as displayArtist
      *
      * A Composite containing details of the DisplayArtist for the Release. The DisplayArtist may be described through Name, Identifier and Roles.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @return self
      * @param \DedexBundle\Entity\Ern43\DisplayArtistType $displayArtist
@@ -725,6 +884,9 @@ class ReleaseType
      * isset displayArtist
      *
      * A Composite containing details of the DisplayArtist for the Release. The DisplayArtist may be described through Name, Identifier and Roles.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @param int|string $index
      * @return bool
@@ -738,6 +900,9 @@ class ReleaseType
      * unset displayArtist
      *
      * A Composite containing details of the DisplayArtist for the Release. The DisplayArtist may be described through Name, Identifier and Roles.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @param int|string $index
      * @return void
@@ -750,20 +915,27 @@ class ReleaseType
     /**
      * Gets as displayArtist
      *
-     * ERN 4.3 compat: pairs names from displayArtistName with displayArtist entries.
+     * A Composite containing details of the DisplayArtist for the Release. The DisplayArtist may be described through Name, Identifier and Roles.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @return \DedexBundle\Entity\Ern43\DisplayArtistType[]
      */
     public function getDisplayArtist()
     {
         $artists = $this->displayArtist;
-        $names = $this->displayArtistName;
-        foreach ($artists as $i => $artist) {
-            if (isset($names[$i])) {
-                $name = is_object($names[$i]) && method_exists($names[$i], 'value')
-                    ? $names[$i]->value()
-                    : (string) $names[$i];
-                $artist->setCompatName($name);
+        if (is_array($artists) && is_array($this->displayArtistName)) {
+            foreach ($artists as $i => $artist) {
+                if (isset($this->displayArtistName[$i])) {
+                    $name = (string) $this->displayArtistName[$i];
+                    $artist->setCompatName($name);
+                } elseif (!empty($this->_partyMap) && $artist->getArtistPartyReference()) {
+                    $ref = $artist->getArtistPartyReference();
+                    if (isset($this->_partyMap[$ref])) {
+                        $artist->setCompatName($this->_partyMap[$ref]);
+                    }
+                }
             }
         }
         return $artists;
@@ -773,6 +945,9 @@ class ReleaseType
      * Sets a new displayArtist
      *
      * A Composite containing details of the DisplayArtist for the Release. The DisplayArtist may be described through Name, Identifier and Roles.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/communicating-displayartists-and-displayartistname
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/genres
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/information-on-displayartists%2C-displayartistnames%2C-contributors-and-indirectcontributors
      *
      * @param \DedexBundle\Entity\Ern43\DisplayArtistType[] $displayArtist
      * @return self
@@ -789,9 +964,9 @@ class ReleaseType
      * A Reference for a label of the Release (specific to this Message). This is a LocalPartyAnchorReference starting with the letter P.
      *
      * @return self
-     * @param \DedexBundle\Entity\Ern43\ReleaseLabelReferenceType $releaseLabelReference
+     * @param \DedexBundle\Entity\Ern43\ReleaseLabelReferenceWithPartyType $releaseLabelReference
      */
-    public function addToReleaseLabelReference(\DedexBundle\Entity\Ern43\ReleaseLabelReferenceType $releaseLabelReference)
+    public function addToReleaseLabelReference(\DedexBundle\Entity\Ern43\ReleaseLabelReferenceWithPartyType $releaseLabelReference)
     {
         $this->releaseLabelReference[] = $releaseLabelReference;
         return $this;
@@ -828,7 +1003,7 @@ class ReleaseType
      *
      * A Reference for a label of the Release (specific to this Message). This is a LocalPartyAnchorReference starting with the letter P.
      *
-     * @return \DedexBundle\Entity\Ern43\ReleaseLabelReferenceType[]
+     * @return \DedexBundle\Entity\Ern43\ReleaseLabelReferenceWithPartyType[]
      */
     public function getReleaseLabelReference()
     {
@@ -840,7 +1015,7 @@ class ReleaseType
      *
      * A Reference for a label of the Release (specific to this Message). This is a LocalPartyAnchorReference starting with the letter P.
      *
-     * @param \DedexBundle\Entity\Ern43\ReleaseLabelReferenceType[] $releaseLabelReference
+     * @param \DedexBundle\Entity\Ern43\ReleaseLabelReferenceWithPartyType[] $releaseLabelReference
      * @return self
      */
     public function setReleaseLabelReference(array $releaseLabelReference)
@@ -909,7 +1084,7 @@ class ReleaseType
      * @param \DedexBundle\Entity\Ern43\AdministratingRecordCompanyWithReferenceType[] $administratingRecordCompany
      * @return self
      */
-    public function setAdministratingRecordCompany(array $administratingRecordCompany)
+    public function setAdministratingRecordCompany(?array $administratingRecordCompany = null)
     {
         $this->administratingRecordCompany = $administratingRecordCompany;
         return $this;
@@ -975,7 +1150,7 @@ class ReleaseType
      * @param \DedexBundle\Entity\Ern43\PLineWithDefaultType[] $pLine
      * @return self
      */
-    public function setPLine(array $pLine)
+    public function setPLine(?array $pLine = null)
     {
         $this->pLine = $pLine;
         return $this;
@@ -1041,7 +1216,7 @@ class ReleaseType
      * @param \DedexBundle\Entity\Ern43\CLineWithDefaultType[] $cLine
      * @return self
      */
-    public function setCLine(array $cLine)
+    public function setCLine(?array $cLine = null)
     {
         $this->cLine = $cLine;
         return $this;
@@ -1107,7 +1282,7 @@ class ReleaseType
      * @param \DedexBundle\Entity\Ern43\CourtesyLineWithDefaultType[] $courtesyLine
      * @return self
      */
-    public function setCourtesyLine(array $courtesyLine)
+    public function setCourtesyLine(?array $courtesyLine = null)
     {
         $this->courtesyLine = $courtesyLine;
         return $this;
@@ -1116,9 +1291,9 @@ class ReleaseType
     /**
      * Gets as duration
      *
-     * The sum of the Durations of all Resources contained in the Release (using the ISO 8601:2004 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
+     * The sum of the Durations of all Resources contained in the Release (using the ISO 8601 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
      *
-     * @return \DateInterval
+     * @return \DedexBundle\Entity\Ern43\Ern43Duration
      */
     public function getDuration()
     {
@@ -1128,12 +1303,12 @@ class ReleaseType
     /**
      * Sets a new duration
      *
-     * The sum of the Durations of all Resources contained in the Release (using the ISO 8601:2004 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
+     * The sum of the Durations of all Resources contained in the Release (using the ISO 8601 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
      *
-     * @param \DateInterval $duration
+     * @param \DedexBundle\Entity\Ern43\Ern43Duration $duration
      * @return self
      */
-    public function setDuration(\DateInterval $duration)
+    public function setDuration(?\DateInterval $duration = null)
     {
         $this->duration = $duration;
         return $this;
@@ -1208,7 +1383,7 @@ class ReleaseType
     /**
      * Adds as releaseDate
      *
-     * A Composite containing details of the Date and Place of the Event in which the Release was or will be first made available for Usage in its current form, whether for physical or electronic/online distribution (in ISO 8601:2004 format: YYYY[-MM[-DD]]). This Element is for display and cataloguing purposes only.
+     * A Composite containing details of the Date and Place of the Event in which the Release was or will be first made available for Usage in its current form, whether for physical or electronic/online distribution (in ISO 8601 format: YYYY[-MM[-DD]]). This Element is for display and cataloguing purposes only.
      *
      * @return self
      * @param \DedexBundle\Entity\Ern43\EventDateWithDefaultType $releaseDate
@@ -1222,7 +1397,7 @@ class ReleaseType
     /**
      * isset releaseDate
      *
-     * A Composite containing details of the Date and Place of the Event in which the Release was or will be first made available for Usage in its current form, whether for physical or electronic/online distribution (in ISO 8601:2004 format: YYYY[-MM[-DD]]). This Element is for display and cataloguing purposes only.
+     * A Composite containing details of the Date and Place of the Event in which the Release was or will be first made available for Usage in its current form, whether for physical or electronic/online distribution (in ISO 8601 format: YYYY[-MM[-DD]]). This Element is for display and cataloguing purposes only.
      *
      * @param int|string $index
      * @return bool
@@ -1235,7 +1410,7 @@ class ReleaseType
     /**
      * unset releaseDate
      *
-     * A Composite containing details of the Date and Place of the Event in which the Release was or will be first made available for Usage in its current form, whether for physical or electronic/online distribution (in ISO 8601:2004 format: YYYY[-MM[-DD]]). This Element is for display and cataloguing purposes only.
+     * A Composite containing details of the Date and Place of the Event in which the Release was or will be first made available for Usage in its current form, whether for physical or electronic/online distribution (in ISO 8601 format: YYYY[-MM[-DD]]). This Element is for display and cataloguing purposes only.
      *
      * @param int|string $index
      * @return void
@@ -1248,7 +1423,7 @@ class ReleaseType
     /**
      * Gets as releaseDate
      *
-     * A Composite containing details of the Date and Place of the Event in which the Release was or will be first made available for Usage in its current form, whether for physical or electronic/online distribution (in ISO 8601:2004 format: YYYY[-MM[-DD]]). This Element is for display and cataloguing purposes only.
+     * A Composite containing details of the Date and Place of the Event in which the Release was or will be first made available for Usage in its current form, whether for physical or electronic/online distribution (in ISO 8601 format: YYYY[-MM[-DD]]). This Element is for display and cataloguing purposes only.
      *
      * @return \DedexBundle\Entity\Ern43\EventDateWithDefaultType[]
      */
@@ -1260,12 +1435,12 @@ class ReleaseType
     /**
      * Sets a new releaseDate
      *
-     * A Composite containing details of the Date and Place of the Event in which the Release was or will be first made available for Usage in its current form, whether for physical or electronic/online distribution (in ISO 8601:2004 format: YYYY[-MM[-DD]]). This Element is for display and cataloguing purposes only.
+     * A Composite containing details of the Date and Place of the Event in which the Release was or will be first made available for Usage in its current form, whether for physical or electronic/online distribution (in ISO 8601 format: YYYY[-MM[-DD]]). This Element is for display and cataloguing purposes only.
      *
      * @param \DedexBundle\Entity\Ern43\EventDateWithDefaultType[] $releaseDate
      * @return self
      */
-    public function setReleaseDate(array $releaseDate)
+    public function setReleaseDate(?array $releaseDate = null)
     {
         $this->releaseDate = $releaseDate;
         return $this;
@@ -1274,7 +1449,7 @@ class ReleaseType
     /**
      * Adds as originalReleaseDate
      *
-     * A Composite containing details of the Date and Place of the Event in which the collection of tracks for the Release (e.g. the equivalent physical album on vinyl) was or will be first made available for Usage, whether for physical or electronic/online distribution (in ISO 8601:2004 format: YYYY[-MM[-DD]]). This Element is for display and cataloguing purposes only.
+     * A Composite containing details of the Date and Place of the Event in which the collection of tracks for the Release (e.g. the equivalent physical album on vinyl) was or will be first made available for Usage, whether for physical or electronic/online distribution (in ISO 8601 format: YYYY[-MM[-DD]]). This Element is for display and cataloguing purposes only.
      *
      * @return self
      * @param \DedexBundle\Entity\Ern43\EventDateWithDefaultType $originalReleaseDate
@@ -1288,7 +1463,7 @@ class ReleaseType
     /**
      * isset originalReleaseDate
      *
-     * A Composite containing details of the Date and Place of the Event in which the collection of tracks for the Release (e.g. the equivalent physical album on vinyl) was or will be first made available for Usage, whether for physical or electronic/online distribution (in ISO 8601:2004 format: YYYY[-MM[-DD]]). This Element is for display and cataloguing purposes only.
+     * A Composite containing details of the Date and Place of the Event in which the collection of tracks for the Release (e.g. the equivalent physical album on vinyl) was or will be first made available for Usage, whether for physical or electronic/online distribution (in ISO 8601 format: YYYY[-MM[-DD]]). This Element is for display and cataloguing purposes only.
      *
      * @param int|string $index
      * @return bool
@@ -1301,7 +1476,7 @@ class ReleaseType
     /**
      * unset originalReleaseDate
      *
-     * A Composite containing details of the Date and Place of the Event in which the collection of tracks for the Release (e.g. the equivalent physical album on vinyl) was or will be first made available for Usage, whether for physical or electronic/online distribution (in ISO 8601:2004 format: YYYY[-MM[-DD]]). This Element is for display and cataloguing purposes only.
+     * A Composite containing details of the Date and Place of the Event in which the collection of tracks for the Release (e.g. the equivalent physical album on vinyl) was or will be first made available for Usage, whether for physical or electronic/online distribution (in ISO 8601 format: YYYY[-MM[-DD]]). This Element is for display and cataloguing purposes only.
      *
      * @param int|string $index
      * @return void
@@ -1314,27 +1489,95 @@ class ReleaseType
     /**
      * Gets as originalReleaseDate
      *
-     * A Composite containing details of the Date and Place of the Event in which the collection of tracks for the Release (e.g. the equivalent physical album on vinyl) was or will be first made available for Usage, whether for physical or electronic/online distribution (in ISO 8601:2004 format: YYYY[-MM[-DD]]). This Element is for display and cataloguing purposes only.
+     * A Composite containing details of the Date and Place of the Event in which the collection of tracks for the Release (e.g. the equivalent physical album on vinyl) was or will be first made available for Usage, whether for physical or electronic/online distribution (in ISO 8601 format: YYYY[-MM[-DD]]). This Element is for display and cataloguing purposes only.
      *
      * @return \DedexBundle\Entity\Ern43\EventDateWithDefaultType[]
      */
     public function getOriginalReleaseDate()
     {
-        // ERN 4.3 compat: return first element (ERN 382 expects single, not array)
-        return !empty($this->originalReleaseDate) ? $this->originalReleaseDate[0] : null;
+        if (!empty($this->originalReleaseDate)) {
+            return $this->originalReleaseDate[0];
+        }
+        return null;
     }
 
     /**
      * Sets a new originalReleaseDate
      *
-     * A Composite containing details of the Date and Place of the Event in which the collection of tracks for the Release (e.g. the equivalent physical album on vinyl) was or will be first made available for Usage, whether for physical or electronic/online distribution (in ISO 8601:2004 format: YYYY[-MM[-DD]]). This Element is for display and cataloguing purposes only.
+     * A Composite containing details of the Date and Place of the Event in which the collection of tracks for the Release (e.g. the equivalent physical album on vinyl) was or will be first made available for Usage, whether for physical or electronic/online distribution (in ISO 8601 format: YYYY[-MM[-DD]]). This Element is for display and cataloguing purposes only.
      *
      * @param \DedexBundle\Entity\Ern43\EventDateWithDefaultType[] $originalReleaseDate
      * @return self
      */
-    public function setOriginalReleaseDate(array $originalReleaseDate)
+    public function setOriginalReleaseDate(?array $originalReleaseDate = null)
     {
         $this->originalReleaseDate = $originalReleaseDate;
+        return $this;
+    }
+
+    /**
+     * Adds as releaseVisibilityReference
+     *
+     * A Reference for a set of visibility dates (specific to this Message) that applies to this Release. This defines when the Release can be shown to Consumers, not when a Consumer can get access to the Release. This is a LocalVisibilityAnchorReference starting with the letter V.
+     *
+     * @return self
+     * @param string $releaseVisibilityReference
+     */
+    public function addToReleaseVisibilityReference($releaseVisibilityReference)
+    {
+        $this->releaseVisibilityReference[] = $releaseVisibilityReference;
+        return $this;
+    }
+
+    /**
+     * isset releaseVisibilityReference
+     *
+     * A Reference for a set of visibility dates (specific to this Message) that applies to this Release. This defines when the Release can be shown to Consumers, not when a Consumer can get access to the Release. This is a LocalVisibilityAnchorReference starting with the letter V.
+     *
+     * @param int|string $index
+     * @return bool
+     */
+    public function issetReleaseVisibilityReference($index)
+    {
+        return isset($this->releaseVisibilityReference[$index]);
+    }
+
+    /**
+     * unset releaseVisibilityReference
+     *
+     * A Reference for a set of visibility dates (specific to this Message) that applies to this Release. This defines when the Release can be shown to Consumers, not when a Consumer can get access to the Release. This is a LocalVisibilityAnchorReference starting with the letter V.
+     *
+     * @param int|string $index
+     * @return void
+     */
+    public function unsetReleaseVisibilityReference($index)
+    {
+        unset($this->releaseVisibilityReference[$index]);
+    }
+
+    /**
+     * Gets as releaseVisibilityReference
+     *
+     * A Reference for a set of visibility dates (specific to this Message) that applies to this Release. This defines when the Release can be shown to Consumers, not when a Consumer can get access to the Release. This is a LocalVisibilityAnchorReference starting with the letter V.
+     *
+     * @return string[]
+     */
+    public function getReleaseVisibilityReference()
+    {
+        return $this->releaseVisibilityReference;
+    }
+
+    /**
+     * Sets a new releaseVisibilityReference
+     *
+     * A Reference for a set of visibility dates (specific to this Message) that applies to this Release. This defines when the Release can be shown to Consumers, not when a Consumer can get access to the Release. This is a LocalVisibilityAnchorReference starting with the letter V.
+     *
+     * @param string $releaseVisibilityReference
+     * @return self
+     */
+    public function setReleaseVisibilityReference(?array $releaseVisibilityReference = null)
+    {
+        $this->releaseVisibilityReference = $releaseVisibilityReference;
         return $this;
     }
 
@@ -1464,7 +1707,7 @@ class ReleaseType
      * @param \DedexBundle\Entity\Ern43\AvRatingType[] $avRating
      * @return self
      */
-    public function setAvRating(array $avRating)
+    public function setAvRating(?array $avRating = null)
     {
         $this->avRating = $avRating;
         return $this;
@@ -1530,35 +1773,101 @@ class ReleaseType
      * @param \DedexBundle\Entity\Ern43\RelatedReleaseType[] $relatedRelease
      * @return self
      */
-    public function setRelatedRelease(array $relatedRelease)
+    public function setRelatedRelease(?array $relatedRelease = null)
     {
         $this->relatedRelease = $relatedRelease;
         return $this;
     }
 
     /**
-     * Gets as isCompilation
+     * Adds as relatedResource
      *
-     * A Flag indicating whether the Release is a Compilation (=true) or not (=false).
+     * A Composite containing details of a Resource which is related to this Release.
      *
-     * @return bool
+     * @return self
+     * @param \DedexBundle\Entity\Ern43\RelatedResourceType $relatedResource
      */
-    public function getIsCompilation()
+    public function addToRelatedResource(\DedexBundle\Entity\Ern43\RelatedResourceType $relatedResource)
     {
-        return $this->isCompilation;
+        $this->relatedResource[] = $relatedResource;
+        return $this;
     }
 
     /**
-     * Sets a new isCompilation
+     * isset relatedResource
      *
-     * A Flag indicating whether the Release is a Compilation (=true) or not (=false).
+     * A Composite containing details of a Resource which is related to this Release.
      *
-     * @param bool $isCompilation
+     * @param int|string $index
+     * @return bool
+     */
+    public function issetRelatedResource($index)
+    {
+        return isset($this->relatedResource[$index]);
+    }
+
+    /**
+     * unset relatedResource
+     *
+     * A Composite containing details of a Resource which is related to this Release.
+     *
+     * @param int|string $index
+     * @return void
+     */
+    public function unsetRelatedResource($index)
+    {
+        unset($this->relatedResource[$index]);
+    }
+
+    /**
+     * Gets as relatedResource
+     *
+     * A Composite containing details of a Resource which is related to this Release.
+     *
+     * @return \DedexBundle\Entity\Ern43\RelatedResourceType[]
+     */
+    public function getRelatedResource()
+    {
+        return $this->relatedResource;
+    }
+
+    /**
+     * Sets a new relatedResource
+     *
+     * A Composite containing details of a Resource which is related to this Release.
+     *
+     * @param \DedexBundle\Entity\Ern43\RelatedResourceType[] $relatedResource
      * @return self
      */
-    public function setIsCompilation($isCompilation)
+    public function setRelatedResource(?array $relatedResource = null)
     {
-        $this->isCompilation = $isCompilation;
+        $this->relatedResource = $relatedResource;
+        return $this;
+    }
+
+    /**
+     * Gets as isSingleArtistCompilation
+     *
+     * A Flag indicating whether the Release is a single-artist Compilation (=true) or not (=false). If this flag is set, the Release would typically be expected to be part of the discography of the main artist of the Release.
+     *
+     * @return bool
+     */
+    public function getIsSingleArtistCompilation()
+    {
+        return $this->isSingleArtistCompilation;
+    }
+
+    /**
+     * Sets a new isSingleArtistCompilation
+     *
+     * A Flag indicating whether the Release is a single-artist Compilation (=true) or not (=false). If this flag is set, the Release would typically be expected to be part of the discography of the main artist of the Release.
+     *
+     * @param bool $isSingleArtistCompilation
+     * @return self
+     */
+    public function setIsSingleArtistCompilation($isSingleArtistCompilation)
+    {
+        $this->isSingleArtistCompilation = $isSingleArtistCompilation;
         return $this;
     }
 
@@ -1592,21 +1901,22 @@ class ReleaseType
      * Gets as resourceGroup
      *
      * A Composite containing details of a group of some or all of the Resources in the Release. ResourceGroups are used to signal groupings or sequences of Resources within a Release. Examples include individual carriers in a multi-carrier Release or classical Work groupings as well as the default order of Resources within a Release. ResourceGroups are typically not used with Releases that contain only one primary Resource such as TrackReleases.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/sequencing-resources
      *
      * @return \DedexBundle\Entity\Ern43\ResourceGroupType
      */
     public function getResourceGroup()
     {
-        // ERN 4.3 compat: wrap in Ern43CompatResourceGroupWrapper for two-level nesting
-        // ERN 382 expects outer group → CD groups → tracks
-        // ERN 4.3 has flat: single group → tracks
-        return [new Ern43CompatResourceGroupWrapper($this->resourceGroup)];
+        return $this->resourceGroup !== null
+            ? [new Ern43CompatResourceGroupWrapper($this->resourceGroup)]
+            : [];
     }
 
     /**
      * Sets a new resourceGroup
      *
      * A Composite containing details of a group of some or all of the Resources in the Release. ResourceGroups are used to signal groupings or sequences of Resources within a Release. Examples include individual carriers in a multi-carrier Release or classical Work groupings as well as the default order of Resources within a Release. ResourceGroups are typically not used with Releases that contain only one primary Resource such as TrackReleases.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/sequencing-resources
      *
      * @param \DedexBundle\Entity\Ern43\ResourceGroupType $resourceGroup
      * @return self
@@ -1677,9 +1987,35 @@ class ReleaseType
      * @param \DedexBundle\Entity\Ern43\ExternalResourceLinkType[] $externalResourceLink
      * @return self
      */
-    public function setExternalResourceLink(array $externalResourceLink)
+    public function setExternalResourceLink(?array $externalResourceLink = null)
     {
         $this->externalResourceLink = $externalResourceLink;
+        return $this;
+    }
+
+    /**
+     * Gets as targetURL
+     *
+     * A URL of a sub-site or channel in the DSP’s system, where the Release should be made available to Consumers.
+     *
+     * @return string
+     */
+    public function getTargetURL()
+    {
+        return $this->targetURL;
+    }
+
+    /**
+     * Sets a new targetURL
+     *
+     * A URL of a sub-site or channel in the DSP’s system, where the Release should be made available to Consumers.
+     *
+     * @param string $targetURL
+     * @return self
+     */
+    public function setTargetURL($targetURL)
+    {
+        $this->targetURL = $targetURL;
         return $this;
     }
 
@@ -1743,7 +2079,7 @@ class ReleaseType
      * @param \DedexBundle\Entity\Ern43\KeywordsWithTerritoryType[] $keywords
      * @return self
      */
-    public function setKeywords(array $keywords)
+    public function setKeywords(?array $keywords = null)
     {
         $this->keywords = $keywords;
         return $this;
@@ -1809,7 +2145,7 @@ class ReleaseType
      * @param \DedexBundle\Entity\Ern43\SynopsisWithTerritoryType[] $synopsis
      * @return self
      */
-    public function setSynopsis(array $synopsis)
+    public function setSynopsis(?array $synopsis = null)
     {
         $this->synopsis = $synopsis;
         return $this;
@@ -1875,7 +2211,7 @@ class ReleaseType
      * @param \DedexBundle\Entity\Ern43\RagaType[] $raga
      * @return self
      */
-    public function setRaga(array $raga)
+    public function setRaga(?array $raga = null)
     {
         $this->raga = $raga;
         return $this;
@@ -1941,7 +2277,7 @@ class ReleaseType
      * @param \DedexBundle\Entity\Ern43\TalaType[] $tala
      * @return self
      */
-    public function setTala(array $tala)
+    public function setTala(?array $tala = null)
     {
         $this->tala = $tala;
         return $this;
@@ -2007,7 +2343,7 @@ class ReleaseType
      * @param \DedexBundle\Entity\Ern43\DeityType[] $deity
      * @return self
      */
-    public function setDeity(array $deity)
+    public function setDeity(?array $deity = null)
     {
         $this->deity = $deity;
         return $this;
@@ -2151,139 +2487,99 @@ class ReleaseType
      * @param \DedexBundle\Entity\Ern43\MarketingCommentType[] $marketingComment
      * @return self
      */
-    public function setMarketingComment(array $marketingComment)
+    public function setMarketingComment(?array $marketingComment = null)
     {
         $this->marketingComment = $marketingComment;
         return $this;
     }
 
-    // ─── ERN 4.3 compatibility methods ───────────────────────────────
+    // --- ERN 4.3 compat methods for Simplifiers ---
 
-    /**
-     * ERN 4.3 compat: returns self as its own DetailsByTerritory.
-     * ERN 382 has separate ReleaseDetailsByTerritory objects.
-     *
-     * @return self[]
-     */
+    public function setPartyMap(array $map)
+    {
+        $this->_partyMap = $map;
+    }
+
     public function getReleaseDetailsByTerritory()
     {
         return [$this];
     }
 
-    /**
-     * ERN 4.3 compat: returns "Worldwide" territory code.
-     *
-     * @return \DedexBundle\Entity\Ern43\Ern43CompatValue[]
-     */
     public function getTerritoryCode()
     {
         return [new Ern43CompatValue("Worldwide")];
     }
 
-    /**
-     * ERN 4.3 compat: returns "true" because in ERN 4.3 the Release element
-     * is by definition the main release (TrackReleases are separate elements).
-     *
-     * @return string
-     */
     public function getIsMainRelease()
     {
         return "true";
     }
 
-    /**
-     * ERN 4.3 compat: builds a flat reference list from the ResourceGroup.
-     * In ERN 382 this was a direct property; in ERN 4.3 resources are
-     * organized via ResourceGroup with content items and linked references.
-     *
-     * @return Ern43CompatValue[]
-     */
-    public function getReleaseResourceReferenceList()
-    {
-        $refs = [];
-        if ($this->resourceGroup !== null) {
-            foreach ($this->resourceGroup->getResourceGroupContentItem() as $item) {
-                $ref = $item->getReleaseResourceReference();
-                if ($ref !== null) {
-                    $refs[] = $ref;
-                }
-            }
-            foreach ($this->resourceGroup->getLinkedReleaseResourceReference() as $linked) {
-                $refs[] = new Ern43CompatValue($linked->value());
-            }
-        }
-        return $refs;
-    }
-
-    /**
-     * ERN 4.3 compat: builds ReferenceTitle from first DisplayTitleText.
-     *
-     * @return \DedexBundle\Entity\Ern43\Ern43CompatReferenceTitle|null
-     */
     public function getReferenceTitle()
     {
+        $text = null;
         if (!empty($this->displayTitleText)) {
-            $text = $this->displayTitleText[0];
-            $val = is_object($text) && method_exists($text, 'value') ? $text->value() : (string) $text;
-            return new Ern43CompatReferenceTitle($val);
+            $text = (string) $this->displayTitleText[0];
+        } elseif (!empty($this->displayTitle) && $this->displayTitle[0]->getTitleText()) {
+            $text = $this->displayTitle[0]->getTitleText();
         }
-        return null;
+        return $text !== null ? new Ern43CompatReferenceTitle($text) : null;
     }
 
-    /**
-     * ERN 4.3 compat: alias for getDisplayTitle().
-     *
-     * @return \DedexBundle\Entity\Ern43\DisplayTitleType[]
-     */
     public function getTitle()
     {
-        return $this->displayTitle;
+        return [];
     }
 
-    /**
-     * @var array
-     */
-    private $_partyMap = [];
-
-    /**
-     * Sets party reference to name map for resolving party references.
-     *
-     * @param array $partyMap
-     * @return self
-     */
-    public function setPartyMap(array $partyMap)
-    {
-        $this->_partyMap = $partyMap;
-        return $this;
-    }
-
-    /**
-     * ERN 4.3 compat: resolves releaseLabelReference from PartyList.
-     *
-     * @return \DedexBundle\Entity\Ern43\Ern43CompatValue[]
-     */
     public function getLabelName()
     {
         $labels = [];
-        foreach ($this->releaseLabelReference as $ref) {
-            $partyRef = $ref->value();
-            if ($partyRef && isset($this->_partyMap[$partyRef])) {
-                $labels[] = new Ern43CompatValue($this->_partyMap[$partyRef]);
+        if (is_array($this->releaseLabelReference)) {
+            foreach ($this->releaseLabelReference as $ref) {
+                $refValue = (string) $ref;
+                if (isset($this->_partyMap[$refValue])) {
+                    $labels[] = new Ern43CompatValue($this->_partyMap[$refValue]);
+                } else {
+                    $labels[] = new Ern43CompatValue($refValue);
+                }
             }
         }
         return $labels;
     }
 
-    /**
-     * ERN 4.3 compat: returns null (no separate digital release date in ERN 4.3).
-     *
-     * @return null
-     */
-    public function getOriginalDigitalReleaseDate()
+    public function getReleaseResourceReferenceList()
     {
-        return null;
+        $refs = [];
+        if ($this->resourceGroup !== null) {
+            $items = $this->resourceGroup->getResourceGroupContentItem();
+            if (is_array($items)) {
+                foreach ($items as $item) {
+                    $refVal = $item->getReleaseResourceReference();
+                    if ($refVal instanceof Ern43CompatValue) {
+                        $refs[] = new Ern43CompatValue($refVal->value(), null, "PrimaryResource");
+                    } else {
+                        $refs[] = new Ern43CompatValue((string) $refVal, null, "PrimaryResource");
+                    }
+                }
+            }
+            // Also add linked resources (images)
+            $linked = $this->resourceGroup->getLinkedReleaseResourceReference();
+            if (is_array($linked)) {
+                foreach ($linked as $lref) {
+                    $refStr = is_object($lref) && method_exists($lref, 'value') ? $lref->value() : (string) $lref;
+                    $refs[] = new Ern43CompatValue($refStr, null, "SecondaryResource");
+                }
+            }
+        }
+        return $refs;
     }
 
-
+    public function getOriginalDigitalReleaseDate()
+    {
+        if (!empty($this->originalReleaseDate)) {
+            return $this->originalReleaseDate[0];
+        }
+        return null;
+    }
 }
 

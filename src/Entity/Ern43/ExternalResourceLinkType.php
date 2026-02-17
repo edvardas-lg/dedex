@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class ExternalResourceLinkType
 {
-
     /**
      * A URL of the linked external Resource.
      *
@@ -22,6 +21,7 @@ class ExternalResourceLinkType
 
     /**
      * A Composite containing details about the Period of Time during which the ExternalResourceLink is active. StartDate and EndDate are deprecated and StartDateTime/EndDateTime should be used instead. DDEX advises that StartDate and EndDate may be removed at a future date and therefore recommends against using them.
+     * Further Reading: https://kb.ddex.net/general-implementation-guidance/licensing-the-standards/ddex-party-identifier-(dpid)
      *
      * @var \DedexBundle\Entity\Ern43\PeriodWithoutFlagsType $validityPeriod
      */
@@ -120,6 +120,7 @@ class ExternalResourceLinkType
      * Gets as validityPeriod
      *
      * A Composite containing details about the Period of Time during which the ExternalResourceLink is active. StartDate and EndDate are deprecated and StartDateTime/EndDateTime should be used instead. DDEX advises that StartDate and EndDate may be removed at a future date and therefore recommends against using them.
+     * Further Reading: https://kb.ddex.net/general-implementation-guidance/licensing-the-standards/ddex-party-identifier-(dpid)
      *
      * @return \DedexBundle\Entity\Ern43\PeriodWithoutFlagsType
      */
@@ -132,11 +133,12 @@ class ExternalResourceLinkType
      * Sets a new validityPeriod
      *
      * A Composite containing details about the Period of Time during which the ExternalResourceLink is active. StartDate and EndDate are deprecated and StartDateTime/EndDateTime should be used instead. DDEX advises that StartDate and EndDate may be removed at a future date and therefore recommends against using them.
+     * Further Reading: https://kb.ddex.net/general-implementation-guidance/licensing-the-standards/ddex-party-identifier-(dpid)
      *
      * @param \DedexBundle\Entity\Ern43\PeriodWithoutFlagsType $validityPeriod
      * @return self
      */
-    public function setValidityPeriod(\DedexBundle\Entity\Ern43\PeriodWithoutFlagsType $validityPeriod)
+    public function setValidityPeriod(?\DedexBundle\Entity\Ern43\PeriodWithoutFlagsType $validityPeriod = null)
     {
         $this->validityPeriod = $validityPeriod;
         return $this;
@@ -228,7 +230,7 @@ class ExternalResourceLinkType
      * @param \DedexBundle\Entity\Ern43\ExternallyLinkedResourceTypeType[] $externallyLinkedResourceType
      * @return self
      */
-    public function setExternallyLinkedResourceType(array $externallyLinkedResourceType)
+    public function setExternallyLinkedResourceType(?array $externallyLinkedResourceType = null)
     {
         $this->externallyLinkedResourceType = $externallyLinkedResourceType;
         return $this;
@@ -259,7 +261,5 @@ class ExternalResourceLinkType
         $this->fileFormat = $fileFormat;
         return $this;
     }
-
-
 }
 

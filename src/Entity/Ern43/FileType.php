@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class FileType
 {
-
     /**
      * A URI of the File (this can be a URL or another type of Identifier using a scheme identifier, e.g. http or ftp, as defined in RFC 3986).
      *
@@ -78,7 +77,7 @@ class FileType
      * @param \DedexBundle\Entity\Ern43\DetailedHashSumType $hashSum
      * @return self
      */
-    public function setHashSum(\DedexBundle\Entity\Ern43\DetailedHashSumType $hashSum)
+    public function setHashSum(?\DedexBundle\Entity\Ern43\DetailedHashSumType $hashSum = null)
     {
         $this->hashSum = $hashSum;
         return $this;
@@ -110,33 +109,20 @@ class FileType
         return $this;
     }
 
-    /**
-     * ERN 4.3 compat: derives file path (directory) from URI.
-     *
-     * @return string
-     */
+    // --- ERN 4.3 compat methods for Simplifiers ---
+
+    public function getFileName()
+    {
+        return $this->uRI !== null ? basename($this->uRI) : null;
+    }
+
     public function getFilePath()
     {
         if ($this->uRI === null) {
-            return '';
+            return null;
         }
         $dir = dirname($this->uRI);
-        return ($dir === '.' || $dir === '') ? '' : $dir . '/';
+        return ($dir === '.') ? '' : $dir;
     }
-
-    /**
-     * ERN 4.3 compat: derives file name from URI.
-     *
-     * @return string
-     */
-    public function getFileName()
-    {
-        if ($this->uRI === null) {
-            return '';
-        }
-        return basename($this->uRI);
-    }
-
-
 }
 

@@ -6,11 +6,11 @@ namespace DedexBundle\Entity\Ern43;
  * Class representing CLineWithDefaultType
  *
  * A Composite containing details of a CLine.
+ * Explanatory Note: This Composite is named CLineWithDefault to disambiguate it from the basic CLine Composite.
  * XSD Type: CLineWithDefault
  */
 class CLineWithDefaultType
 {
-
     /**
      * A Territory to which the CLine applies. The use of ISO TerritoryCodes (or the term 'Worldwide') is strongly encouraged; TIS TerritoryCodes should only be used if both MessageSender and MessageRecipient are familiar with this standard.
      *
@@ -208,7 +208,5 @@ class CLineWithDefaultType
         $this->cLineText = $cLineText;
         return $this;
     }
-
-
 }
 

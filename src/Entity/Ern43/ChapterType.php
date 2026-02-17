@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class ChapterType
 {
-
     /**
      * The Language and script for the Elements of the Collection as defined in IETF RfC 5646. The default is the same as indicated for the containing composite. Language and Script are provided as lang[-script][-region][-variant]. This is represented in an XML schema as an XML Attribute.
      *
@@ -36,6 +35,7 @@ class ChapterType
 
     /**
      * A Composite containing details of a Title of the Chapter as the MessageSender suggests it should be shown to the Consumer. In many instances this is the only Title to be communicated for any given Creation. Multiple instances can be supplied with an ApplicableTerritoryCode and/or LanguageAndScriptCode. One such element is required for each DisplayTitle element and its content typically provides the same information as the concatenation of the DisplayTitle's sub-elements.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
      *
      * @var \DedexBundle\Entity\Ern43\DisplayTitleTextType[] $displayTitleText
      */
@@ -94,21 +94,21 @@ class ChapterType
     private $representativeImageReference = null;
 
     /**
-     * The start time of the Chapter, measured from the start of the Resource that contains it (using the ISO 8601:2004 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
+     * The start time of the Chapter, measured from the start of the Resource that contains it (using the ISO 8601 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
      *
      * @var \DateInterval $startTime
      */
     private $startTime = null;
 
     /**
-     * The Duration of the use of the Chapter (using the ISO 8601:2004 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
+     * The Duration of the use of the Chapter (using the ISO 8601 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
      *
      * @var \DateInterval $duration
      */
     private $duration = null;
 
     /**
-     * The end time of the Chapter, measured from the start of the Resource that contains it (using the ISO 8601:2004 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
+     * The end time of the Chapter, measured from the start of the Resource that contains it (using the ISO 8601 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
      *
      * @var \DateInterval $endTime
      */
@@ -226,7 +226,7 @@ class ChapterType
      * @param \DedexBundle\Entity\Ern43\ProprietaryIdType[] $chapterId
      * @return self
      */
-    public function setChapterId(array $chapterId)
+    public function setChapterId(?array $chapterId = null)
     {
         $this->chapterId = $chapterId;
         return $this;
@@ -236,6 +236,7 @@ class ChapterType
      * Adds as displayTitleText
      *
      * A Composite containing details of a Title of the Chapter as the MessageSender suggests it should be shown to the Consumer. In many instances this is the only Title to be communicated for any given Creation. Multiple instances can be supplied with an ApplicableTerritoryCode and/or LanguageAndScriptCode. One such element is required for each DisplayTitle element and its content typically provides the same information as the concatenation of the DisplayTitle's sub-elements.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
      *
      * @return self
      * @param \DedexBundle\Entity\Ern43\DisplayTitleTextType $displayTitleText
@@ -250,6 +251,7 @@ class ChapterType
      * isset displayTitleText
      *
      * A Composite containing details of a Title of the Chapter as the MessageSender suggests it should be shown to the Consumer. In many instances this is the only Title to be communicated for any given Creation. Multiple instances can be supplied with an ApplicableTerritoryCode and/or LanguageAndScriptCode. One such element is required for each DisplayTitle element and its content typically provides the same information as the concatenation of the DisplayTitle's sub-elements.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
      *
      * @param int|string $index
      * @return bool
@@ -263,6 +265,7 @@ class ChapterType
      * unset displayTitleText
      *
      * A Composite containing details of a Title of the Chapter as the MessageSender suggests it should be shown to the Consumer. In many instances this is the only Title to be communicated for any given Creation. Multiple instances can be supplied with an ApplicableTerritoryCode and/or LanguageAndScriptCode. One such element is required for each DisplayTitle element and its content typically provides the same information as the concatenation of the DisplayTitle's sub-elements.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
      *
      * @param int|string $index
      * @return void
@@ -276,6 +279,7 @@ class ChapterType
      * Gets as displayTitleText
      *
      * A Composite containing details of a Title of the Chapter as the MessageSender suggests it should be shown to the Consumer. In many instances this is the only Title to be communicated for any given Creation. Multiple instances can be supplied with an ApplicableTerritoryCode and/or LanguageAndScriptCode. One such element is required for each DisplayTitle element and its content typically provides the same information as the concatenation of the DisplayTitle's sub-elements.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
      *
      * @return \DedexBundle\Entity\Ern43\DisplayTitleTextType[]
      */
@@ -288,11 +292,12 @@ class ChapterType
      * Sets a new displayTitleText
      *
      * A Composite containing details of a Title of the Chapter as the MessageSender suggests it should be shown to the Consumer. In many instances this is the only Title to be communicated for any given Creation. Multiple instances can be supplied with an ApplicableTerritoryCode and/or LanguageAndScriptCode. One such element is required for each DisplayTitle element and its content typically provides the same information as the concatenation of the DisplayTitle's sub-elements.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
      *
      * @param \DedexBundle\Entity\Ern43\DisplayTitleTextType[] $displayTitleText
      * @return self
      */
-    public function setDisplayTitleText(array $displayTitleText)
+    public function setDisplayTitleText(?array $displayTitleText = null)
     {
         $this->displayTitleText = $displayTitleText;
         return $this;
@@ -358,7 +363,7 @@ class ChapterType
      * @param \DedexBundle\Entity\Ern43\DisplayTitleType[] $displayTitle
      * @return self
      */
-    public function setDisplayTitle(array $displayTitle)
+    public function setDisplayTitle(?array $displayTitle = null)
     {
         $this->displayTitle = $displayTitle;
         return $this;
@@ -424,7 +429,7 @@ class ChapterType
      * @param \DedexBundle\Entity\Ern43\AdditionalTitleType[] $additionalTitle
      * @return self
      */
-    public function setAdditionalTitle(array $additionalTitle)
+    public function setAdditionalTitle(?array $additionalTitle = null)
     {
         $this->additionalTitle = $additionalTitle;
         return $this;
@@ -516,7 +521,7 @@ class ChapterType
      * @param \DedexBundle\Entity\Ern43\ContributorType[] $contributor
      * @return self
      */
-    public function setContributor(array $contributor)
+    public function setContributor(?array $contributor = null)
     {
         $this->contributor = $contributor;
         return $this;
@@ -582,7 +587,7 @@ class ChapterType
      * @param \DedexBundle\Entity\Ern43\CharacterType[] $character
      * @return self
      */
-    public function setCharacter(array $character)
+    public function setCharacter(?array $character = null)
     {
         $this->character = $character;
         return $this;
@@ -617,9 +622,9 @@ class ChapterType
     /**
      * Gets as startTime
      *
-     * The start time of the Chapter, measured from the start of the Resource that contains it (using the ISO 8601:2004 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
+     * The start time of the Chapter, measured from the start of the Resource that contains it (using the ISO 8601 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
      *
-     * @return \DateInterval
+     * @return \DedexBundle\Entity\Ern43\Ern43Duration
      */
     public function getStartTime()
     {
@@ -629,12 +634,12 @@ class ChapterType
     /**
      * Sets a new startTime
      *
-     * The start time of the Chapter, measured from the start of the Resource that contains it (using the ISO 8601:2004 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
+     * The start time of the Chapter, measured from the start of the Resource that contains it (using the ISO 8601 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
      *
-     * @param \DateInterval $startTime
+     * @param \DedexBundle\Entity\Ern43\Ern43Duration $startTime
      * @return self
      */
-    public function setStartTime(\DateInterval $startTime)
+    public function setStartTime(?\DateInterval $startTime = null)
     {
         $this->startTime = $startTime;
         return $this;
@@ -643,9 +648,9 @@ class ChapterType
     /**
      * Gets as duration
      *
-     * The Duration of the use of the Chapter (using the ISO 8601:2004 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
+     * The Duration of the use of the Chapter (using the ISO 8601 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
      *
-     * @return \DateInterval
+     * @return \DedexBundle\Entity\Ern43\Ern43Duration
      */
     public function getDuration()
     {
@@ -655,12 +660,12 @@ class ChapterType
     /**
      * Sets a new duration
      *
-     * The Duration of the use of the Chapter (using the ISO 8601:2004 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
+     * The Duration of the use of the Chapter (using the ISO 8601 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
      *
-     * @param \DateInterval $duration
+     * @param \DedexBundle\Entity\Ern43\Ern43Duration $duration
      * @return self
      */
-    public function setDuration(\DateInterval $duration)
+    public function setDuration(?\DateInterval $duration = null)
     {
         $this->duration = $duration;
         return $this;
@@ -669,9 +674,9 @@ class ChapterType
     /**
      * Gets as endTime
      *
-     * The end time of the Chapter, measured from the start of the Resource that contains it (using the ISO 8601:2004 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
+     * The end time of the Chapter, measured from the start of the Resource that contains it (using the ISO 8601 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
      *
-     * @return \DateInterval
+     * @return \DedexBundle\Entity\Ern43\Ern43Duration
      */
     public function getEndTime()
     {
@@ -681,17 +686,15 @@ class ChapterType
     /**
      * Sets a new endTime
      *
-     * The end time of the Chapter, measured from the start of the Resource that contains it (using the ISO 8601:2004 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
+     * The end time of the Chapter, measured from the start of the Resource that contains it (using the ISO 8601 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
      *
-     * @param \DateInterval $endTime
+     * @param \DedexBundle\Entity\Ern43\Ern43Duration $endTime
      * @return self
      */
-    public function setEndTime(\DateInterval $endTime)
+    public function setEndTime(?\DateInterval $endTime = null)
     {
         $this->endTime = $endTime;
         return $this;
     }
-
-
 }
 

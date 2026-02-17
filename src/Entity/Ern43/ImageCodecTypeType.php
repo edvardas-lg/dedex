@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class ImageCodecTypeType
 {
-
     /**
      * @var string $__value
      */
@@ -148,7 +147,5 @@ class ImageCodecTypeType
         $this->userDefinedValue = $userDefinedValue;
         return $this;
     }
-
-
 }
 

@@ -10,16 +10,12 @@ namespace DedexBundle\Entity\Ern43;
  */
 class DisplayArtistType
 {
-
-    /**
-     * ERN 4.3 compat: artist name set from parallel DisplayArtistName array.
-     *
-     * @var string $_compatName
-     */
+    // ERN 4.3 compat: artist name resolved from PartyList
     private $_compatName = null;
 
     /**
      * The number indicating the order of the Resource DisplayArtist in a group of Artists that have contributed to a Resource. This is represented in an XML schema as an XML Attribute.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/sequencing-recording-artists-and-writers
      *
      * @var int $sequenceNumber
      */
@@ -60,7 +56,8 @@ class DisplayArtistType
     /**
      * Gets as sequenceNumber
      *
-     * The number indicating the order of the Resource DisplayArtist in a group of Artists that have contributed to a Resource. This is represented in an XML schema as an XML Attribute.
+     * The number indicating the order of the Resource DisplayArtist in a group of Artists that have contributed to a Resource. This is represented in an XML schema as an XML Attribute. 
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/sequencing-recording-artists-and-writers
      *
      * @return int
      */
@@ -72,7 +69,8 @@ class DisplayArtistType
     /**
      * Sets a new sequenceNumber
      *
-     * The number indicating the order of the Resource DisplayArtist in a group of Artists that have contributed to a Resource. This is represented in an XML schema as an XML Attribute.
+     * The number indicating the order of the Resource DisplayArtist in a group of Artists that have contributed to a Resource. This is represented in an XML schema as an XML Attribute. 
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/sequencing-recording-artists-and-writers
      *
      * @param int $sequenceNumber
      * @return self
@@ -195,7 +193,7 @@ class DisplayArtistType
      * @param \DedexBundle\Entity\Ern43\ContributorRoleType[] $artisticRole
      * @return self
      */
-    public function setArtisticRole(array $artisticRole)
+    public function setArtisticRole(?array $artisticRole = null)
     {
         $this->artisticRole = $artisticRole;
         return $this;
@@ -261,46 +259,27 @@ class DisplayArtistType
      * @param \DedexBundle\Entity\Ern43\TitleDisplayInformationType[] $titleDisplayInformation
      * @return self
      */
-    public function setTitleDisplayInformation(array $titleDisplayInformation)
+    public function setTitleDisplayInformation(?array $titleDisplayInformation = null)
     {
         $this->titleDisplayInformation = $titleDisplayInformation;
         return $this;
     }
 
-    /**
-     * ERN 4.3 compat: sets the artist name from the parallel DisplayArtistName array.
-     *
-     * @param string $name
-     * @return self
-     */
+    // --- ERN 4.3 compat methods for Simplifiers ---
+
     public function setCompatName($name)
     {
         $this->_compatName = $name;
-        return $this;
     }
 
-    /**
-     * ERN 4.3 compat: returns party name as array for ERN 382 API compatibility.
-     * ERN 382 code expects getPartyName()[0]->getFullName().
-     *
-     * @return \DedexBundle\Entity\Ern43\Ern43CompatPartyName[]
-     */
     public function getPartyName()
     {
-        return [new Ern43CompatPartyName($this->_compatName)];
+        return [new Ern43CompatPartyName($this->_compatName ?? '')];
     }
 
-    /**
-     * ERN 4.3 compat: returns artist role as array for ERN 382 API compatibility.
-     * ERN 382 code expects getArtistRole()[0] which is an object with value().
-     *
-     * @return \DedexBundle\Entity\Ern43\DisplayArtistRoleType[]
-     */
     public function getArtistRole()
     {
         return $this->displayArtistRole !== null ? [$this->displayArtistRole] : [];
     }
-
-
 }
 

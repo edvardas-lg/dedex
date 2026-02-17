@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class ExternallyLinkedResourceTypeType
 {
-
     /**
      * @var string $__value
      */
@@ -115,7 +114,5 @@ class ExternallyLinkedResourceTypeType
         $this->userDefinedValue = $userDefinedValue;
         return $this;
     }
-
-
 }
 

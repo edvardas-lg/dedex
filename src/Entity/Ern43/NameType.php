@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class NameType
 {
-
     /**
      * @var string $__value
      */
@@ -82,7 +81,5 @@ class NameType
         $this->languageAndScriptCode = $languageAndScriptCode;
         return $this;
     }
-
-
 }
 

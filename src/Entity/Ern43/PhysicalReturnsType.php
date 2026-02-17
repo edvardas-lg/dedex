@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class PhysicalReturnsType
 {
-
     /**
      * The Flag indicating whether physical returns are allowed (=true) or not (=false).
      *
@@ -19,7 +18,7 @@ class PhysicalReturnsType
     private $physicalReturnsAllowed = null;
 
     /**
-     * A Date which is the latest one for physical returns (in ISO 8601:2004 format: YYYY-MM-DD).
+     * A Date which is the latest one for physical returns (in ISO 8601 format: YYYY-MM-DD).
      *
      * @var string $latestDateForPhysicalReturns
      */
@@ -54,7 +53,7 @@ class PhysicalReturnsType
     /**
      * Gets as latestDateForPhysicalReturns
      *
-     * A Date which is the latest one for physical returns (in ISO 8601:2004 format: YYYY-MM-DD).
+     * A Date which is the latest one for physical returns (in ISO 8601 format: YYYY-MM-DD).
      *
      * @return string
      */
@@ -66,7 +65,7 @@ class PhysicalReturnsType
     /**
      * Sets a new latestDateForPhysicalReturns
      *
-     * A Date which is the latest one for physical returns (in ISO 8601:2004 format: YYYY-MM-DD).
+     * A Date which is the latest one for physical returns (in ISO 8601 format: YYYY-MM-DD).
      *
      * @param string $latestDateForPhysicalReturns
      * @return self
@@ -76,7 +75,5 @@ class PhysicalReturnsType
         $this->latestDateForPhysicalReturns = $latestDateForPhysicalReturns;
         return $this;
     }
-
-
 }
 

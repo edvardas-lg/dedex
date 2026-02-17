@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class MessageHeaderType
 {
-
     /**
      * A xs:string used to uniquely identify the thread of Messages of which the current Message is a part. The MessageThreadId shall be, in combination with the DdexPartyId (DPID) of the MessageSender, globally unique. Thus, a MessageSender shall never re-use a MessageThreadId. One example of such a 'thread' is the chain of NewReleaseMessages being sent from ReleaseCreator to wholesale ReleaseDistributor 1 to retail DSP when communicating information about the same Release(s). A common MessageThreadId will allow all these messages to be tied together.
      *
@@ -56,7 +55,7 @@ class MessageHeaderType
     ];
 
     /**
-     * The DateTime on which the Message was created (the only allowed format is ISO 8601:2004: YYYY-MM-DDThh:mm:ssTZD).
+     * The DateTime on which the Message was created (the only allowed format is ISO 8601: YYYY-MM-DDThh:mm:ssTZD).
      *
      * @var \DateTime $messageCreatedDateTime
      */
@@ -200,7 +199,7 @@ class MessageHeaderType
      * @param \DedexBundle\Entity\Ern43\MessagingPartyWithoutCodeType $sentOnBehalfOf
      * @return self
      */
-    public function setSentOnBehalfOf(\DedexBundle\Entity\Ern43\MessagingPartyWithoutCodeType $sentOnBehalfOf)
+    public function setSentOnBehalfOf(?\DedexBundle\Entity\Ern43\MessagingPartyWithoutCodeType $sentOnBehalfOf = null)
     {
         $this->sentOnBehalfOf = $sentOnBehalfOf;
         return $this;
@@ -275,7 +274,7 @@ class MessageHeaderType
     /**
      * Gets as messageCreatedDateTime
      *
-     * The DateTime on which the Message was created (the only allowed format is ISO 8601:2004: YYYY-MM-DDThh:mm:ssTZD).
+     * The DateTime on which the Message was created (the only allowed format is ISO 8601: YYYY-MM-DDThh:mm:ssTZD).
      *
      * @return \DateTime
      */
@@ -287,7 +286,7 @@ class MessageHeaderType
     /**
      * Sets a new messageCreatedDateTime
      *
-     * The DateTime on which the Message was created (the only allowed format is ISO 8601:2004: YYYY-MM-DDThh:mm:ssTZD).
+     * The DateTime on which the Message was created (the only allowed format is ISO 8601: YYYY-MM-DDThh:mm:ssTZD).
      *
      * @param \DateTime $messageCreatedDateTime
      * @return self
@@ -358,7 +357,7 @@ class MessageHeaderType
      * @param \DedexBundle\Entity\Ern43\MessageAuditTrailEventType[] $messageAuditTrail
      * @return self
      */
-    public function setMessageAuditTrail(array $messageAuditTrail)
+    public function setMessageAuditTrail(?array $messageAuditTrail = null)
     {
         $this->messageAuditTrail = $messageAuditTrail;
         return $this;
@@ -389,7 +388,5 @@ class MessageHeaderType
         $this->messageControlType = $messageControlType;
         return $this;
     }
-
-
 }
 

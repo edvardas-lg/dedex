@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class DisplayCreditsType
 {
-
     /**
      * The Language and script of this Element as defined in IETF RfC 5646. The default is the same as indicated for the containing composite. Language and Script are provided as lang[-script][-region][-variant]. This is represented in an XML schema as an XML Attribute.
      *
@@ -221,7 +220,7 @@ class DisplayCreditsType
      * @param string $displayCreditParty
      * @return self
      */
-    public function setDisplayCreditParty(array $displayCreditParty)
+    public function setDisplayCreditParty(?array $displayCreditParty = null)
     {
         $this->displayCreditParty = $displayCreditParty;
         return $this;
@@ -287,12 +286,10 @@ class DisplayCreditsType
      * @param string[] $nameUsedInDisplayCredit
      * @return self
      */
-    public function setNameUsedInDisplayCredit(array $nameUsedInDisplayCredit)
+    public function setNameUsedInDisplayCredit(?array $nameUsedInDisplayCredit = null)
     {
         $this->nameUsedInDisplayCredit = $nameUsedInDisplayCredit;
         return $this;
     }
-
-
 }
 

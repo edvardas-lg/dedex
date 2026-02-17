@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class ProprietaryIdType
 {
-
     /**
      * @var string $__value
      */
@@ -82,7 +81,5 @@ class ProprietaryIdType
         $this->namespace = $namespace;
         return $this;
     }
-
-
 }
 

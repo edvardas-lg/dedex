@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class DistributionChannelPageType
 {
-
     /**
      * A Composite containing details of the PartyId for a Party owning the WebPage. If no Namespace is given, the Identifier is a DdexPartyId (DPID). Note that DPIDs are not normally used to identify Artists, producers or other Creators.
      *
@@ -101,7 +100,7 @@ class DistributionChannelPageType
      * @param \DedexBundle\Entity\Ern43\DetailedPartyIdType[] $partyId
      * @return self
      */
-    public function setPartyId(array $partyId)
+    public function setPartyId(?array $partyId = null)
     {
         $this->partyId = $partyId;
         return $this;
@@ -127,7 +126,7 @@ class DistributionChannelPageType
      * @param \DedexBundle\Entity\Ern43\NameType $pageName
      * @return self
      */
-    public function setPageName(\DedexBundle\Entity\Ern43\NameType $pageName)
+    public function setPageName(?\DedexBundle\Entity\Ern43\NameType $pageName = null)
     {
         $this->pageName = $pageName;
         return $this;
@@ -184,7 +183,5 @@ class DistributionChannelPageType
         $this->userName = $userName;
         return $this;
     }
-
-
 }
 

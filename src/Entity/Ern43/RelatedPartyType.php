@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class RelatedPartyType
 {
-
     /**
      * A Reference for a related Party (specific to this Message). This is a LocalPartyAnchorReference starting with the letter P.
      *
@@ -76,7 +75,5 @@ class RelatedPartyType
         $this->partyRelationshipType = $partyRelationshipType;
         return $this;
     }
-
-
 }
 

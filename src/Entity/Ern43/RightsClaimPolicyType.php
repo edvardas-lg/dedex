@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class RightsClaimPolicyType
 {
-
     /**
      * A Composite containing details of Conditions. If more than one Condition is specified, then all of them have to be fulfilled (i.e. they are combined using the logical operator AND).
      *
@@ -87,7 +86,7 @@ class RightsClaimPolicyType
      * @param \DedexBundle\Entity\Ern43\ConditionForRightsClaimPolicyType[] $condition
      * @return self
      */
-    public function setCondition(array $condition)
+    public function setCondition(?array $condition = null)
     {
         $this->condition = $condition;
         return $this;
@@ -118,7 +117,5 @@ class RightsClaimPolicyType
         $this->rightsClaimPolicyType = $rightsClaimPolicyType;
         return $this;
     }
-
-
 }
 

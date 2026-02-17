@@ -6,11 +6,11 @@ namespace DedexBundle\Entity\Ern43;
  * Class representing CourtesyLineWithDefaultType
  *
  * A Composite containing details of a CourtesyLine.
+ * Explanatory Note: This Composite is named CourtesyLineWithDefault to disambiguate it from the basic CourtesyLine Composite.
  * XSD Type: CourtesyLineWithDefault
  */
 class CourtesyLineWithDefaultType
 {
-
     /**
      * @var string $__value
      */
@@ -148,7 +148,5 @@ class CourtesyLineWithDefaultType
         $this->isDefault = $isDefault;
         return $this;
     }
-
-
 }
 

@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class ResourceGroupContentItemType
 {
-
     /**
      * The number indicating the logical order of the ContentItem in its ResourceGroup.
      *
@@ -150,14 +149,15 @@ class ResourceGroupContentItemType
     /**
      * Gets as releaseResourceReference
      *
-     * A ReleaseResourceReference for the ContentItem (specific to this Message).
-     * ERN 4.3 compat: wraps string in Ern43CompatValue for value() access.
+     * A ReleaseResourceReference for the ContentItem (specific to this Message). The LocalAnchorReference in this Composite is a xs:string starting with the letter A.
      *
      * @return string
      */
     public function getReleaseResourceReference()
     {
-        return new Ern43CompatValue($this->releaseResourceReference);
+        return $this->releaseResourceReference !== null
+            ? new Ern43CompatValue($this->releaseResourceReference)
+            : null;
     }
 
     /**
@@ -234,7 +234,7 @@ class ResourceGroupContentItemType
      * @param \DedexBundle\Entity\Ern43\LinkedReleaseResourceReferenceType[] $linkedReleaseResourceReference
      * @return self
      */
-    public function setLinkedReleaseResourceReference(array $linkedReleaseResourceReference)
+    public function setLinkedReleaseResourceReference(?array $linkedReleaseResourceReference = null)
     {
         $this->linkedReleaseResourceReference = $linkedReleaseResourceReference;
         return $this;
@@ -317,19 +317,5 @@ class ResourceGroupContentItemType
         $this->isPreOrderIncentiveResource = $isPreOrderIncentiveResource;
         return $this;
     }
-
-    /**
-     * ERN 4.3 compat: returns resource type as array for ERN 382 API compatibility.
-     * Returns empty array; resource type is determined by matching the reference
-     * against the resource list.
-     *
-     * @return array
-     */
-    public function getResourceType()
-    {
-        return [];
-    }
-
-
 }
 

@@ -10,11 +10,10 @@ namespace DedexBundle\Entity\Ern43;
  */
 class DealTermsTechnicalInstantiationType
 {
-
     /**
      * A Type of resolution (or definition) in which a Video is provided.
      *
-     * @var string $videoDefinitionType
+     * @var \DedexBundle\Entity\Ern43\VideoDefinitionTypeType $videoDefinitionType
      */
     private $videoDefinitionType = null;
 
@@ -37,7 +36,7 @@ class DealTermsTechnicalInstantiationType
      *
      * A Type of resolution (or definition) in which a Video is provided.
      *
-     * @return string
+     * @return \DedexBundle\Entity\Ern43\VideoDefinitionTypeType
      */
     public function getVideoDefinitionType()
     {
@@ -49,10 +48,10 @@ class DealTermsTechnicalInstantiationType
      *
      * A Type of resolution (or definition) in which a Video is provided.
      *
-     * @param string $videoDefinitionType
+     * @param \DedexBundle\Entity\Ern43\VideoDefinitionTypeType $videoDefinitionType
      * @return self
      */
-    public function setVideoDefinitionType($videoDefinitionType)
+    public function setVideoDefinitionType(?\DedexBundle\Entity\Ern43\VideoDefinitionTypeType $videoDefinitionType = null)
     {
         $this->videoDefinitionType = $videoDefinitionType;
         return $this;
@@ -104,12 +103,10 @@ class DealTermsTechnicalInstantiationType
      * @param \DedexBundle\Entity\Ern43\BitRateType $bitRate
      * @return self
      */
-    public function setBitRate(\DedexBundle\Entity\Ern43\BitRateType $bitRate)
+    public function setBitRate(?\DedexBundle\Entity\Ern43\BitRateType $bitRate = null)
     {
         $this->bitRate = $bitRate;
         return $this;
     }
-
-
 }
 

@@ -6,11 +6,13 @@ namespace DedexBundle\Entity\Ern43;
  * Class representing PartyNameWithoutCodeType
  *
  * A Composite containing details of a PartyName. Name details for a Party typically either contain a FullName or a KeyName.
+ * Explanatory Note: This Composite is named PartyNameWithoutCode to disambiguate it from the basic PartyName Composite.
+ * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
+ * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers
  * XSD Type: PartyNameWithoutCode
  */
 class PartyNameWithoutCodeType
 {
-
     /**
      * The complete Name of the Party, in its normal form of presentation (e.g. John H. Smith, Acme Music Inc, the Beatles).
      *
@@ -47,7 +49,7 @@ class PartyNameWithoutCodeType
     private $keyName = null;
 
     /**
-     * The Name(s) following the KeyName. Example:'Ibrahim' (in Anwar Ibrahim). This is common, e.g., in many Asian personal name forms where a FullName begins with the KeyName, which is followed by other names.
+     * The Name(s) following the KeyName. Example: 'Ibrahim' (in Anwar Ibrahim). This is common, e.g., in many Asian personal name forms where a FullName begins with the KeyName, which is followed by other names.
      *
      * @var string $namesAfterKeyName
      */
@@ -193,7 +195,7 @@ class PartyNameWithoutCodeType
     /**
      * Gets as namesAfterKeyName
      *
-     * The Name(s) following the KeyName. Example:'Ibrahim' (in Anwar Ibrahim). This is common, e.g., in many Asian personal name forms where a FullName begins with the KeyName, which is followed by other names.
+     * The Name(s) following the KeyName. Example: 'Ibrahim' (in Anwar Ibrahim). This is common, e.g., in many Asian personal name forms where a FullName begins with the KeyName, which is followed by other names.
      *
      * @return string
      */
@@ -205,7 +207,7 @@ class PartyNameWithoutCodeType
     /**
      * Sets a new namesAfterKeyName
      *
-     * The Name(s) following the KeyName. Example:'Ibrahim' (in Anwar Ibrahim). This is common, e.g., in many Asian personal name forms where a FullName begins with the KeyName, which is followed by other names.
+     * The Name(s) following the KeyName. Example: 'Ibrahim' (in Anwar Ibrahim). This is common, e.g., in many Asian personal name forms where a FullName begins with the KeyName, which is followed by other names.
      *
      * @param string $namesAfterKeyName
      * @return self
@@ -241,7 +243,5 @@ class PartyNameWithoutCodeType
         $this->abbreviatedName = $abbreviatedName;
         return $this;
     }
-
-
 }
 

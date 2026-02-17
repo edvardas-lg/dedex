@@ -6,11 +6,11 @@ namespace DedexBundle\Entity\Ern43;
  * Class representing DescriptionWithTerritoryType
  *
  * A Composite containing details of a Description.
+ * Explanatory Note: This Composite is named DescriptionWithTerritory to disambiguate it from the basic Description Composite.
  * XSD Type: DescriptionWithTerritory
  */
 class DescriptionWithTerritoryType
 {
-
     /**
      * @var string $__value
      */
@@ -148,7 +148,5 @@ class DescriptionWithTerritoryType
         $this->isDefault = $isDefault;
         return $this;
     }
-
-
 }
 

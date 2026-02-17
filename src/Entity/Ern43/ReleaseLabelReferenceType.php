@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class ReleaseLabelReferenceType
 {
-
     /**
      * @var string $__value
      */
@@ -247,7 +246,5 @@ class ReleaseLabelReferenceType
         $this->applicableTerritoryCode = $applicableTerritoryCode;
         return $this;
     }
-
-
 }
 

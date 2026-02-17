@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class TechnicalSoundRecordingDetailsType
 {
-
     /**
      * The Language and script for the Elements of the TechnicalSoundRecordingDetails as defined in IETF RfC 5646. The default is the same as indicated for the containing composite. Language and Script are provided as lang[-script][-region][-variant]. This is represented in an XML schema as an XML Attribute.
      *
@@ -40,102 +39,34 @@ class TechnicalSoundRecordingDetailsType
     private $technicalResourceDetailsReference = null;
 
     /**
-     * A Composite containing details of a Type of AudioCodec.
+     * A Composite containing details of a delivery File.
      *
-     * @var \DedexBundle\Entity\Ern43\AudioCodecTypeType $audioCodecType
+     * @var \DedexBundle\Entity\Ern43\AudioDeliveryFileType[] $deliveryFile
      */
-    private $audioCodecType = null;
+    private $deliveryFile = [
+        
+    ];
 
     /**
-     * A Composite containing the BitRate for the audio data and a UnitOfMeasure (the default is kbps).
+     * A Flag indicating whether immersive audio metadata is present in the File (=true) or not (=false).
      *
-     * @var \DedexBundle\Entity\Ern43\BitRateType $bitRate
+     * @var bool $hasImmersiveAudioMetadata
      */
-    private $bitRate = null;
+    private $hasImmersiveAudioMetadata = null;
 
     /**
-     * A Composite containing the BitRate for the audio data recording and a UnitOfMeasure (the default is kbps).
+     * The Flag indicating whether the SoundRecording is technically a clip of the parent Resource (=true) or not (=false). If the Flag is set to true, the SoundRecording described is a clip and the ClipDetails describe how the clip is generated from the full recording described in another TechnicalSoundRecordingDetails composite. If the Flag is set to false (or left out), the SoundRecording described is a 'full' recording and any ClipDetails describe how a clip is generated from said full recording. Note that nothing can be implied from this element as to the conditions under which the clip can be made available.
      *
-     * @var \DedexBundle\Entity\Ern43\BitRateType $originalBitRate
+     * @var bool $isClip
      */
-    private $originalBitRate = null;
-
-    /**
-     * A number of audio channels.
-     *
-     * @var int $numberOfChannels
-     */
-    private $numberOfChannels = null;
-
-    /**
-     * A Composite containing the sampling rate of the SoundRecording and a UnitOfMeasure (the default is Hz).
-     *
-     * @var \DedexBundle\Entity\Ern43\SamplingRateType $samplingRate
-     */
-    private $samplingRate = null;
-
-    /**
-     * A Composite containing the sampling rate of the SoundRecording during the recording, and a UnitOfMeasure (the default is Hz).
-     *
-     * @var \DedexBundle\Entity\Ern43\SamplingRateType $originalSamplingRate
-     */
-    private $originalSamplingRate = null;
-
-    /**
-     * An amount of audio data in a sample.
-     *
-     * @var int $bitsPerSample
-     */
-    private $bitsPerSample = null;
-
-    /**
-     * The Duration of the instantiation of the SoundRecording if this differs from the Duration provided for the SoundRecording itself (using the ISO 8601:2004 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S). This element must only be used if and when there are no royalty reporting implications on this change in duration and when the specific technical instantiation is a clip taken from a technical instantiation representing the whole SoundRecording.
-     *
-     * @var \DateInterval $duration
-     */
-    private $duration = null;
-
-    /**
-     * The BitDepth of the File.
-     *
-     * @var int $bitDepth
-     */
-    private $bitDepth = null;
-
-    /**
-     * The Flag indicating whether the SoundRecording is technically a preview of the parent Resource (=true) or not (=false). Note that nothing can be implied from this element as to the conditions under which the preview can be made available.
-     *
-     * @var bool $isPreview
-     */
-    private $isPreview = null;
+    private $isClip = null;
 
     /**
      * A Composite containing details of a preview.
      *
-     * @var \DedexBundle\Entity\Ern43\SoundRecordingPreviewDetailsType $previewDetails
+     * @var \DedexBundle\Entity\Ern43\SoundRecordingClipDetailsType[] $clipDetails
      */
-    private $previewDetails = null;
-
-    /**
-     * A Composite containing details of a File containing the SoundRecording that a DSP can obtain.
-     *
-     * @var \DedexBundle\Entity\Ern43\FileType $file
-     */
-    private $file = null;
-
-    /**
-     * A Composite containing details of a DeliveryFile.
-     *
-     * @var \DedexBundle\Entity\Ern43\DeliveryFileType $deliveryFile
-     */
-    private $deliveryFile = null;
-
-    /**
-     * A Composite containing details of a Fingerprint and its governing algorithm.
-     *
-     * @var \DedexBundle\Entity\Ern43\FingerprintType[] $fingerprint
-     */
-    private $fingerprint = [
+    private $clipDetails = [
         
     ];
 
@@ -244,329 +175,51 @@ class TechnicalSoundRecordingDetailsType
     }
 
     /**
-     * Gets as audioCodecType
+     * Adds as deliveryFile
      *
-     * A Composite containing details of a Type of AudioCodec.
+     * A Composite containing details of a delivery File.
      *
-     * @return \DedexBundle\Entity\Ern43\AudioCodecTypeType
-     */
-    public function getAudioCodecType()
-    {
-        return $this->audioCodecType;
-    }
-
-    /**
-     * Sets a new audioCodecType
-     *
-     * A Composite containing details of a Type of AudioCodec.
-     *
-     * @param \DedexBundle\Entity\Ern43\AudioCodecTypeType $audioCodecType
      * @return self
+     * @param \DedexBundle\Entity\Ern43\AudioDeliveryFileType $deliveryFile
      */
-    public function setAudioCodecType(\DedexBundle\Entity\Ern43\AudioCodecTypeType $audioCodecType)
+    public function addToDeliveryFile(\DedexBundle\Entity\Ern43\AudioDeliveryFileType $deliveryFile)
     {
-        $this->audioCodecType = $audioCodecType;
+        $this->deliveryFile[] = $deliveryFile;
         return $this;
     }
 
     /**
-     * Gets as bitRate
+     * isset deliveryFile
      *
-     * A Composite containing the BitRate for the audio data and a UnitOfMeasure (the default is kbps).
+     * A Composite containing details of a delivery File.
      *
-     * @return \DedexBundle\Entity\Ern43\BitRateType
-     */
-    public function getBitRate()
-    {
-        return $this->bitRate;
-    }
-
-    /**
-     * Sets a new bitRate
-     *
-     * A Composite containing the BitRate for the audio data and a UnitOfMeasure (the default is kbps).
-     *
-     * @param \DedexBundle\Entity\Ern43\BitRateType $bitRate
-     * @return self
-     */
-    public function setBitRate(\DedexBundle\Entity\Ern43\BitRateType $bitRate)
-    {
-        $this->bitRate = $bitRate;
-        return $this;
-    }
-
-    /**
-     * Gets as originalBitRate
-     *
-     * A Composite containing the BitRate for the audio data recording and a UnitOfMeasure (the default is kbps).
-     *
-     * @return \DedexBundle\Entity\Ern43\BitRateType
-     */
-    public function getOriginalBitRate()
-    {
-        return $this->originalBitRate;
-    }
-
-    /**
-     * Sets a new originalBitRate
-     *
-     * A Composite containing the BitRate for the audio data recording and a UnitOfMeasure (the default is kbps).
-     *
-     * @param \DedexBundle\Entity\Ern43\BitRateType $originalBitRate
-     * @return self
-     */
-    public function setOriginalBitRate(\DedexBundle\Entity\Ern43\BitRateType $originalBitRate)
-    {
-        $this->originalBitRate = $originalBitRate;
-        return $this;
-    }
-
-    /**
-     * Gets as numberOfChannels
-     *
-     * A number of audio channels.
-     *
-     * @return int
-     */
-    public function getNumberOfChannels()
-    {
-        return $this->numberOfChannels;
-    }
-
-    /**
-     * Sets a new numberOfChannels
-     *
-     * A number of audio channels.
-     *
-     * @param int $numberOfChannels
-     * @return self
-     */
-    public function setNumberOfChannels($numberOfChannels)
-    {
-        $this->numberOfChannels = $numberOfChannels;
-        return $this;
-    }
-
-    /**
-     * Gets as samplingRate
-     *
-     * A Composite containing the sampling rate of the SoundRecording and a UnitOfMeasure (the default is Hz).
-     *
-     * @return \DedexBundle\Entity\Ern43\SamplingRateType
-     */
-    public function getSamplingRate()
-    {
-        return $this->samplingRate;
-    }
-
-    /**
-     * Sets a new samplingRate
-     *
-     * A Composite containing the sampling rate of the SoundRecording and a UnitOfMeasure (the default is Hz).
-     *
-     * @param \DedexBundle\Entity\Ern43\SamplingRateType $samplingRate
-     * @return self
-     */
-    public function setSamplingRate(\DedexBundle\Entity\Ern43\SamplingRateType $samplingRate)
-    {
-        $this->samplingRate = $samplingRate;
-        return $this;
-    }
-
-    /**
-     * Gets as originalSamplingRate
-     *
-     * A Composite containing the sampling rate of the SoundRecording during the recording, and a UnitOfMeasure (the default is Hz).
-     *
-     * @return \DedexBundle\Entity\Ern43\SamplingRateType
-     */
-    public function getOriginalSamplingRate()
-    {
-        return $this->originalSamplingRate;
-    }
-
-    /**
-     * Sets a new originalSamplingRate
-     *
-     * A Composite containing the sampling rate of the SoundRecording during the recording, and a UnitOfMeasure (the default is Hz).
-     *
-     * @param \DedexBundle\Entity\Ern43\SamplingRateType $originalSamplingRate
-     * @return self
-     */
-    public function setOriginalSamplingRate(\DedexBundle\Entity\Ern43\SamplingRateType $originalSamplingRate)
-    {
-        $this->originalSamplingRate = $originalSamplingRate;
-        return $this;
-    }
-
-    /**
-     * Gets as bitsPerSample
-     *
-     * An amount of audio data in a sample.
-     *
-     * @return int
-     */
-    public function getBitsPerSample()
-    {
-        return $this->bitsPerSample;
-    }
-
-    /**
-     * Sets a new bitsPerSample
-     *
-     * An amount of audio data in a sample.
-     *
-     * @param int $bitsPerSample
-     * @return self
-     */
-    public function setBitsPerSample($bitsPerSample)
-    {
-        $this->bitsPerSample = $bitsPerSample;
-        return $this;
-    }
-
-    /**
-     * Gets as duration
-     *
-     * The Duration of the instantiation of the SoundRecording if this differs from the Duration provided for the SoundRecording itself (using the ISO 8601:2004 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S). This element must only be used if and when there are no royalty reporting implications on this change in duration and when the specific technical instantiation is a clip taken from a technical instantiation representing the whole SoundRecording.
-     *
-     * @return \DateInterval
-     */
-    public function getDuration()
-    {
-        return $this->duration;
-    }
-
-    /**
-     * Sets a new duration
-     *
-     * The Duration of the instantiation of the SoundRecording if this differs from the Duration provided for the SoundRecording itself (using the ISO 8601:2004 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S). This element must only be used if and when there are no royalty reporting implications on this change in duration and when the specific technical instantiation is a clip taken from a technical instantiation representing the whole SoundRecording.
-     *
-     * @param \DateInterval $duration
-     * @return self
-     */
-    public function setDuration(\DateInterval $duration)
-    {
-        $this->duration = $duration;
-        return $this;
-    }
-
-    /**
-     * Gets as bitDepth
-     *
-     * The BitDepth of the File.
-     *
-     * @return int
-     */
-    public function getBitDepth()
-    {
-        return $this->bitDepth;
-    }
-
-    /**
-     * Sets a new bitDepth
-     *
-     * The BitDepth of the File.
-     *
-     * @param int $bitDepth
-     * @return self
-     */
-    public function setBitDepth($bitDepth)
-    {
-        $this->bitDepth = $bitDepth;
-        return $this;
-    }
-
-    /**
-     * Gets as isPreview
-     *
-     * The Flag indicating whether the SoundRecording is technically a preview of the parent Resource (=true) or not (=false). Note that nothing can be implied from this element as to the conditions under which the preview can be made available.
-     *
+     * @param int|string $index
      * @return bool
      */
-    public function getIsPreview()
+    public function issetDeliveryFile($index)
     {
-        return $this->isPreview;
+        return isset($this->deliveryFile[$index]);
     }
 
     /**
-     * Sets a new isPreview
+     * unset deliveryFile
      *
-     * The Flag indicating whether the SoundRecording is technically a preview of the parent Resource (=true) or not (=false). Note that nothing can be implied from this element as to the conditions under which the preview can be made available.
+     * A Composite containing details of a delivery File.
      *
-     * @param bool $isPreview
-     * @return self
+     * @param int|string $index
+     * @return void
      */
-    public function setIsPreview($isPreview)
+    public function unsetDeliveryFile($index)
     {
-        $this->isPreview = $isPreview;
-        return $this;
-    }
-
-    /**
-     * Gets as previewDetails
-     *
-     * A Composite containing details of a preview.
-     *
-     * @return \DedexBundle\Entity\Ern43\SoundRecordingPreviewDetailsType
-     */
-    public function getPreviewDetails()
-    {
-        return $this->previewDetails;
-    }
-
-    /**
-     * Sets a new previewDetails
-     *
-     * A Composite containing details of a preview.
-     *
-     * @param \DedexBundle\Entity\Ern43\SoundRecordingPreviewDetailsType $previewDetails
-     * @return self
-     */
-    public function setPreviewDetails(\DedexBundle\Entity\Ern43\SoundRecordingPreviewDetailsType $previewDetails)
-    {
-        $this->previewDetails = $previewDetails;
-        return $this;
-    }
-
-    /**
-     * Gets as file
-     *
-     * ERN 4.3 compat: wraps single File in array for ERN 382 API compatibility.
-     *
-     * @return \DedexBundle\Entity\Ern43\FileType[]
-     */
-    public function getFile()
-    {
-        if ($this->file !== null) {
-            return [$this->file];
-        }
-        if ($this->deliveryFile !== null && $this->deliveryFile->getFile() !== null) {
-            return [$this->deliveryFile->getFile()];
-        }
-        return [];
-    }
-
-    /**
-     * Sets a new file
-     *
-     * A Composite containing details of a File containing the SoundRecording that a DSP can obtain.
-     *
-     * @param \DedexBundle\Entity\Ern43\FileType $file
-     * @return self
-     */
-    public function setFile(\DedexBundle\Entity\Ern43\FileType $file)
-    {
-        $this->file = $file;
-        return $this;
+        unset($this->deliveryFile[$index]);
     }
 
     /**
      * Gets as deliveryFile
      *
-     * A Composite containing details of a DeliveryFile.
+     * A Composite containing details of a delivery File.
      *
-     * @return \DedexBundle\Entity\Ern43\DeliveryFileType
+     * @return \DedexBundle\Entity\Ern43\AudioDeliveryFileType[]
      */
     public function getDeliveryFile()
     {
@@ -576,83 +229,149 @@ class TechnicalSoundRecordingDetailsType
     /**
      * Sets a new deliveryFile
      *
-     * A Composite containing details of a DeliveryFile.
+     * A Composite containing details of a delivery File.
      *
-     * @param \DedexBundle\Entity\Ern43\DeliveryFileType $deliveryFile
+     * @param \DedexBundle\Entity\Ern43\AudioDeliveryFileType[] $deliveryFile
      * @return self
      */
-    public function setDeliveryFile(\DedexBundle\Entity\Ern43\DeliveryFileType $deliveryFile)
+    public function setDeliveryFile(?array $deliveryFile = null)
     {
         $this->deliveryFile = $deliveryFile;
         return $this;
     }
 
     /**
-     * Adds as fingerprint
+     * Gets as hasImmersiveAudioMetadata
      *
-     * A Composite containing details of a Fingerprint and its governing algorithm.
+     * A Flag indicating whether immersive audio metadata is present in the File (=true) or not (=false).
      *
-     * @return self
-     * @param \DedexBundle\Entity\Ern43\FingerprintType $fingerprint
+     * @return bool
      */
-    public function addToFingerprint(\DedexBundle\Entity\Ern43\FingerprintType $fingerprint)
+    public function getHasImmersiveAudioMetadata()
     {
-        $this->fingerprint[] = $fingerprint;
+        return $this->hasImmersiveAudioMetadata;
+    }
+
+    /**
+     * Sets a new hasImmersiveAudioMetadata
+     *
+     * A Flag indicating whether immersive audio metadata is present in the File (=true) or not (=false).
+     *
+     * @param bool $hasImmersiveAudioMetadata
+     * @return self
+     */
+    public function setHasImmersiveAudioMetadata($hasImmersiveAudioMetadata)
+    {
+        $this->hasImmersiveAudioMetadata = $hasImmersiveAudioMetadata;
         return $this;
     }
 
     /**
-     * isset fingerprint
+     * Gets as isClip
      *
-     * A Composite containing details of a Fingerprint and its governing algorithm.
+     * The Flag indicating whether the SoundRecording is technically a clip of the parent Resource (=true) or not (=false). If the Flag is set to true, the SoundRecording described is a clip and the ClipDetails describe how the clip is generated from the full recording described in another TechnicalSoundRecordingDetails composite. If the Flag is set to false (or left out), the SoundRecording described is a 'full' recording and any ClipDetails describe how a clip is generated from said full recording. Note that nothing can be implied from this element as to the conditions under which the clip can be made available.
+     *
+     * @return bool
+     */
+    public function getIsClip()
+    {
+        return $this->isClip;
+    }
+
+    /**
+     * Sets a new isClip
+     *
+     * The Flag indicating whether the SoundRecording is technically a clip of the parent Resource (=true) or not (=false). If the Flag is set to true, the SoundRecording described is a clip and the ClipDetails describe how the clip is generated from the full recording described in another TechnicalSoundRecordingDetails composite. If the Flag is set to false (or left out), the SoundRecording described is a 'full' recording and any ClipDetails describe how a clip is generated from said full recording. Note that nothing can be implied from this element as to the conditions under which the clip can be made available.
+     *
+     * @param bool $isClip
+     * @return self
+     */
+    public function setIsClip($isClip)
+    {
+        $this->isClip = $isClip;
+        return $this;
+    }
+
+    /**
+     * Adds as clipDetails
+     *
+     * A Composite containing details of a preview.
+     *
+     * @return self
+     * @param \DedexBundle\Entity\Ern43\SoundRecordingClipDetailsType $clipDetails
+     */
+    public function addToClipDetails(\DedexBundle\Entity\Ern43\SoundRecordingClipDetailsType $clipDetails)
+    {
+        $this->clipDetails[] = $clipDetails;
+        return $this;
+    }
+
+    /**
+     * isset clipDetails
+     *
+     * A Composite containing details of a preview.
      *
      * @param int|string $index
      * @return bool
      */
-    public function issetFingerprint($index)
+    public function issetClipDetails($index)
     {
-        return isset($this->fingerprint[$index]);
+        return isset($this->clipDetails[$index]);
     }
 
     /**
-     * unset fingerprint
+     * unset clipDetails
      *
-     * A Composite containing details of a Fingerprint and its governing algorithm.
+     * A Composite containing details of a preview.
      *
      * @param int|string $index
      * @return void
      */
-    public function unsetFingerprint($index)
+    public function unsetClipDetails($index)
     {
-        unset($this->fingerprint[$index]);
+        unset($this->clipDetails[$index]);
     }
 
     /**
-     * Gets as fingerprint
+     * Gets as clipDetails
      *
-     * A Composite containing details of a Fingerprint and its governing algorithm.
+     * A Composite containing details of a preview.
      *
-     * @return \DedexBundle\Entity\Ern43\FingerprintType[]
+     * @return \DedexBundle\Entity\Ern43\SoundRecordingClipDetailsType[]
      */
-    public function getFingerprint()
+    public function getClipDetails()
     {
-        return $this->fingerprint;
+        return $this->clipDetails;
     }
 
     /**
-     * Sets a new fingerprint
+     * Sets a new clipDetails
      *
-     * A Composite containing details of a Fingerprint and its governing algorithm.
+     * A Composite containing details of a preview.
      *
-     * @param \DedexBundle\Entity\Ern43\FingerprintType[] $fingerprint
+     * @param \DedexBundle\Entity\Ern43\SoundRecordingClipDetailsType[] $clipDetails
      * @return self
      */
-    public function setFingerprint(array $fingerprint)
+    public function setClipDetails(?array $clipDetails = null)
     {
-        $this->fingerprint = $fingerprint;
+        $this->clipDetails = $clipDetails;
         return $this;
     }
 
+    // --- ERN 4.3 compat: collect File objects from DeliveryFile chain ---
 
+    public function getFile()
+    {
+        $files = [];
+        if (is_array($this->deliveryFile)) {
+            foreach ($this->deliveryFile as $df) {
+                $file = $df->getFile();
+                if ($file !== null) {
+                    $files[] = $file;
+                }
+            }
+        }
+        return $files;
+    }
 }
 

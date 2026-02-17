@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class PrefixType
 {
-
     /**
      * @var string $__value
      */
@@ -82,7 +81,5 @@ class PrefixType
         $this->languageAndScriptCode = $languageAndScriptCode;
         return $this;
     }
-
-
 }
 

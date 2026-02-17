@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class PartyType
 {
-
     /**
      * The Identifier (specific to the Message) of the Party. This is a LocalPartyAnchor starting with the letter P.
      *
@@ -149,7 +148,7 @@ class PartyType
      * @param \DedexBundle\Entity\Ern43\DetailedPartyIdType[] $partyId
      * @return self
      */
-    public function setPartyId(array $partyId)
+    public function setPartyId(?array $partyId = null)
     {
         $this->partyId = $partyId;
         return $this;
@@ -215,7 +214,7 @@ class PartyType
      * @param \DedexBundle\Entity\Ern43\PartyNameWithTerritoryType[] $partyName
      * @return self
      */
-    public function setPartyName(array $partyName)
+    public function setPartyName(?array $partyName = null)
     {
         $this->partyName = $partyName;
         return $this;
@@ -281,7 +280,7 @@ class PartyType
      * @param \DedexBundle\Entity\Ern43\AffiliationType[] $affiliation
      * @return self
      */
-    public function setAffiliation(array $affiliation)
+    public function setAffiliation(?array $affiliation = null)
     {
         $this->affiliation = $affiliation;
         return $this;
@@ -347,7 +346,7 @@ class PartyType
      * @param \DedexBundle\Entity\Ern43\RelatedPartyType[] $relatedParty
      * @return self
      */
-    public function setRelatedParty(array $relatedParty)
+    public function setRelatedParty(?array $relatedParty = null)
     {
         $this->relatedParty = $relatedParty;
         return $this;
@@ -413,12 +412,10 @@ class PartyType
      * @param string[] $artistProfilePage
      * @return self
      */
-    public function setArtistProfilePage(array $artistProfilePage)
+    public function setArtistProfilePage(?array $artistProfilePage = null)
     {
         $this->artistProfilePage = $artistProfilePage;
         return $this;
     }
-
-
 }
 

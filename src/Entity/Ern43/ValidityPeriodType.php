@@ -10,16 +10,15 @@ namespace DedexBundle\Entity\Ern43;
  */
 class ValidityPeriodType
 {
-
     /**
-     * A Composite containing details of the Date and Place of an Event that marks the beginning of the Period (in ISO 8601:2004 format: YYYY-MM-DD). The StartDate must be no later than the EndDate if both are provided.
+     * A Composite containing details of the Date and Place of an Event that marks the beginning of the Period (in ISO 8601 format: YYYY-MM-DD). The StartDate must be no later than the EndDate if both are provided.
      *
      * @var \DedexBundle\Entity\Ern43\EventDateType $startDate
      */
     private $startDate = null;
 
     /**
-     * A Composite containing details of the Date and Place of an Event that marks the end of the Period (in ISO 8601:2004 format: YYYY-MM-DD). The EndDate must not be earlier than the StartDate if both are provided.
+     * A Composite containing details of the Date and Place of an Event that marks the end of the Period (in ISO 8601 format: YYYY-MM-DD). The EndDate must not be earlier than the StartDate if both are provided.
      *
      * @var \DedexBundle\Entity\Ern43\EventDateType $endDate
      */
@@ -28,7 +27,7 @@ class ValidityPeriodType
     /**
      * Gets as startDate
      *
-     * A Composite containing details of the Date and Place of an Event that marks the beginning of the Period (in ISO 8601:2004 format: YYYY-MM-DD). The StartDate must be no later than the EndDate if both are provided.
+     * A Composite containing details of the Date and Place of an Event that marks the beginning of the Period (in ISO 8601 format: YYYY-MM-DD). The StartDate must be no later than the EndDate if both are provided.
      *
      * @return \DedexBundle\Entity\Ern43\EventDateType
      */
@@ -40,12 +39,12 @@ class ValidityPeriodType
     /**
      * Sets a new startDate
      *
-     * A Composite containing details of the Date and Place of an Event that marks the beginning of the Period (in ISO 8601:2004 format: YYYY-MM-DD). The StartDate must be no later than the EndDate if both are provided.
+     * A Composite containing details of the Date and Place of an Event that marks the beginning of the Period (in ISO 8601 format: YYYY-MM-DD). The StartDate must be no later than the EndDate if both are provided.
      *
      * @param \DedexBundle\Entity\Ern43\EventDateType $startDate
      * @return self
      */
-    public function setStartDate(\DedexBundle\Entity\Ern43\EventDateType $startDate)
+    public function setStartDate(?\DedexBundle\Entity\Ern43\EventDateType $startDate = null)
     {
         $this->startDate = $startDate;
         return $this;
@@ -54,7 +53,7 @@ class ValidityPeriodType
     /**
      * Gets as endDate
      *
-     * A Composite containing details of the Date and Place of an Event that marks the end of the Period (in ISO 8601:2004 format: YYYY-MM-DD). The EndDate must not be earlier than the StartDate if both are provided.
+     * A Composite containing details of the Date and Place of an Event that marks the end of the Period (in ISO 8601 format: YYYY-MM-DD). The EndDate must not be earlier than the StartDate if both are provided.
      *
      * @return \DedexBundle\Entity\Ern43\EventDateType
      */
@@ -66,17 +65,15 @@ class ValidityPeriodType
     /**
      * Sets a new endDate
      *
-     * A Composite containing details of the Date and Place of an Event that marks the end of the Period (in ISO 8601:2004 format: YYYY-MM-DD). The EndDate must not be earlier than the StartDate if both are provided.
+     * A Composite containing details of the Date and Place of an Event that marks the end of the Period (in ISO 8601 format: YYYY-MM-DD). The EndDate must not be earlier than the StartDate if both are provided.
      *
      * @param \DedexBundle\Entity\Ern43\EventDateType $endDate
      * @return self
      */
-    public function setEndDate(\DedexBundle\Entity\Ern43\EventDateType $endDate)
+    public function setEndDate(?\DedexBundle\Entity\Ern43\EventDateType $endDate = null)
     {
         $this->endDate = $endDate;
         return $this;
     }
-
-
 }
 

@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class IsCreditedType
 {
-
     /**
      * @var bool $__value
      */
@@ -82,7 +81,5 @@ class IsCreditedType
         $this->mayBeShared = $mayBeShared;
         return $this;
     }
-
-
 }
 

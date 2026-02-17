@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class WorkRightsControllerType
 {
-
     /**
      * A Reference for a Party (specific to this Message). This is a LocalPartyAnchorReference starting with the letter P.
      *
@@ -21,9 +20,9 @@ class WorkRightsControllerType
     /**
      * A role that describes the Party involved in the administration of Rights.
      *
-     * @var string[] $rightsControllerRole
+     * @var string[] $rightsControlType
      */
-    private $rightsControllerRole = [
+    private $rightsControlType = [
         
     ];
 
@@ -42,7 +41,8 @@ class WorkRightsControllerType
     private $rightShareUnknown = null;
 
     /**
-     * The share of the licensed Rights owned by the RightsController. RightShare information is given as a xs:decimal value with up to 6 digits (e.g. '12.5' represents 12.5%). If no information is given, 100% is assumed.
+     * The share of the licensed Rights owned by the RightsController. RightShare information is given as a xs:decimal value with up to 6 digits after the decimal point (e.g. '12.5' represents 12.5%). If no information is given, 100% is assumed.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/communication-of-percentages
      *
      * @var float $rightSharePercentage
      */
@@ -58,14 +58,14 @@ class WorkRightsControllerType
     ];
 
     /**
-     * The Date that marks the beginning of the title (in ISO 8601:2004 format: YYYY-MM-DD).
+     * The Date that marks the beginning of the title (in ISO 8601 format: YYYY-MM-DD).
      *
      * @var string $startDate
      */
     private $startDate = null;
 
     /**
-     * The Date that marks the end of the title (in ISO 8601:2004 format: YYYY-MM-DD).
+     * The Date that marks the end of the title (in ISO 8601 format: YYYY-MM-DD).
      *
      * @var string $endDate
      */
@@ -98,68 +98,68 @@ class WorkRightsControllerType
     }
 
     /**
-     * Adds as rightsControllerRole
+     * Adds as rightsControlType
      *
      * A role that describes the Party involved in the administration of Rights.
      *
      * @return self
-     * @param string $rightsControllerRole
+     * @param string $rightsControlType
      */
-    public function addToRightsControllerRole($rightsControllerRole)
+    public function addToRightsControlType($rightsControlType)
     {
-        $this->rightsControllerRole[] = $rightsControllerRole;
+        $this->rightsControlType[] = $rightsControlType;
         return $this;
     }
 
     /**
-     * isset rightsControllerRole
+     * isset rightsControlType
      *
      * A role that describes the Party involved in the administration of Rights.
      *
      * @param int|string $index
      * @return bool
      */
-    public function issetRightsControllerRole($index)
+    public function issetRightsControlType($index)
     {
-        return isset($this->rightsControllerRole[$index]);
+        return isset($this->rightsControlType[$index]);
     }
 
     /**
-     * unset rightsControllerRole
+     * unset rightsControlType
      *
      * A role that describes the Party involved in the administration of Rights.
      *
      * @param int|string $index
      * @return void
      */
-    public function unsetRightsControllerRole($index)
+    public function unsetRightsControlType($index)
     {
-        unset($this->rightsControllerRole[$index]);
+        unset($this->rightsControlType[$index]);
     }
 
     /**
-     * Gets as rightsControllerRole
+     * Gets as rightsControlType
      *
      * A role that describes the Party involved in the administration of Rights.
      *
      * @return string[]
      */
-    public function getRightsControllerRole()
+    public function getRightsControlType()
     {
-        return $this->rightsControllerRole;
+        return $this->rightsControlType;
     }
 
     /**
-     * Sets a new rightsControllerRole
+     * Sets a new rightsControlType
      *
      * A role that describes the Party involved in the administration of Rights.
      *
-     * @param string $rightsControllerRole
+     * @param string $rightsControlType
      * @return self
      */
-    public function setRightsControllerRole(array $rightsControllerRole)
+    public function setRightsControlType(?array $rightsControlType = null)
     {
-        $this->rightsControllerRole = $rightsControllerRole;
+        $this->rightsControlType = $rightsControlType;
         return $this;
     }
 
@@ -218,7 +218,8 @@ class WorkRightsControllerType
     /**
      * Gets as rightSharePercentage
      *
-     * The share of the licensed Rights owned by the RightsController. RightShare information is given as a xs:decimal value with up to 6 digits (e.g. '12.5' represents 12.5%). If no information is given, 100% is assumed.
+     * The share of the licensed Rights owned by the RightsController. RightShare information is given as a xs:decimal value with up to 6 digits after the decimal point (e.g. '12.5' represents 12.5%). If no information is given, 100% is assumed.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/communication-of-percentages
      *
      * @return float
      */
@@ -230,7 +231,8 @@ class WorkRightsControllerType
     /**
      * Sets a new rightSharePercentage
      *
-     * The share of the licensed Rights owned by the RightsController. RightShare information is given as a xs:decimal value with up to 6 digits (e.g. '12.5' represents 12.5%). If no information is given, 100% is assumed.
+     * The share of the licensed Rights owned by the RightsController. RightShare information is given as a xs:decimal value with up to 6 digits after the decimal point (e.g. '12.5' represents 12.5%). If no information is given, 100% is assumed.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/communication-of-percentages
      *
      * @param float $rightSharePercentage
      * @return self
@@ -301,7 +303,7 @@ class WorkRightsControllerType
      * @param \DedexBundle\Entity\Ern43\AllTerritoryCodeType[] $territory
      * @return self
      */
-    public function setTerritory(array $territory)
+    public function setTerritory(?array $territory = null)
     {
         $this->territory = $territory;
         return $this;
@@ -310,7 +312,7 @@ class WorkRightsControllerType
     /**
      * Gets as startDate
      *
-     * The Date that marks the beginning of the title (in ISO 8601:2004 format: YYYY-MM-DD).
+     * The Date that marks the beginning of the title (in ISO 8601 format: YYYY-MM-DD).
      *
      * @return string
      */
@@ -322,7 +324,7 @@ class WorkRightsControllerType
     /**
      * Sets a new startDate
      *
-     * The Date that marks the beginning of the title (in ISO 8601:2004 format: YYYY-MM-DD).
+     * The Date that marks the beginning of the title (in ISO 8601 format: YYYY-MM-DD).
      *
      * @param string $startDate
      * @return self
@@ -336,7 +338,7 @@ class WorkRightsControllerType
     /**
      * Gets as endDate
      *
-     * The Date that marks the end of the title (in ISO 8601:2004 format: YYYY-MM-DD).
+     * The Date that marks the end of the title (in ISO 8601 format: YYYY-MM-DD).
      *
      * @return string
      */
@@ -348,7 +350,7 @@ class WorkRightsControllerType
     /**
      * Sets a new endDate
      *
-     * The Date that marks the end of the title (in ISO 8601:2004 format: YYYY-MM-DD).
+     * The Date that marks the end of the title (in ISO 8601 format: YYYY-MM-DD).
      *
      * @param string $endDate
      * @return self
@@ -358,7 +360,5 @@ class WorkRightsControllerType
         $this->endDate = $endDate;
         return $this;
     }
-
-
 }
 

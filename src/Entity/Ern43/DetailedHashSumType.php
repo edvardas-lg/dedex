@@ -5,12 +5,12 @@ namespace DedexBundle\Entity\Ern43;
 /**
  * Class representing DetailedHashSumType
  *
- * A Composite containing details of a HashSum and its governing algorithm.
+ * A Composite containing details of a HashSum and its governing Algorithm.
+ * Explanatory Note: This Composite is named DetailedHashSum to disambiguate it from the basic HashSum Composite.
  * XSD Type: DetailedHashSum
  */
 class DetailedHashSumType
 {
-
     /**
      * A Composite containing details of the Type of HashSumAlgorithm governing the HashSum.
      *
@@ -26,7 +26,7 @@ class DetailedHashSumType
     private $version = null;
 
     /**
-     * A parameter of the HashSumAlgorithm.
+     * A Parameter of the HashSumAlgorithm.
      *
      * @var string $parameter
      */
@@ -101,7 +101,7 @@ class DetailedHashSumType
     /**
      * Gets as parameter
      *
-     * A parameter of the HashSumAlgorithm.
+     * A Parameter of the HashSumAlgorithm.
      *
      * @return string
      */
@@ -113,7 +113,7 @@ class DetailedHashSumType
     /**
      * Sets a new parameter
      *
-     * A parameter of the HashSumAlgorithm.
+     * A Parameter of the HashSumAlgorithm.
      *
      * @param string $parameter
      * @return self
@@ -175,7 +175,5 @@ class DetailedHashSumType
         $this->hashSumValue = $hashSumValue;
         return $this;
     }
-
-
 }
 

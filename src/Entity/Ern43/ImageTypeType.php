@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class ImageTypeType
 {
-
     /**
      * @var string $__value
      */
@@ -115,7 +114,5 @@ class ImageTypeType
         $this->userDefinedValue = $userDefinedValue;
         return $this;
     }
-
-
 }
 

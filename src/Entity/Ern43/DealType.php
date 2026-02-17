@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class DealType
 {
-
     /**
      * A Reference to a TextDocument containing details of the Deal (in the form of an Identifier, Name or Description).
      *
@@ -29,6 +28,7 @@ class DealType
 
     /**
      * A Composite containing details of the terms of the Deal.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/deals-and-commercial-aspects/cancelling-a-deal-before-street-date
      *
      * @var \DedexBundle\Entity\Ern43\DealTermsType $dealTerms
      */
@@ -110,7 +110,7 @@ class DealType
      * @param string[] $dealReference
      * @return self
      */
-    public function setDealReference(array $dealReference)
+    public function setDealReference(?array $dealReference = null)
     {
         $this->dealReference = $dealReference;
         return $this;
@@ -146,6 +146,7 @@ class DealType
      * Gets as dealTerms
      *
      * A Composite containing details of the terms of the Deal.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/deals-and-commercial-aspects/cancelling-a-deal-before-street-date
      *
      * @return \DedexBundle\Entity\Ern43\DealTermsType
      */
@@ -158,11 +159,12 @@ class DealType
      * Sets a new dealTerms
      *
      * A Composite containing details of the terms of the Deal.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/deals-and-commercial-aspects/cancelling-a-deal-before-street-date
      *
      * @param \DedexBundle\Entity\Ern43\DealTermsType $dealTerms
      * @return self
      */
-    public function setDealTerms(\DedexBundle\Entity\Ern43\DealTermsType $dealTerms)
+    public function setDealTerms(?\DedexBundle\Entity\Ern43\DealTermsType $dealTerms = null)
     {
         $this->dealTerms = $dealTerms;
         return $this;
@@ -228,7 +230,7 @@ class DealType
      * @param string $dealTechnicalResourceDetailsReferenceList
      * @return self
      */
-    public function setDealTechnicalResourceDetailsReferenceList(array $dealTechnicalResourceDetailsReferenceList)
+    public function setDealTechnicalResourceDetailsReferenceList(?array $dealTechnicalResourceDetailsReferenceList = null)
     {
         $this->dealTechnicalResourceDetailsReferenceList = $dealTechnicalResourceDetailsReferenceList;
         return $this;
@@ -294,12 +296,10 @@ class DealType
      * @param \DedexBundle\Entity\Ern43\DistributionChannelPageType[] $distributionChannelPage
      * @return self
      */
-    public function setDistributionChannelPage(array $distributionChannelPage)
+    public function setDistributionChannelPage(?array $distributionChannelPage = null)
     {
         $this->distributionChannelPage = $distributionChannelPage;
         return $this;
     }
-
-
 }
 

@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class TechnicalTextDetailsType
 {
-
     /**
      * The Language and script for the Elements of the TechnicalTextDetails as defined in IETF RfC 5646. The default is the same as indicated for the containing composite. Language and Script are provided as lang[-script][-region][-variant]. This is represented in an XML schema as an XML Attribute.
      *
@@ -54,18 +53,21 @@ class TechnicalTextDetailsType
     private $bitDepth = null;
 
     /**
-     * The Flag indicating whether the Text is technically a preview of the parent Resource (=true) or not (=false). Note that nothing can be implied from this element as to the conditions under which the preview can be made available.
+     * The Flag indicating whether the Text is technically a clip of the parent Resource (=true) or not (=false). If the Flag is set to true, the Text described is a clip and the ClipDetails describe how the clip is generated from the full recording described in another TechnicalTextDetails composite. If the Flag is set to false (or left out), the Text described is a 'full' recording and any ClipDetails describe how a clip is generated from said full recording. Note that nothing can be implied from this element as to the conditions under which the clip can be made available.
      *
-     * @var bool $isPreview
+     * @var bool $isClip
      */
-    private $isPreview = null;
+    private $isClip = null;
 
     /**
      * A Composite containing details of a preview.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-previews/preview-resources
      *
-     * @var \DedexBundle\Entity\Ern43\PreviewDetailsType $previewDetails
+     * @var \DedexBundle\Entity\Ern43\ClipDetailsType[] $clipDetails
      */
-    private $previewDetails = null;
+    private $clipDetails = [
+        
+    ];
 
     /**
      * A Composite containing details of a File containing the Text that a DSP can obtain.
@@ -73,6 +75,13 @@ class TechnicalTextDetailsType
      * @var \DedexBundle\Entity\Ern43\FileType $file
      */
     private $file = null;
+
+    /**
+     * A Flag indicating whether a File containing the Text is a provided in a delivery (=true) or not (=false).
+     *
+     * @var bool $isProvidedInDelivery
+     */
+    private $isProvidedInDelivery = null;
 
     /**
      * A Composite containing details of a Fingerprint and its governing algorithm.
@@ -207,7 +216,7 @@ class TechnicalTextDetailsType
      * @param \DedexBundle\Entity\Ern43\TextCodecTypeType $textCodecType
      * @return self
      */
-    public function setTextCodecType(\DedexBundle\Entity\Ern43\TextCodecTypeType $textCodecType)
+    public function setTextCodecType(?\DedexBundle\Entity\Ern43\TextCodecTypeType $textCodecType = null)
     {
         $this->textCodecType = $textCodecType;
         return $this;
@@ -240,54 +249,99 @@ class TechnicalTextDetailsType
     }
 
     /**
-     * Gets as isPreview
+     * Gets as isClip
      *
-     * The Flag indicating whether the Text is technically a preview of the parent Resource (=true) or not (=false). Note that nothing can be implied from this element as to the conditions under which the preview can be made available.
+     * The Flag indicating whether the Text is technically a clip of the parent Resource (=true) or not (=false). If the Flag is set to true, the Text described is a clip and the ClipDetails describe how the clip is generated from the full recording described in another TechnicalTextDetails composite. If the Flag is set to false (or left out), the Text described is a 'full' recording and any ClipDetails describe how a clip is generated from said full recording. Note that nothing can be implied from this element as to the conditions under which the clip can be made available.
      *
      * @return bool
      */
-    public function getIsPreview()
+    public function getIsClip()
     {
-        return $this->isPreview;
+        return $this->isClip;
     }
 
     /**
-     * Sets a new isPreview
+     * Sets a new isClip
      *
-     * The Flag indicating whether the Text is technically a preview of the parent Resource (=true) or not (=false). Note that nothing can be implied from this element as to the conditions under which the preview can be made available.
+     * The Flag indicating whether the Text is technically a clip of the parent Resource (=true) or not (=false). If the Flag is set to true, the Text described is a clip and the ClipDetails describe how the clip is generated from the full recording described in another TechnicalTextDetails composite. If the Flag is set to false (or left out), the Text described is a 'full' recording and any ClipDetails describe how a clip is generated from said full recording. Note that nothing can be implied from this element as to the conditions under which the clip can be made available.
      *
-     * @param bool $isPreview
+     * @param bool $isClip
      * @return self
      */
-    public function setIsPreview($isPreview)
+    public function setIsClip($isClip)
     {
-        $this->isPreview = $isPreview;
+        $this->isClip = $isClip;
         return $this;
     }
 
     /**
-     * Gets as previewDetails
+     * Adds as clipDetails
      *
      * A Composite containing details of a preview.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-previews/preview-resources
      *
-     * @return \DedexBundle\Entity\Ern43\PreviewDetailsType
+     * @return self
+     * @param \DedexBundle\Entity\Ern43\ClipDetailsType $clipDetails
      */
-    public function getPreviewDetails()
+    public function addToClipDetails(\DedexBundle\Entity\Ern43\ClipDetailsType $clipDetails)
     {
-        return $this->previewDetails;
+        $this->clipDetails[] = $clipDetails;
+        return $this;
     }
 
     /**
-     * Sets a new previewDetails
+     * isset clipDetails
      *
      * A Composite containing details of a preview.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-previews/preview-resources
      *
-     * @param \DedexBundle\Entity\Ern43\PreviewDetailsType $previewDetails
+     * @param int|string $index
+     * @return bool
+     */
+    public function issetClipDetails($index)
+    {
+        return isset($this->clipDetails[$index]);
+    }
+
+    /**
+     * unset clipDetails
+     *
+     * A Composite containing details of a preview.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-previews/preview-resources
+     *
+     * @param int|string $index
+     * @return void
+     */
+    public function unsetClipDetails($index)
+    {
+        unset($this->clipDetails[$index]);
+    }
+
+    /**
+     * Gets as clipDetails
+     *
+     * A Composite containing details of a preview.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-previews/preview-resources
+     *
+     * @return \DedexBundle\Entity\Ern43\ClipDetailsType[]
+     */
+    public function getClipDetails()
+    {
+        return $this->clipDetails;
+    }
+
+    /**
+     * Sets a new clipDetails
+     *
+     * A Composite containing details of a preview.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-previews/preview-resources
+     *
+     * @param \DedexBundle\Entity\Ern43\ClipDetailsType[] $clipDetails
      * @return self
      */
-    public function setPreviewDetails(\DedexBundle\Entity\Ern43\PreviewDetailsType $previewDetails)
+    public function setClipDetails(?array $clipDetails = null)
     {
-        $this->previewDetails = $previewDetails;
+        $this->clipDetails = $clipDetails;
         return $this;
     }
 
@@ -311,9 +365,35 @@ class TechnicalTextDetailsType
      * @param \DedexBundle\Entity\Ern43\FileType $file
      * @return self
      */
-    public function setFile(\DedexBundle\Entity\Ern43\FileType $file)
+    public function setFile(?\DedexBundle\Entity\Ern43\FileType $file = null)
     {
         $this->file = $file;
+        return $this;
+    }
+
+    /**
+     * Gets as isProvidedInDelivery
+     *
+     * A Flag indicating whether a File containing the Text is a provided in a delivery (=true) or not (=false).
+     *
+     * @return bool
+     */
+    public function getIsProvidedInDelivery()
+    {
+        return $this->isProvidedInDelivery;
+    }
+
+    /**
+     * Sets a new isProvidedInDelivery
+     *
+     * A Flag indicating whether a File containing the Text is a provided in a delivery (=true) or not (=false).
+     *
+     * @param bool $isProvidedInDelivery
+     * @return self
+     */
+    public function setIsProvidedInDelivery($isProvidedInDelivery)
+    {
+        $this->isProvidedInDelivery = $isProvidedInDelivery;
         return $this;
     }
 
@@ -377,12 +457,10 @@ class TechnicalTextDetailsType
      * @param \DedexBundle\Entity\Ern43\FingerprintType[] $fingerprint
      * @return self
      */
-    public function setFingerprint(array $fingerprint)
+    public function setFingerprint(?array $fingerprint = null)
     {
         $this->fingerprint = $fingerprint;
         return $this;
     }
-
-
 }
 

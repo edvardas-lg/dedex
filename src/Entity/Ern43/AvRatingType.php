@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class AvRatingType
 {
-
     /**
      * A Territory to which the AvRating applies. The use of ISO TerritoryCodes (or the term 'Worldwide') is strongly encouraged; TIS TerritoryCodes should only be used if both MessageSender and MessageRecipient are familiar with this standard.
      *
@@ -40,9 +39,9 @@ class AvRatingType
     private $agency = null;
 
     /**
-     * A Reason for a rating being applied.
+     * A Composite containing details of a Reason for a rating being applied.
      *
-     * @var string $reason
+     * @var \DedexBundle\Entity\Ern43\RatingReasonType $reason
      */
     private $reason = null;
 
@@ -153,9 +152,9 @@ class AvRatingType
     /**
      * Gets as reason
      *
-     * A Reason for a rating being applied.
+     * A Composite containing details of a Reason for a rating being applied.
      *
-     * @return string
+     * @return \DedexBundle\Entity\Ern43\RatingReasonType
      */
     public function getReason()
     {
@@ -165,17 +164,15 @@ class AvRatingType
     /**
      * Sets a new reason
      *
-     * A Reason for a rating being applied.
+     * A Composite containing details of a Reason for a rating being applied.
      *
-     * @param string $reason
+     * @param \DedexBundle\Entity\Ern43\RatingReasonType $reason
      * @return self
      */
-    public function setReason($reason)
+    public function setReason(?\DedexBundle\Entity\Ern43\RatingReasonType $reason = null)
     {
         $this->reason = $reason;
         return $this;
     }
-
-
 }
 

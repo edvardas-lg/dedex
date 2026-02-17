@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class DealTermsType
 {
-
     /**
      * A Territory in which the Deal applies. Either this Element or ExcludedTerritory must be present, but not both. The use of ISO TerritoryCodes (or the term 'Worldwide') is strongly encouraged; TIS TerritoryCodes should only be used if both MessageSender and MessageRecipient are familiar with this standard.
      *
@@ -30,9 +29,11 @@ class DealTermsType
     ];
 
     /**
-     * A Composite containing details about a Period of Time during which the Deal is valid. No StartDate in this Composite means that the Deal is valid as per contractual relationship between MessageSender and MessageRecipient. No EndDate in this Composite means that the Deal is valid until further notice. StartDate and EndDate are deprecated and StartDateTime/EndDateTime should be used instead. DDEX advises that StartDate and EndDate may be removed at a future date and therefore recommends against using them.
+     * A Composite containing details about a Period of Time during which the Deal is valid. To indicate a Deal that is valid at the time of sending of a NewReleaseMessage, the MessageSender should use a StartDate or StartDateTime set in the past. No EndDate in this Composite means that the Deal is valid until further notice. StartDate and EndDate are deprecated and StartDateTime/EndDateTime should be used instead. DDEX advises that StartDate and EndDate may be removed at a future date and therefore recommends against using them.
+     * Further Reading: https://kb.ddex.net/general-implementation-guidance/licensing-the-standards/ddex-party-identifier-(dpid)
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/deals-and-commercial-aspects/start-dates%2C-end-dates%2C-start-datetimes-and-end-datetimes
      *
-     * @var \DedexBundle\Entity\Ern43\PeriodWithoutFlagsType[] $validityPeriod
+     * @var \DedexBundle\Entity\Ern43\PeriodWithStartDateType[] $validityPeriod
      */
     private $validityPeriod = [
         
@@ -53,6 +54,15 @@ class DealTermsType
      * @var \DedexBundle\Entity\Ern43\DiscoverableUseTypeType[] $useType
      */
     private $useType = [
+        
+    ];
+
+    /**
+     * A Composite containing details of a physical interface by which a Consumer uses a Service or Release.
+     *
+     * @var \DedexBundle\Entity\Ern43\UserInterfaceTypeType[] $userInterfaceType
+     */
+    private $userInterfaceType = [
         
     ];
 
@@ -85,31 +95,8 @@ class DealTermsType
      * @var \DedexBundle\Entity\Ern43\DSPType[] $distributionChannel
      */
     private $distributionChannel = [
-
+        
     ];
-
-    /**
-     * ERN 4.3 compat: returns self as single-element array for ERN 382 API compatibility.
-     * ERN 382 code expects getDealTerms()->getUsage() returning iterable of objects
-     * with getUseType() and getDistributionChannelType().
-     *
-     * @return self[]
-     */
-    public function getUsage()
-    {
-        return [$this];
-    }
-
-    /**
-     * ERN 4.3 compat: returns empty array for distribution channel type.
-     * ERN 4.3 uses DSPType objects in distributionChannel, not simple type values.
-     *
-     * @return array
-     */
-    public function getDistributionChannelType()
-    {
-        return [];
-    }
 
     /**
      * A Composite containing details of excluded DSP. This is used in an aggregator model where all agreed partners of the aggregators may use a ReleaseDeal, except those that are listed herein.
@@ -131,6 +118,7 @@ class DealTermsType
 
     /**
      * A Composite containing details of a Price. Note that this Price applies to all UseTypes referenced in this Composite.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/deals-and-commercial-aspects/price-information
      *
      * @var \DedexBundle\Entity\Ern43\PriceInformationWithTypeType[] $priceInformation
      */
@@ -158,62 +146,6 @@ class DealTermsType
      * @var bool $isPreOrderDeal
      */
     private $isPreOrderDeal = null;
-
-    /**
-     * A Date on which the Release is made first available for display. If no ReleaseDisplayStartDate is provided, the StartDate for the Deal is used instead. The ReleaseDisplayStartDate may not be later than the StartDate for the Deal. If the MessageRecipient is not able to cater for such granular display policies, the MessageRecipient may be forced to not display any Release information until a much later date. This is a string with the syntax YYYY[-MM[-DD]]. ReleaseDisplayStartDate is deprecated and ReleaseDisplayStartDateTime should be used instead. DDEX advises that ReleaseDisplayStartDate may be removed at a future date and therefore recommends against using it.
-     *
-     * @var string $releaseDisplayStartDate
-     */
-    private $releaseDisplayStartDate = null;
-
-    /**
-     * A Date on which the Track list is made first available for display (it overrides the generic ReleaseDisplayStartDate if supplied). If no TrackListingPreviewStartDate is provided, the StartDate for the Deal is used instead. The TrackListingPreviewStartDate shall not be later than the StartDate of the Deal allowing the general availability of the referenced Release. This element is not applicable on Track Releases. This is a string with the syntax YYYY[-MM[-DD]]. TrackListingPreviewStartDate is deprecated and TrackListingPreviewStartDateTime should be used instead. DDEX advises that TrackListingPreviewStartDate may be removed at a future date and therefore recommends against using it.
-     *
-     * @var string $trackListingPreviewStartDate
-     */
-    private $trackListingPreviewStartDate = null;
-
-    /**
-     * A Date on which the cover art is made first available for display (it overrides the generic ReleaseDisplayStartDate if supplied). If no CoverArtPreviewStartDate is provided, the StartDate for the Deal is used instead. The CoverArtPreviewStartDate shall not be later than the StartDate of the Deal allowing the general availability of the referenced Release. This is a string with the syntax YYYY[-MM[-DD]]. CoverArtPreviewStartDate is deprecated and CoverArtPreviewStartDateTime should be used instead. DDEX advises that CoverArtPreviewStartDate may be removed at a future date and therefore recommends against using it.
-     *
-     * @var string $coverArtPreviewStartDate
-     */
-    private $coverArtPreviewStartDate = null;
-
-    /**
-     * A Date on which an audio or video clip is made first available for display (it overrides the generic ReleaseDisplayStartDate if supplied). If no ClipPreviewStartDate is provided, the StartDate for the Deal is used instead. The ClipPreviewStartDate may not be later than the StartDate for the Deal. The ClipPrevicePreviewStartDate shall not be later than the StartDate of the Deal allowing the general availability of the referenced Release. This is a string with the syntax YYYY[-MM[-DD]]. ClipPreviewStartDate is deprecated and ClipPreviewStartDateTime should be used instead. DDEX advises that ClipPreviewStartDate may be removed at a future date and therefore recommends against using it.
-     *
-     * @var string $clipPreviewStartDate
-     */
-    private $clipPreviewStartDate = null;
-
-    /**
-     * A DateTime on which the Release is made first available for display. If no ReleaseDisplayStartDateTime is provided, the StartDate for the Deal is used instead. The ReleaseDisplayStartDateTime may not be later than the StartDate for the Deal. If the MessageRecipient is not able to cater for such granular display policies, the MessageRecipient may be forced to not display any Release information until a much later date. This is a string in ISO 8601:2004 format: YYYY-MM-DDThh:mm:ss.
-     *
-     * @var \DateTime $releaseDisplayStartDateTime
-     */
-    private $releaseDisplayStartDateTime = null;
-
-    /**
-     * A DateTime on which the Track list is made first available for display (it overrides the generic ReleaseDisplayStartDate if supplied). If no TrackListingPreviewStartDateTime is provided, the StartDate for the Deal is used instead. The TrackListingPreviewStartDateTime shall not be later than the StartDate of the Deal allowing the general availability of the referenced Release. This element is not applicable on Track Releases. This is a string in ISO 8601:2004 format: YYYY-MM-DDThh:mm:ss.
-     *
-     * @var \DateTime $trackListingPreviewStartDateTime
-     */
-    private $trackListingPreviewStartDateTime = null;
-
-    /**
-     * A DateTime on which the cover art is made first available for display (it overrides the generic ReleaseDisplayStartDate if supplied). If no CoverArtPreviewStartDateTime is provided, the StartDate for the Deal is used instead. The CoverArtPreviewStartDateTime shall not be later than the StartDate of the Deal allowing the general availability of the referenced Release. This is a string in ISO 8601:2004 format: YYYY-MM-DDThh:mm:ss.
-     *
-     * @var \DateTime $coverArtPreviewStartDateTime
-     */
-    private $coverArtPreviewStartDateTime = null;
-
-    /**
-     * A DateTime on which an audio or video clip is made first available for display (it overrides the generic ReleaseDisplayStartDate if supplied). If no ClipPreviewStartDateTime is provided, the StartDate for the Deal is used instead. The ClipPreviewStartDateTime ClipPrevicePreviewStartDate shall not be later than the StartDate of the Deal allowing the general availability of the referenced Release. This is a string in ISO 8601:2004 format: YYYY-MM-DDThh:mm:ss.
-     *
-     * @var \DateTime $clipPreviewStartDateTime
-     */
-    private $clipPreviewStartDateTime = null;
 
     /**
      * A Composite containing details of one or more Resources that are only available for download as soon as the Release is purchased (i.e. before the ReleaseDate).
@@ -285,7 +217,13 @@ class DealTermsType
      */
     public function getTerritoryCode()
     {
-        return $this->territoryCode;
+        $result = [];
+        if (is_array($this->territoryCode)) {
+            foreach ($this->territoryCode as $tc) {
+                $result[] = is_object($tc) ? (string) $tc : $tc;
+            }
+        }
+        return $result;
     }
 
     /**
@@ -296,7 +234,7 @@ class DealTermsType
      * @param \DedexBundle\Entity\Ern43\CurrentTerritoryCodeType[] $territoryCode
      * @return self
      */
-    public function setTerritoryCode(array $territoryCode)
+    public function setTerritoryCode(?array $territoryCode = null)
     {
         $this->territoryCode = $territoryCode;
         return $this;
@@ -362,7 +300,7 @@ class DealTermsType
      * @param \DedexBundle\Entity\Ern43\CurrentTerritoryCodeType[] $excludedTerritoryCode
      * @return self
      */
-    public function setExcludedTerritoryCode(array $excludedTerritoryCode)
+    public function setExcludedTerritoryCode(?array $excludedTerritoryCode = null)
     {
         $this->excludedTerritoryCode = $excludedTerritoryCode;
         return $this;
@@ -371,12 +309,14 @@ class DealTermsType
     /**
      * Adds as validityPeriod
      *
-     * A Composite containing details about a Period of Time during which the Deal is valid. No StartDate in this Composite means that the Deal is valid as per contractual relationship between MessageSender and MessageRecipient. No EndDate in this Composite means that the Deal is valid until further notice. StartDate and EndDate are deprecated and StartDateTime/EndDateTime should be used instead. DDEX advises that StartDate and EndDate may be removed at a future date and therefore recommends against using them.
+     * A Composite containing details about a Period of Time during which the Deal is valid. To indicate a Deal that is valid at the time of sending of a NewReleaseMessage, the MessageSender should use a StartDate or StartDateTime set in the past. No EndDate in this Composite means that the Deal is valid until further notice. StartDate and EndDate are deprecated and StartDateTime/EndDateTime should be used instead. DDEX advises that StartDate and EndDate may be removed at a future date and therefore recommends against using them.
+     * Further Reading: https://kb.ddex.net/general-implementation-guidance/licensing-the-standards/ddex-party-identifier-(dpid)
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/deals-and-commercial-aspects/start-dates%2C-end-dates%2C-start-datetimes-and-end-datetimes
      *
      * @return self
-     * @param \DedexBundle\Entity\Ern43\PeriodWithoutFlagsType $validityPeriod
+     * @param \DedexBundle\Entity\Ern43\PeriodWithStartDateType $validityPeriod
      */
-    public function addToValidityPeriod(\DedexBundle\Entity\Ern43\PeriodWithoutFlagsType $validityPeriod)
+    public function addToValidityPeriod(\DedexBundle\Entity\Ern43\PeriodWithStartDateType $validityPeriod)
     {
         $this->validityPeriod[] = $validityPeriod;
         return $this;
@@ -385,7 +325,9 @@ class DealTermsType
     /**
      * isset validityPeriod
      *
-     * A Composite containing details about a Period of Time during which the Deal is valid. No StartDate in this Composite means that the Deal is valid as per contractual relationship between MessageSender and MessageRecipient. No EndDate in this Composite means that the Deal is valid until further notice. StartDate and EndDate are deprecated and StartDateTime/EndDateTime should be used instead. DDEX advises that StartDate and EndDate may be removed at a future date and therefore recommends against using them.
+     * A Composite containing details about a Period of Time during which the Deal is valid. To indicate a Deal that is valid at the time of sending of a NewReleaseMessage, the MessageSender should use a StartDate or StartDateTime set in the past. No EndDate in this Composite means that the Deal is valid until further notice. StartDate and EndDate are deprecated and StartDateTime/EndDateTime should be used instead. DDEX advises that StartDate and EndDate may be removed at a future date and therefore recommends against using them.
+     * Further Reading: https://kb.ddex.net/general-implementation-guidance/licensing-the-standards/ddex-party-identifier-(dpid)
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/deals-and-commercial-aspects/start-dates%2C-end-dates%2C-start-datetimes-and-end-datetimes
      *
      * @param int|string $index
      * @return bool
@@ -398,7 +340,9 @@ class DealTermsType
     /**
      * unset validityPeriod
      *
-     * A Composite containing details about a Period of Time during which the Deal is valid. No StartDate in this Composite means that the Deal is valid as per contractual relationship between MessageSender and MessageRecipient. No EndDate in this Composite means that the Deal is valid until further notice. StartDate and EndDate are deprecated and StartDateTime/EndDateTime should be used instead. DDEX advises that StartDate and EndDate may be removed at a future date and therefore recommends against using them.
+     * A Composite containing details about a Period of Time during which the Deal is valid. To indicate a Deal that is valid at the time of sending of a NewReleaseMessage, the MessageSender should use a StartDate or StartDateTime set in the past. No EndDate in this Composite means that the Deal is valid until further notice. StartDate and EndDate are deprecated and StartDateTime/EndDateTime should be used instead. DDEX advises that StartDate and EndDate may be removed at a future date and therefore recommends against using them.
+     * Further Reading: https://kb.ddex.net/general-implementation-guidance/licensing-the-standards/ddex-party-identifier-(dpid)
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/deals-and-commercial-aspects/start-dates%2C-end-dates%2C-start-datetimes-and-end-datetimes
      *
      * @param int|string $index
      * @return void
@@ -411,9 +355,11 @@ class DealTermsType
     /**
      * Gets as validityPeriod
      *
-     * A Composite containing details about a Period of Time during which the Deal is valid. No StartDate in this Composite means that the Deal is valid as per contractual relationship between MessageSender and MessageRecipient. No EndDate in this Composite means that the Deal is valid until further notice. StartDate and EndDate are deprecated and StartDateTime/EndDateTime should be used instead. DDEX advises that StartDate and EndDate may be removed at a future date and therefore recommends against using them.
+     * A Composite containing details about a Period of Time during which the Deal is valid. To indicate a Deal that is valid at the time of sending of a NewReleaseMessage, the MessageSender should use a StartDate or StartDateTime set in the past. No EndDate in this Composite means that the Deal is valid until further notice. StartDate and EndDate are deprecated and StartDateTime/EndDateTime should be used instead. DDEX advises that StartDate and EndDate may be removed at a future date and therefore recommends against using them.
+     * Further Reading: https://kb.ddex.net/general-implementation-guidance/licensing-the-standards/ddex-party-identifier-(dpid)
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/deals-and-commercial-aspects/start-dates%2C-end-dates%2C-start-datetimes-and-end-datetimes
      *
-     * @return \DedexBundle\Entity\Ern43\PeriodWithoutFlagsType[]
+     * @return \DedexBundle\Entity\Ern43\PeriodWithStartDateType[]
      */
     public function getValidityPeriod()
     {
@@ -423,9 +369,11 @@ class DealTermsType
     /**
      * Sets a new validityPeriod
      *
-     * A Composite containing details about a Period of Time during which the Deal is valid. No StartDate in this Composite means that the Deal is valid as per contractual relationship between MessageSender and MessageRecipient. No EndDate in this Composite means that the Deal is valid until further notice. StartDate and EndDate are deprecated and StartDateTime/EndDateTime should be used instead. DDEX advises that StartDate and EndDate may be removed at a future date and therefore recommends against using them.
+     * A Composite containing details about a Period of Time during which the Deal is valid. To indicate a Deal that is valid at the time of sending of a NewReleaseMessage, the MessageSender should use a StartDate or StartDateTime set in the past. No EndDate in this Composite means that the Deal is valid until further notice. StartDate and EndDate are deprecated and StartDateTime/EndDateTime should be used instead. DDEX advises that StartDate and EndDate may be removed at a future date and therefore recommends against using them.
+     * Further Reading: https://kb.ddex.net/general-implementation-guidance/licensing-the-standards/ddex-party-identifier-(dpid)
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/deals-and-commercial-aspects/start-dates%2C-end-dates%2C-start-datetimes-and-end-datetimes
      *
-     * @param \DedexBundle\Entity\Ern43\PeriodWithoutFlagsType[] $validityPeriod
+     * @param \DedexBundle\Entity\Ern43\PeriodWithStartDateType[] $validityPeriod
      * @return self
      */
     public function setValidityPeriod(array $validityPeriod)
@@ -494,7 +442,7 @@ class DealTermsType
      * @param \DedexBundle\Entity\Ern43\CommercialModelTypeType[] $commercialModelType
      * @return self
      */
-    public function setCommercialModelType(array $commercialModelType)
+    public function setCommercialModelType(?array $commercialModelType = null)
     {
         $this->commercialModelType = $commercialModelType;
         return $this;
@@ -560,9 +508,75 @@ class DealTermsType
      * @param \DedexBundle\Entity\Ern43\DiscoverableUseTypeType[] $useType
      * @return self
      */
-    public function setUseType(array $useType)
+    public function setUseType(?array $useType = null)
     {
         $this->useType = $useType;
+        return $this;
+    }
+
+    /**
+     * Adds as userInterfaceType
+     *
+     * A Composite containing details of a physical interface by which a Consumer uses a Service or Release.
+     *
+     * @return self
+     * @param \DedexBundle\Entity\Ern43\UserInterfaceTypeType $userInterfaceType
+     */
+    public function addToUserInterfaceType(\DedexBundle\Entity\Ern43\UserInterfaceTypeType $userInterfaceType)
+    {
+        $this->userInterfaceType[] = $userInterfaceType;
+        return $this;
+    }
+
+    /**
+     * isset userInterfaceType
+     *
+     * A Composite containing details of a physical interface by which a Consumer uses a Service or Release.
+     *
+     * @param int|string $index
+     * @return bool
+     */
+    public function issetUserInterfaceType($index)
+    {
+        return isset($this->userInterfaceType[$index]);
+    }
+
+    /**
+     * unset userInterfaceType
+     *
+     * A Composite containing details of a physical interface by which a Consumer uses a Service or Release.
+     *
+     * @param int|string $index
+     * @return void
+     */
+    public function unsetUserInterfaceType($index)
+    {
+        unset($this->userInterfaceType[$index]);
+    }
+
+    /**
+     * Gets as userInterfaceType
+     *
+     * A Composite containing details of a physical interface by which a Consumer uses a Service or Release.
+     *
+     * @return \DedexBundle\Entity\Ern43\UserInterfaceTypeType[]
+     */
+    public function getUserInterfaceType()
+    {
+        return $this->userInterfaceType;
+    }
+
+    /**
+     * Sets a new userInterfaceType
+     *
+     * A Composite containing details of a physical interface by which a Consumer uses a Service or Release.
+     *
+     * @param \DedexBundle\Entity\Ern43\UserInterfaceTypeType[] $userInterfaceType
+     * @return self
+     */
+    public function setUserInterfaceType(?array $userInterfaceType = null)
+    {
+        $this->userInterfaceType = $userInterfaceType;
         return $this;
     }
 
@@ -626,7 +640,7 @@ class DealTermsType
      * @param \DedexBundle\Entity\Ern43\CarrierTypeType[] $carrierType
      * @return self
      */
-    public function setCarrierType(array $carrierType)
+    public function setCarrierType(?array $carrierType = null)
     {
         $this->carrierType = $carrierType;
         return $this;
@@ -652,7 +666,7 @@ class DealTermsType
      * @param \DedexBundle\Entity\Ern43\DealTermsTechnicalInstantiationType $technicalInstantiation
      * @return self
      */
-    public function setTechnicalInstantiation(\DedexBundle\Entity\Ern43\DealTermsTechnicalInstantiationType $technicalInstantiation)
+    public function setTechnicalInstantiation(?\DedexBundle\Entity\Ern43\DealTermsTechnicalInstantiationType $technicalInstantiation = null)
     {
         $this->technicalInstantiation = $technicalInstantiation;
         return $this;
@@ -744,7 +758,7 @@ class DealTermsType
      * @param \DedexBundle\Entity\Ern43\DSPType[] $distributionChannel
      * @return self
      */
-    public function setDistributionChannel(array $distributionChannel)
+    public function setDistributionChannel(?array $distributionChannel = null)
     {
         $this->distributionChannel = $distributionChannel;
         return $this;
@@ -810,7 +824,7 @@ class DealTermsType
      * @param \DedexBundle\Entity\Ern43\DSPType[] $excludedDistributionChannel
      * @return self
      */
-    public function setExcludedDistributionChannel(array $excludedDistributionChannel)
+    public function setExcludedDistributionChannel(?array $excludedDistributionChannel = null)
     {
         $this->excludedDistributionChannel = $excludedDistributionChannel;
         return $this;
@@ -876,7 +890,7 @@ class DealTermsType
      * @param \DedexBundle\Entity\Ern43\RightsClaimPolicyType[] $rightsClaimPolicy
      * @return self
      */
-    public function setRightsClaimPolicy(array $rightsClaimPolicy)
+    public function setRightsClaimPolicy(?array $rightsClaimPolicy = null)
     {
         $this->rightsClaimPolicy = $rightsClaimPolicy;
         return $this;
@@ -886,6 +900,7 @@ class DealTermsType
      * Adds as priceInformation
      *
      * A Composite containing details of a Price. Note that this Price applies to all UseTypes referenced in this Composite.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/deals-and-commercial-aspects/price-information
      *
      * @return self
      * @param \DedexBundle\Entity\Ern43\PriceInformationWithTypeType $priceInformation
@@ -900,6 +915,7 @@ class DealTermsType
      * isset priceInformation
      *
      * A Composite containing details of a Price. Note that this Price applies to all UseTypes referenced in this Composite.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/deals-and-commercial-aspects/price-information
      *
      * @param int|string $index
      * @return bool
@@ -913,6 +929,7 @@ class DealTermsType
      * unset priceInformation
      *
      * A Composite containing details of a Price. Note that this Price applies to all UseTypes referenced in this Composite.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/deals-and-commercial-aspects/price-information
      *
      * @param int|string $index
      * @return void
@@ -926,6 +943,7 @@ class DealTermsType
      * Gets as priceInformation
      *
      * A Composite containing details of a Price. Note that this Price applies to all UseTypes referenced in this Composite.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/deals-and-commercial-aspects/price-information
      *
      * @return \DedexBundle\Entity\Ern43\PriceInformationWithTypeType[]
      */
@@ -938,11 +956,12 @@ class DealTermsType
      * Sets a new priceInformation
      *
      * A Composite containing details of a Price. Note that this Price applies to all UseTypes referenced in this Composite.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/deals-and-commercial-aspects/price-information
      *
      * @param \DedexBundle\Entity\Ern43\PriceInformationWithTypeType[] $priceInformation
      * @return self
      */
-    public function setPriceInformation(array $priceInformation)
+    public function setPriceInformation(?array $priceInformation = null)
     {
         $this->priceInformation = $priceInformation;
         return $this;
@@ -994,7 +1013,7 @@ class DealTermsType
      * @param \DedexBundle\Entity\Ern43\PromotionalCodeType $promotionalCode
      * @return self
      */
-    public function setPromotionalCode(\DedexBundle\Entity\Ern43\PromotionalCodeType $promotionalCode)
+    public function setPromotionalCode(?\DedexBundle\Entity\Ern43\PromotionalCodeType $promotionalCode = null)
     {
         $this->promotionalCode = $promotionalCode;
         return $this;
@@ -1023,214 +1042,6 @@ class DealTermsType
     public function setIsPreOrderDeal($isPreOrderDeal)
     {
         $this->isPreOrderDeal = $isPreOrderDeal;
-        return $this;
-    }
-
-    /**
-     * Gets as releaseDisplayStartDate
-     *
-     * A Date on which the Release is made first available for display. If no ReleaseDisplayStartDate is provided, the StartDate for the Deal is used instead. The ReleaseDisplayStartDate may not be later than the StartDate for the Deal. If the MessageRecipient is not able to cater for such granular display policies, the MessageRecipient may be forced to not display any Release information until a much later date. This is a string with the syntax YYYY[-MM[-DD]]. ReleaseDisplayStartDate is deprecated and ReleaseDisplayStartDateTime should be used instead. DDEX advises that ReleaseDisplayStartDate may be removed at a future date and therefore recommends against using it.
-     *
-     * @return string
-     */
-    public function getReleaseDisplayStartDate()
-    {
-        return $this->releaseDisplayStartDate;
-    }
-
-    /**
-     * Sets a new releaseDisplayStartDate
-     *
-     * A Date on which the Release is made first available for display. If no ReleaseDisplayStartDate is provided, the StartDate for the Deal is used instead. The ReleaseDisplayStartDate may not be later than the StartDate for the Deal. If the MessageRecipient is not able to cater for such granular display policies, the MessageRecipient may be forced to not display any Release information until a much later date. This is a string with the syntax YYYY[-MM[-DD]]. ReleaseDisplayStartDate is deprecated and ReleaseDisplayStartDateTime should be used instead. DDEX advises that ReleaseDisplayStartDate may be removed at a future date and therefore recommends against using it.
-     *
-     * @param string $releaseDisplayStartDate
-     * @return self
-     */
-    public function setReleaseDisplayStartDate($releaseDisplayStartDate)
-    {
-        $this->releaseDisplayStartDate = $releaseDisplayStartDate;
-        return $this;
-    }
-
-    /**
-     * Gets as trackListingPreviewStartDate
-     *
-     * A Date on which the Track list is made first available for display (it overrides the generic ReleaseDisplayStartDate if supplied). If no TrackListingPreviewStartDate is provided, the StartDate for the Deal is used instead. The TrackListingPreviewStartDate shall not be later than the StartDate of the Deal allowing the general availability of the referenced Release. This element is not applicable on Track Releases. This is a string with the syntax YYYY[-MM[-DD]]. TrackListingPreviewStartDate is deprecated and TrackListingPreviewStartDateTime should be used instead. DDEX advises that TrackListingPreviewStartDate may be removed at a future date and therefore recommends against using it.
-     *
-     * @return string
-     */
-    public function getTrackListingPreviewStartDate()
-    {
-        return $this->trackListingPreviewStartDate;
-    }
-
-    /**
-     * Sets a new trackListingPreviewStartDate
-     *
-     * A Date on which the Track list is made first available for display (it overrides the generic ReleaseDisplayStartDate if supplied). If no TrackListingPreviewStartDate is provided, the StartDate for the Deal is used instead. The TrackListingPreviewStartDate shall not be later than the StartDate of the Deal allowing the general availability of the referenced Release. This element is not applicable on Track Releases. This is a string with the syntax YYYY[-MM[-DD]]. TrackListingPreviewStartDate is deprecated and TrackListingPreviewStartDateTime should be used instead. DDEX advises that TrackListingPreviewStartDate may be removed at a future date and therefore recommends against using it.
-     *
-     * @param string $trackListingPreviewStartDate
-     * @return self
-     */
-    public function setTrackListingPreviewStartDate($trackListingPreviewStartDate)
-    {
-        $this->trackListingPreviewStartDate = $trackListingPreviewStartDate;
-        return $this;
-    }
-
-    /**
-     * Gets as coverArtPreviewStartDate
-     *
-     * A Date on which the cover art is made first available for display (it overrides the generic ReleaseDisplayStartDate if supplied). If no CoverArtPreviewStartDate is provided, the StartDate for the Deal is used instead. The CoverArtPreviewStartDate shall not be later than the StartDate of the Deal allowing the general availability of the referenced Release. This is a string with the syntax YYYY[-MM[-DD]]. CoverArtPreviewStartDate is deprecated and CoverArtPreviewStartDateTime should be used instead. DDEX advises that CoverArtPreviewStartDate may be removed at a future date and therefore recommends against using it.
-     *
-     * @return string
-     */
-    public function getCoverArtPreviewStartDate()
-    {
-        return $this->coverArtPreviewStartDate;
-    }
-
-    /**
-     * Sets a new coverArtPreviewStartDate
-     *
-     * A Date on which the cover art is made first available for display (it overrides the generic ReleaseDisplayStartDate if supplied). If no CoverArtPreviewStartDate is provided, the StartDate for the Deal is used instead. The CoverArtPreviewStartDate shall not be later than the StartDate of the Deal allowing the general availability of the referenced Release. This is a string with the syntax YYYY[-MM[-DD]]. CoverArtPreviewStartDate is deprecated and CoverArtPreviewStartDateTime should be used instead. DDEX advises that CoverArtPreviewStartDate may be removed at a future date and therefore recommends against using it.
-     *
-     * @param string $coverArtPreviewStartDate
-     * @return self
-     */
-    public function setCoverArtPreviewStartDate($coverArtPreviewStartDate)
-    {
-        $this->coverArtPreviewStartDate = $coverArtPreviewStartDate;
-        return $this;
-    }
-
-    /**
-     * Gets as clipPreviewStartDate
-     *
-     * A Date on which an audio or video clip is made first available for display (it overrides the generic ReleaseDisplayStartDate if supplied). If no ClipPreviewStartDate is provided, the StartDate for the Deal is used instead. The ClipPreviewStartDate may not be later than the StartDate for the Deal. The ClipPrevicePreviewStartDate shall not be later than the StartDate of the Deal allowing the general availability of the referenced Release. This is a string with the syntax YYYY[-MM[-DD]]. ClipPreviewStartDate is deprecated and ClipPreviewStartDateTime should be used instead. DDEX advises that ClipPreviewStartDate may be removed at a future date and therefore recommends against using it.
-     *
-     * @return string
-     */
-    public function getClipPreviewStartDate()
-    {
-        return $this->clipPreviewStartDate;
-    }
-
-    /**
-     * Sets a new clipPreviewStartDate
-     *
-     * A Date on which an audio or video clip is made first available for display (it overrides the generic ReleaseDisplayStartDate if supplied). If no ClipPreviewStartDate is provided, the StartDate for the Deal is used instead. The ClipPreviewStartDate may not be later than the StartDate for the Deal. The ClipPrevicePreviewStartDate shall not be later than the StartDate of the Deal allowing the general availability of the referenced Release. This is a string with the syntax YYYY[-MM[-DD]]. ClipPreviewStartDate is deprecated and ClipPreviewStartDateTime should be used instead. DDEX advises that ClipPreviewStartDate may be removed at a future date and therefore recommends against using it.
-     *
-     * @param string $clipPreviewStartDate
-     * @return self
-     */
-    public function setClipPreviewStartDate($clipPreviewStartDate)
-    {
-        $this->clipPreviewStartDate = $clipPreviewStartDate;
-        return $this;
-    }
-
-    /**
-     * Gets as releaseDisplayStartDateTime
-     *
-     * A DateTime on which the Release is made first available for display. If no ReleaseDisplayStartDateTime is provided, the StartDate for the Deal is used instead. The ReleaseDisplayStartDateTime may not be later than the StartDate for the Deal. If the MessageRecipient is not able to cater for such granular display policies, the MessageRecipient may be forced to not display any Release information until a much later date. This is a string in ISO 8601:2004 format: YYYY-MM-DDThh:mm:ss.
-     *
-     * @return \DateTime
-     */
-    public function getReleaseDisplayStartDateTime()
-    {
-        return $this->releaseDisplayStartDateTime;
-    }
-
-    /**
-     * Sets a new releaseDisplayStartDateTime
-     *
-     * A DateTime on which the Release is made first available for display. If no ReleaseDisplayStartDateTime is provided, the StartDate for the Deal is used instead. The ReleaseDisplayStartDateTime may not be later than the StartDate for the Deal. If the MessageRecipient is not able to cater for such granular display policies, the MessageRecipient may be forced to not display any Release information until a much later date. This is a string in ISO 8601:2004 format: YYYY-MM-DDThh:mm:ss.
-     *
-     * @param \DateTime $releaseDisplayStartDateTime
-     * @return self
-     */
-    public function setReleaseDisplayStartDateTime(\DateTime $releaseDisplayStartDateTime)
-    {
-        $this->releaseDisplayStartDateTime = $releaseDisplayStartDateTime;
-        return $this;
-    }
-
-    /**
-     * Gets as trackListingPreviewStartDateTime
-     *
-     * A DateTime on which the Track list is made first available for display (it overrides the generic ReleaseDisplayStartDate if supplied). If no TrackListingPreviewStartDateTime is provided, the StartDate for the Deal is used instead. The TrackListingPreviewStartDateTime shall not be later than the StartDate of the Deal allowing the general availability of the referenced Release. This element is not applicable on Track Releases. This is a string in ISO 8601:2004 format: YYYY-MM-DDThh:mm:ss.
-     *
-     * @return \DateTime
-     */
-    public function getTrackListingPreviewStartDateTime()
-    {
-        return $this->trackListingPreviewStartDateTime;
-    }
-
-    /**
-     * Sets a new trackListingPreviewStartDateTime
-     *
-     * A DateTime on which the Track list is made first available for display (it overrides the generic ReleaseDisplayStartDate if supplied). If no TrackListingPreviewStartDateTime is provided, the StartDate for the Deal is used instead. The TrackListingPreviewStartDateTime shall not be later than the StartDate of the Deal allowing the general availability of the referenced Release. This element is not applicable on Track Releases. This is a string in ISO 8601:2004 format: YYYY-MM-DDThh:mm:ss.
-     *
-     * @param \DateTime $trackListingPreviewStartDateTime
-     * @return self
-     */
-    public function setTrackListingPreviewStartDateTime(\DateTime $trackListingPreviewStartDateTime)
-    {
-        $this->trackListingPreviewStartDateTime = $trackListingPreviewStartDateTime;
-        return $this;
-    }
-
-    /**
-     * Gets as coverArtPreviewStartDateTime
-     *
-     * A DateTime on which the cover art is made first available for display (it overrides the generic ReleaseDisplayStartDate if supplied). If no CoverArtPreviewStartDateTime is provided, the StartDate for the Deal is used instead. The CoverArtPreviewStartDateTime shall not be later than the StartDate of the Deal allowing the general availability of the referenced Release. This is a string in ISO 8601:2004 format: YYYY-MM-DDThh:mm:ss.
-     *
-     * @return \DateTime
-     */
-    public function getCoverArtPreviewStartDateTime()
-    {
-        return $this->coverArtPreviewStartDateTime;
-    }
-
-    /**
-     * Sets a new coverArtPreviewStartDateTime
-     *
-     * A DateTime on which the cover art is made first available for display (it overrides the generic ReleaseDisplayStartDate if supplied). If no CoverArtPreviewStartDateTime is provided, the StartDate for the Deal is used instead. The CoverArtPreviewStartDateTime shall not be later than the StartDate of the Deal allowing the general availability of the referenced Release. This is a string in ISO 8601:2004 format: YYYY-MM-DDThh:mm:ss.
-     *
-     * @param \DateTime $coverArtPreviewStartDateTime
-     * @return self
-     */
-    public function setCoverArtPreviewStartDateTime(\DateTime $coverArtPreviewStartDateTime)
-    {
-        $this->coverArtPreviewStartDateTime = $coverArtPreviewStartDateTime;
-        return $this;
-    }
-
-    /**
-     * Gets as clipPreviewStartDateTime
-     *
-     * A DateTime on which an audio or video clip is made first available for display (it overrides the generic ReleaseDisplayStartDate if supplied). If no ClipPreviewStartDateTime is provided, the StartDate for the Deal is used instead. The ClipPreviewStartDateTime ClipPrevicePreviewStartDate shall not be later than the StartDate of the Deal allowing the general availability of the referenced Release. This is a string in ISO 8601:2004 format: YYYY-MM-DDThh:mm:ss.
-     *
-     * @return \DateTime
-     */
-    public function getClipPreviewStartDateTime()
-    {
-        return $this->clipPreviewStartDateTime;
-    }
-
-    /**
-     * Sets a new clipPreviewStartDateTime
-     *
-     * A DateTime on which an audio or video clip is made first available for display (it overrides the generic ReleaseDisplayStartDate if supplied). If no ClipPreviewStartDateTime is provided, the StartDate for the Deal is used instead. The ClipPreviewStartDateTime ClipPrevicePreviewStartDate shall not be later than the StartDate of the Deal allowing the general availability of the referenced Release. This is a string in ISO 8601:2004 format: YYYY-MM-DDThh:mm:ss.
-     *
-     * @param \DateTime $clipPreviewStartDateTime
-     * @return self
-     */
-    public function setClipPreviewStartDateTime(\DateTime $clipPreviewStartDateTime)
-    {
-        $this->clipPreviewStartDateTime = $clipPreviewStartDateTime;
         return $this;
     }
 
@@ -1294,7 +1105,7 @@ class DealTermsType
      * @param string $instantGratificationResourceList
      * @return self
      */
-    public function setInstantGratificationResourceList(array $instantGratificationResourceList)
+    public function setInstantGratificationResourceList(?array $instantGratificationResourceList = null)
     {
         $this->instantGratificationResourceList = $instantGratificationResourceList;
         return $this;
@@ -1320,7 +1131,7 @@ class DealTermsType
      * @param \DedexBundle\Entity\Ern43\PhysicalReturnsType $physicalReturns
      * @return self
      */
-    public function setPhysicalReturns(\DedexBundle\Entity\Ern43\PhysicalReturnsType $physicalReturns)
+    public function setPhysicalReturns(?\DedexBundle\Entity\Ern43\PhysicalReturnsType $physicalReturns = null)
     {
         $this->physicalReturns = $physicalReturns;
         return $this;
@@ -1352,6 +1163,16 @@ class DealTermsType
         return $this;
     }
 
+    // --- ERN 4.3 compat methods for Simplifiers ---
 
+    public function getUsage()
+    {
+        return [$this];
+    }
+
+    public function getDistributionChannelType()
+    {
+        return [];
+    }
 }
 

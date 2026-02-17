@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class ResourceProprietaryIdType
 {
-
     /**
      * The Flag indicating whether this Identifier is old and has been replaced by a new one (=true) or not (=false). The Flag may only be set to True when the new Identifier is also provided. If the Flag is not set, this Identifier is deemed to be the current one.
      *
@@ -118,7 +117,5 @@ class ResourceProprietaryIdType
         $this->proprietaryId = $proprietaryId;
         return $this;
     }
-
-
 }
 

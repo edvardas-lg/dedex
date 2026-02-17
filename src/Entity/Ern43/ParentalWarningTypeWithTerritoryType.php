@@ -6,11 +6,11 @@ namespace DedexBundle\Entity\Ern43;
  * Class representing ParentalWarningTypeWithTerritoryType
  *
  * A Composite containing details of a ParentalWarningType.
+ * Explanatory Note: This Composite is named ParentalWarningTypeWithTerritory to disambiguate it from the basic ParentalWarningType Composite.
  * XSD Type: ParentalWarningTypeWithTerritory
  */
 class ParentalWarningTypeWithTerritoryType
 {
-
     /**
      * @var string $__value
      */
@@ -181,7 +181,5 @@ class ParentalWarningTypeWithTerritoryType
         $this->isDefault = $isDefault;
         return $this;
     }
-
-
 }
 

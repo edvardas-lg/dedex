@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class DisplayTitleTextType
 {
-
     /**
      * @var string $__value
      */
@@ -36,6 +35,13 @@ class DisplayTitleTextType
      * @var bool $isDefault
      */
     private $isDefault = null;
+
+    /**
+     * The Flag indicating whether the Title is in its original Language (=true) or not (=false). This Flag should not be set if this is not the case. This is represented in an XML schema as an XML Attribute.
+     *
+     * @var bool $isInOriginalLanguage
+     */
+    private $isInOriginalLanguage = null;
 
     /**
      * Construct
@@ -149,6 +155,30 @@ class DisplayTitleTextType
         return $this;
     }
 
+    /**
+     * Gets as isInOriginalLanguage
+     *
+     * The Flag indicating whether the Title is in its original Language (=true) or not (=false). This Flag should not be set if this is not the case. This is represented in an XML schema as an XML Attribute.
+     *
+     * @return bool
+     */
+    public function getIsInOriginalLanguage()
+    {
+        return $this->isInOriginalLanguage;
+    }
 
+    /**
+     * Sets a new isInOriginalLanguage
+     *
+     * The Flag indicating whether the Title is in its original Language (=true) or not (=false). This Flag should not be set if this is not the case. This is represented in an XML schema as an XML Attribute.
+     *
+     * @param bool $isInOriginalLanguage
+     * @return self
+     */
+    public function setIsInOriginalLanguage($isInOriginalLanguage)
+    {
+        $this->isInOriginalLanguage = $isInOriginalLanguage;
+        return $this;
+    }
 }
 

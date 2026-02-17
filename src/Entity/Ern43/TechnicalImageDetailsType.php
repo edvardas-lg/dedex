@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class TechnicalImageDetailsType
 {
-
     /**
      * The Language and script for the Elements of the TechnicalImageDetails as defined in IETF RfC 5646. The default is the same as indicated for the containing composite. Language and Script are provided as lang[-script][-region][-variant]. This is represented in an XML schema as an XML Attribute.
      *
@@ -63,9 +62,11 @@ class TechnicalImageDetailsType
     /**
      * A Composite containing the ratio formed by dividing the ImageHeight by the ImageWidth.
      *
-     * @var \DedexBundle\Entity\Ern43\AspectRatioType $aspectRatio
+     * @var \DedexBundle\Entity\Ern43\AspectRatioType[] $aspectRatio
      */
-    private $aspectRatio = null;
+    private $aspectRatio = [
+        
+    ];
 
     /**
      * An amount of data determining the color of a Pixel of the Image (given in bits per pixel).
@@ -89,18 +90,21 @@ class TechnicalImageDetailsType
     private $bitDepth = null;
 
     /**
-     * The Flag indicating whether the Image is technically a preview of the parent Resource (=true) or not (=false). Note that nothing can be implied from this element as to the conditions under which the preview can be made available.
+     * The Flag indicating whether the Image is technically a clip of the parent Resource (=true) or not (=false). If the Flag is set to true, the Image described is a clip and the ClipDetails describe how the clip is generated from the full recording described in another TechnicalImageDetails composite. If the Flag is set to false (or left out), the Image described is a 'full' recording and any ClipDetails describe how a clip is generated from said full recording. Note that nothing can be implied from this element as to the conditions under which the clip can be made available.
      *
-     * @var bool $isPreview
+     * @var bool $isClip
      */
-    private $isPreview = null;
+    private $isClip = null;
 
     /**
      * A Composite containing details of a preview.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-previews/preview-resources
      *
-     * @var \DedexBundle\Entity\Ern43\PreviewDetailsType $previewDetails
+     * @var \DedexBundle\Entity\Ern43\ClipDetailsType[] $clipDetails
      */
-    private $previewDetails = null;
+    private $clipDetails = [
+        
+    ];
 
     /**
      * A Composite containing details of a File containing the Image that a DSP can obtain.
@@ -108,6 +112,13 @@ class TechnicalImageDetailsType
      * @var \DedexBundle\Entity\Ern43\FileType $file
      */
     private $file = null;
+
+    /**
+     * A Flag indicating whether a File containing the Image is a provided in a delivery (=true) or not (=false).
+     *
+     * @var bool $isProvidedInDelivery
+     */
+    private $isProvidedInDelivery = null;
 
     /**
      * A Composite containing details of a Fingerprint and its governing algorithm.
@@ -242,7 +253,7 @@ class TechnicalImageDetailsType
      * @param \DedexBundle\Entity\Ern43\ImageCodecTypeType $imageCodecType
      * @return self
      */
-    public function setImageCodecType(\DedexBundle\Entity\Ern43\ImageCodecTypeType $imageCodecType)
+    public function setImageCodecType(?\DedexBundle\Entity\Ern43\ImageCodecTypeType $imageCodecType = null)
     {
         $this->imageCodecType = $imageCodecType;
         return $this;
@@ -268,7 +279,7 @@ class TechnicalImageDetailsType
      * @param \DedexBundle\Entity\Ern43\ExtentType $imageHeight
      * @return self
      */
-    public function setImageHeight(\DedexBundle\Entity\Ern43\ExtentType $imageHeight)
+    public function setImageHeight(?\DedexBundle\Entity\Ern43\ExtentType $imageHeight = null)
     {
         $this->imageHeight = $imageHeight;
         return $this;
@@ -294,10 +305,50 @@ class TechnicalImageDetailsType
      * @param \DedexBundle\Entity\Ern43\ExtentType $imageWidth
      * @return self
      */
-    public function setImageWidth(\DedexBundle\Entity\Ern43\ExtentType $imageWidth)
+    public function setImageWidth(?\DedexBundle\Entity\Ern43\ExtentType $imageWidth = null)
     {
         $this->imageWidth = $imageWidth;
         return $this;
+    }
+
+    /**
+     * Adds as aspectRatio
+     *
+     * A Composite containing the ratio formed by dividing the ImageHeight by the ImageWidth.
+     *
+     * @return self
+     * @param \DedexBundle\Entity\Ern43\AspectRatioType $aspectRatio
+     */
+    public function addToAspectRatio(\DedexBundle\Entity\Ern43\AspectRatioType $aspectRatio)
+    {
+        $this->aspectRatio[] = $aspectRatio;
+        return $this;
+    }
+
+    /**
+     * isset aspectRatio
+     *
+     * A Composite containing the ratio formed by dividing the ImageHeight by the ImageWidth.
+     *
+     * @param int|string $index
+     * @return bool
+     */
+    public function issetAspectRatio($index)
+    {
+        return isset($this->aspectRatio[$index]);
+    }
+
+    /**
+     * unset aspectRatio
+     *
+     * A Composite containing the ratio formed by dividing the ImageHeight by the ImageWidth.
+     *
+     * @param int|string $index
+     * @return void
+     */
+    public function unsetAspectRatio($index)
+    {
+        unset($this->aspectRatio[$index]);
     }
 
     /**
@@ -305,7 +356,7 @@ class TechnicalImageDetailsType
      *
      * A Composite containing the ratio formed by dividing the ImageHeight by the ImageWidth.
      *
-     * @return \DedexBundle\Entity\Ern43\AspectRatioType
+     * @return \DedexBundle\Entity\Ern43\AspectRatioType[]
      */
     public function getAspectRatio()
     {
@@ -317,10 +368,10 @@ class TechnicalImageDetailsType
      *
      * A Composite containing the ratio formed by dividing the ImageHeight by the ImageWidth.
      *
-     * @param \DedexBundle\Entity\Ern43\AspectRatioType $aspectRatio
+     * @param \DedexBundle\Entity\Ern43\AspectRatioType[] $aspectRatio
      * @return self
      */
-    public function setAspectRatio(\DedexBundle\Entity\Ern43\AspectRatioType $aspectRatio)
+    public function setAspectRatio(?array $aspectRatio = null)
     {
         $this->aspectRatio = $aspectRatio;
         return $this;
@@ -405,63 +456,108 @@ class TechnicalImageDetailsType
     }
 
     /**
-     * Gets as isPreview
+     * Gets as isClip
      *
-     * The Flag indicating whether the Image is technically a preview of the parent Resource (=true) or not (=false). Note that nothing can be implied from this element as to the conditions under which the preview can be made available.
+     * The Flag indicating whether the Image is technically a clip of the parent Resource (=true) or not (=false). If the Flag is set to true, the Image described is a clip and the ClipDetails describe how the clip is generated from the full recording described in another TechnicalImageDetails composite. If the Flag is set to false (or left out), the Image described is a 'full' recording and any ClipDetails describe how a clip is generated from said full recording. Note that nothing can be implied from this element as to the conditions under which the clip can be made available.
      *
      * @return bool
      */
-    public function getIsPreview()
+    public function getIsClip()
     {
-        return $this->isPreview;
+        return $this->isClip;
     }
 
     /**
-     * Sets a new isPreview
+     * Sets a new isClip
      *
-     * The Flag indicating whether the Image is technically a preview of the parent Resource (=true) or not (=false). Note that nothing can be implied from this element as to the conditions under which the preview can be made available.
+     * The Flag indicating whether the Image is technically a clip of the parent Resource (=true) or not (=false). If the Flag is set to true, the Image described is a clip and the ClipDetails describe how the clip is generated from the full recording described in another TechnicalImageDetails composite. If the Flag is set to false (or left out), the Image described is a 'full' recording and any ClipDetails describe how a clip is generated from said full recording. Note that nothing can be implied from this element as to the conditions under which the clip can be made available.
      *
-     * @param bool $isPreview
+     * @param bool $isClip
      * @return self
      */
-    public function setIsPreview($isPreview)
+    public function setIsClip($isClip)
     {
-        $this->isPreview = $isPreview;
+        $this->isClip = $isClip;
         return $this;
     }
 
     /**
-     * Gets as previewDetails
+     * Adds as clipDetails
      *
      * A Composite containing details of a preview.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-previews/preview-resources
      *
-     * @return \DedexBundle\Entity\Ern43\PreviewDetailsType
+     * @return self
+     * @param \DedexBundle\Entity\Ern43\ClipDetailsType $clipDetails
      */
-    public function getPreviewDetails()
+    public function addToClipDetails(\DedexBundle\Entity\Ern43\ClipDetailsType $clipDetails)
     {
-        return $this->previewDetails;
+        $this->clipDetails[] = $clipDetails;
+        return $this;
     }
 
     /**
-     * Sets a new previewDetails
+     * isset clipDetails
      *
      * A Composite containing details of a preview.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-previews/preview-resources
      *
-     * @param \DedexBundle\Entity\Ern43\PreviewDetailsType $previewDetails
+     * @param int|string $index
+     * @return bool
+     */
+    public function issetClipDetails($index)
+    {
+        return isset($this->clipDetails[$index]);
+    }
+
+    /**
+     * unset clipDetails
+     *
+     * A Composite containing details of a preview.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-previews/preview-resources
+     *
+     * @param int|string $index
+     * @return void
+     */
+    public function unsetClipDetails($index)
+    {
+        unset($this->clipDetails[$index]);
+    }
+
+    /**
+     * Gets as clipDetails
+     *
+     * A Composite containing details of a preview.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-previews/preview-resources
+     *
+     * @return \DedexBundle\Entity\Ern43\ClipDetailsType[]
+     */
+    public function getClipDetails()
+    {
+        return $this->clipDetails;
+    }
+
+    /**
+     * Sets a new clipDetails
+     *
+     * A Composite containing details of a preview.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-previews/preview-resources
+     *
+     * @param \DedexBundle\Entity\Ern43\ClipDetailsType[] $clipDetails
      * @return self
      */
-    public function setPreviewDetails(\DedexBundle\Entity\Ern43\PreviewDetailsType $previewDetails)
+    public function setClipDetails(?array $clipDetails = null)
     {
-        $this->previewDetails = $previewDetails;
+        $this->clipDetails = $clipDetails;
         return $this;
     }
 
     /**
      * Gets as file
      *
-     * ERN 4.3 compat: wraps single File in array for ERN 382 API compatibility.
+     * A Composite containing details of a File containing the Image that a DSP can obtain.
      *
-     * @return \DedexBundle\Entity\Ern43\FileType[]
+     * @return \DedexBundle\Entity\Ern43\FileType
      */
     public function getFile()
     {
@@ -476,9 +572,35 @@ class TechnicalImageDetailsType
      * @param \DedexBundle\Entity\Ern43\FileType $file
      * @return self
      */
-    public function setFile(\DedexBundle\Entity\Ern43\FileType $file)
+    public function setFile(?\DedexBundle\Entity\Ern43\FileType $file = null)
     {
         $this->file = $file;
+        return $this;
+    }
+
+    /**
+     * Gets as isProvidedInDelivery
+     *
+     * A Flag indicating whether a File containing the Image is a provided in a delivery (=true) or not (=false).
+     *
+     * @return bool
+     */
+    public function getIsProvidedInDelivery()
+    {
+        return $this->isProvidedInDelivery;
+    }
+
+    /**
+     * Sets a new isProvidedInDelivery
+     *
+     * A Flag indicating whether a File containing the Image is a provided in a delivery (=true) or not (=false).
+     *
+     * @param bool $isProvidedInDelivery
+     * @return self
+     */
+    public function setIsProvidedInDelivery($isProvidedInDelivery)
+    {
+        $this->isProvidedInDelivery = $isProvidedInDelivery;
         return $this;
     }
 
@@ -542,12 +664,10 @@ class TechnicalImageDetailsType
      * @param \DedexBundle\Entity\Ern43\FingerprintType[] $fingerprint
      * @return self
      */
-    public function setFingerprint(array $fingerprint)
+    public function setFingerprint(?array $fingerprint = null)
     {
         $this->fingerprint = $fingerprint;
         return $this;
     }
-
-
 }
 

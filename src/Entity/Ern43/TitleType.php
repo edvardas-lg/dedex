@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class TitleType
 {
-
     /**
      * The Language and script for the Elements of the Title as defined in IETF RfC 5646. The default is the same as indicated for the containing composite. Language and Script are provided as lang[-script][-region][-variant]. This is represented in an XML schema as an XML Attribute.
      *
@@ -27,6 +26,7 @@ class TitleType
 
     /**
      * The text of the Title.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
      *
      * @var string $titleText
      */
@@ -95,6 +95,7 @@ class TitleType
      * Gets as titleText
      *
      * The text of the Title.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
      *
      * @return string
      */
@@ -107,6 +108,7 @@ class TitleType
      * Sets a new titleText
      *
      * The text of the Title.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/general-guidance-on-messages/field-length-and-precision
      *
      * @param string $titleText
      * @return self
@@ -142,7 +144,5 @@ class TitleType
         $this->subTitle = $subTitle;
         return $this;
     }
-
-
 }
 

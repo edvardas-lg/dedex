@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class TextCodecTypeType
 {
-
     /**
      * @var string $__value
      */
@@ -148,7 +147,5 @@ class TextCodecTypeType
         $this->userDefinedValue = $userDefinedValue;
         return $this;
     }
-
-
 }
 

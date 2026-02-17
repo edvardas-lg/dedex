@@ -6,11 +6,11 @@ namespace DedexBundle\Entity\Ern43;
  * Class representing PLineWithDefaultType
  *
  * A Composite containing details of a PLine.
+ * Explanatory Note: This Composite is named PLineWithDefault to disambiguate it from the basic PLine Composite.
  * XSD Type: PLineWithDefault
  */
 class PLineWithDefaultType
 {
-
     /**
      * A Territory to which the PLine applies. The use of ISO TerritoryCodes (or the term 'Worldwide') is strongly encouraged; TIS TerritoryCodes should only be used if both MessageSender and MessageRecipient are familiar with this standard.
      *
@@ -208,7 +208,5 @@ class PLineWithDefaultType
         $this->pLineText = $pLineText;
         return $this;
     }
-
-
 }
 

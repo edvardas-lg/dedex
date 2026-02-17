@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class AllTerritoryCodeType
 {
-
     /**
      * @var string $__value
      */
@@ -82,7 +81,5 @@ class AllTerritoryCodeType
         $this->identifierType = $identifierType;
         return $this;
     }
-
-
 }
 

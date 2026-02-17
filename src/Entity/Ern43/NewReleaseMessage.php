@@ -6,9 +6,12 @@ namespace DedexBundle\Entity\Ern43;
  * Class representing NewReleaseMessage
  *
  * A Message in the Release Notification Message Suite Standard, containing details of a new Release.
+ * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-message-exchange-protocols-and-choreographies
  */
 class NewReleaseMessage
 {
+    // ERN 4.3 compat: party reference → name map built from PartyList
+    private $_partyMap = null;
 
     /**
      * The Identifier of the Version of the release profile used for the Message. This is represented in an XML schema as an XML Attribute.
@@ -25,6 +28,13 @@ class NewReleaseMessage
     private $releaseProfileVariantVersionId = null;
 
     /**
+     * The Identifier of the Version of the AllowedValueSets used for the Message. This is represented in an XML schema as an XML Attribute.
+     *
+     * @var string $avsVersionId
+     */
+    private $avsVersionId = null;
+
+    /**
      * The Language and script for the Elements of this Message as defined in IETF RfC 5646. Language and Script are provided as lang[-script][-region][-variant]. This is represented in an XML schema as an XML Attribute.
      *
      * @var string $languageAndScriptCode
@@ -32,18 +42,20 @@ class NewReleaseMessage
     private $languageAndScriptCode = null;
 
     /**
-     * The Identifier of the Version of the Allowed Value Set used for the Message. This is represented in an XML schema as an XML Attribute.
-     *
-     * @var string $avsVersionId
-     */
-    private $avsVersionId = null;
-
-    /**
      * The MessageHeader for the NewReleaseMessage.
      *
      * @var \DedexBundle\Entity\Ern43\MessageHeaderType $messageHeader
      */
     private $messageHeader = null;
+
+    /**
+     * A Composite containing details of Release administration.
+     *
+     * @var \DedexBundle\Entity\Ern43\ReleaseAdminType[] $releaseAdmin
+     */
+    private $releaseAdmin = [
+        
+    ];
 
     /**
      * A Composite containing details of one or more Parties relating to the reported MusicalWorks.
@@ -55,12 +67,13 @@ class NewReleaseMessage
     /**
      * A Composite containing details of one or more CueSheets contained in Releases for which data is provided in the NewReleaseMessage.
      *
-     * @var \DedexBundle\Entity\Ern43\DetailedCueSheetType[] $cueSheetList
+     * @var \DedexBundle\Entity\Ern43\CueSheetType[] $cueSheetList
      */
     private $cueSheetList = null;
 
     /**
      * A Composite containing details of one or more Resources.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/sequencing-resources
      *
      * @var \DedexBundle\Entity\Ern43\ResourceListType $resourceList
      */
@@ -83,7 +96,7 @@ class NewReleaseMessage
     /**
      * A Composite containing details of one or more Deals governing the Usage of the Releases in the Message.
      *
-     * @var \DedexBundle\Entity\Ern43\ReleaseDealType[] $dealList
+     * @var \DedexBundle\Entity\Ern43\DealListType $dealList
      */
     private $dealList = null;
 
@@ -93,13 +106,6 @@ class NewReleaseMessage
      * @var \DedexBundle\Entity\Ern43\FileType[] $supplementalDocumentList
      */
     private $supplementalDocumentList = null;
-
-    /**
-     * A Composite containing technical details of Resources.
-     *
-     * @var \DedexBundle\Entity\Ern43\TechnicalResourceDetailsListType $technicalResourceDetailsList
-     */
-    private $technicalResourceDetailsList = null;
 
     /**
      * Gets as releaseProfileVersionId
@@ -154,6 +160,32 @@ class NewReleaseMessage
     }
 
     /**
+     * Gets as avsVersionId
+     *
+     * The Identifier of the Version of the AllowedValueSets used for the Message. This is represented in an XML schema as an XML Attribute.
+     *
+     * @return string
+     */
+    public function getAvsVersionId()
+    {
+        return $this->avsVersionId;
+    }
+
+    /**
+     * Sets a new avsVersionId
+     *
+     * The Identifier of the Version of the AllowedValueSets used for the Message. This is represented in an XML schema as an XML Attribute.
+     *
+     * @param string $avsVersionId
+     * @return self
+     */
+    public function setAvsVersionId($avsVersionId)
+    {
+        $this->avsVersionId = $avsVersionId;
+        return $this;
+    }
+
+    /**
      * Gets as languageAndScriptCode
      *
      * The Language and script for the Elements of this Message as defined in IETF RfC 5646. Language and Script are provided as lang[-script][-region][-variant]. This is represented in an XML schema as an XML Attribute.
@@ -180,32 +212,6 @@ class NewReleaseMessage
     }
 
     /**
-     * Gets as avsVersionId
-     *
-     * The Identifier of the Version of the Allowed Value Set used for the Message. This is represented in an XML schema as an XML Attribute.
-     *
-     * @return string
-     */
-    public function getAvsVersionId()
-    {
-        return $this->avsVersionId;
-    }
-
-    /**
-     * Sets a new avsVersionId
-     *
-     * The Identifier of the Version of the Allowed Value Set used for the Message. This is represented in an XML schema as an XML Attribute.
-     *
-     * @param string $avsVersionId
-     * @return self
-     */
-    public function setAvsVersionId($avsVersionId)
-    {
-        $this->avsVersionId = $avsVersionId;
-        return $this;
-    }
-
-    /**
      * Gets as messageHeader
      *
      * The MessageHeader for the NewReleaseMessage.
@@ -228,6 +234,72 @@ class NewReleaseMessage
     public function setMessageHeader(\DedexBundle\Entity\Ern43\MessageHeaderType $messageHeader)
     {
         $this->messageHeader = $messageHeader;
+        return $this;
+    }
+
+    /**
+     * Adds as releaseAdmin
+     *
+     * A Composite containing details of Release administration.
+     *
+     * @return self
+     * @param \DedexBundle\Entity\Ern43\ReleaseAdminType $releaseAdmin
+     */
+    public function addToReleaseAdmin(\DedexBundle\Entity\Ern43\ReleaseAdminType $releaseAdmin)
+    {
+        $this->releaseAdmin[] = $releaseAdmin;
+        return $this;
+    }
+
+    /**
+     * isset releaseAdmin
+     *
+     * A Composite containing details of Release administration.
+     *
+     * @param int|string $index
+     * @return bool
+     */
+    public function issetReleaseAdmin($index)
+    {
+        return isset($this->releaseAdmin[$index]);
+    }
+
+    /**
+     * unset releaseAdmin
+     *
+     * A Composite containing details of Release administration.
+     *
+     * @param int|string $index
+     * @return void
+     */
+    public function unsetReleaseAdmin($index)
+    {
+        unset($this->releaseAdmin[$index]);
+    }
+
+    /**
+     * Gets as releaseAdmin
+     *
+     * A Composite containing details of Release administration.
+     *
+     * @return \DedexBundle\Entity\Ern43\ReleaseAdminType[]
+     */
+    public function getReleaseAdmin()
+    {
+        return $this->releaseAdmin;
+    }
+
+    /**
+     * Sets a new releaseAdmin
+     *
+     * A Composite containing details of Release administration.
+     *
+     * @param \DedexBundle\Entity\Ern43\ReleaseAdminType[] $releaseAdmin
+     * @return self
+     */
+    public function setReleaseAdmin(?array $releaseAdmin = null)
+    {
+        $this->releaseAdmin = $releaseAdmin;
         return $this;
     }
 
@@ -303,9 +375,9 @@ class NewReleaseMessage
      * A Composite containing details of one or more CueSheets contained in Releases for which data is provided in the NewReleaseMessage.
      *
      * @return self
-     * @param \DedexBundle\Entity\Ern43\DetailedCueSheetType $cueSheet
+     * @param \DedexBundle\Entity\Ern43\CueSheetType $cueSheet
      */
-    public function addToCueSheetList(\DedexBundle\Entity\Ern43\DetailedCueSheetType $cueSheet)
+    public function addToCueSheetList(\DedexBundle\Entity\Ern43\CueSheetType $cueSheet)
     {
         $this->cueSheetList[] = $cueSheet;
         return $this;
@@ -342,7 +414,7 @@ class NewReleaseMessage
      *
      * A Composite containing details of one or more CueSheets contained in Releases for which data is provided in the NewReleaseMessage.
      *
-     * @return \DedexBundle\Entity\Ern43\DetailedCueSheetType[]
+     * @return \DedexBundle\Entity\Ern43\CueSheetType[]
      */
     public function getCueSheetList()
     {
@@ -354,64 +426,30 @@ class NewReleaseMessage
      *
      * A Composite containing details of one or more CueSheets contained in Releases for which data is provided in the NewReleaseMessage.
      *
-     * @param \DedexBundle\Entity\Ern43\DetailedCueSheetType[] $cueSheetList
+     * @param \DedexBundle\Entity\Ern43\CueSheetType[] $cueSheetList
      * @return self
      */
-    public function setCueSheetList(array $cueSheetList)
+    public function setCueSheetList(?array $cueSheetList = null)
     {
         $this->cueSheetList = $cueSheetList;
         return $this;
     }
 
     /**
-     * @var array
-     */
-    private $_partyMap = null;
-
-    /**
-     * Build party reference to name map from PartyList.
-     *
-     * @return array
-     */
-    private function getPartyMap()
-    {
-        if ($this->_partyMap !== null) {
-            return $this->_partyMap;
-        }
-
-        $this->_partyMap = [];
-        if ($this->partyList) {
-            foreach ($this->partyList as $party) {
-                $ref = $party->getPartyReference();
-                if ($ref && !empty($party->getPartyName())) {
-                    $fullName = $party->getPartyName()[0]->getFullName();
-                    if ($fullName) {
-                        $this->_partyMap[$ref] = is_object($fullName) && method_exists($fullName, 'value')
-                            ? $fullName->value()
-                            : (string) $fullName;
-                    }
-                }
-            }
-        }
-
-        return $this->_partyMap;
-    }
-
-    /**
      * Gets as resourceList
      *
      * A Composite containing details of one or more Resources.
-     * Injects party map into SoundRecordings for party reference resolution.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/sequencing-resources
      *
      * @return \DedexBundle\Entity\Ern43\ResourceListType
      */
     public function getResourceList()
     {
-        if ($this->resourceList) {
+        if ($this->resourceList !== null) {
             $partyMap = $this->getPartyMap();
-            if (!empty($partyMap)) {
-                foreach ($this->resourceList->getSoundRecording() as $soundRecording) {
-                    $soundRecording->setPartyMap($partyMap);
+            foreach ($this->resourceList->getSoundRecording() as $sr) {
+                if (method_exists($sr, 'setPartyMap')) {
+                    $sr->setPartyMap($partyMap);
                 }
             }
         }
@@ -422,6 +460,7 @@ class NewReleaseMessage
      * Sets a new resourceList
      *
      * A Composite containing details of one or more Resources.
+     * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-releaseresourcework-metadata/sequencing-resources
      *
      * @param \DedexBundle\Entity\Ern43\ResourceListType $resourceList
      * @return self
@@ -452,7 +491,7 @@ class NewReleaseMessage
      * @param \DedexBundle\Entity\Ern43\ChapterListType $chapterList
      * @return self
      */
-    public function setChapterList(\DedexBundle\Entity\Ern43\ChapterListType $chapterList)
+    public function setChapterList(?\DedexBundle\Entity\Ern43\ChapterListType $chapterList = null)
     {
         $this->chapterList = $chapterList;
         return $this;
@@ -462,17 +501,13 @@ class NewReleaseMessage
      * Gets as releaseList
      *
      * A Composite containing details of one or more DDEX Releases contained in the NewReleaseMessage.
-     * Injects party map into Releases for label name resolution.
      *
      * @return \DedexBundle\Entity\Ern43\ReleaseListType
      */
     public function getReleaseList()
     {
-        if ($this->releaseList) {
-            $partyMap = $this->getPartyMap();
-            if (!empty($partyMap)) {
-                $this->releaseList->setPartyMap($partyMap);
-            }
+        if ($this->releaseList !== null) {
+            $this->releaseList->setPartyMap($this->getPartyMap());
         }
         return $this->releaseList;
     }
@@ -492,56 +527,15 @@ class NewReleaseMessage
     }
 
     /**
-     * Adds as releaseDeal
-     *
-     * A Composite containing details of one or more Deals governing the Usage of the Releases in the Message.
-     *
-     * @return self
-     * @param \DedexBundle\Entity\Ern43\ReleaseDealType $releaseDeal
-     */
-    public function addToDealList(\DedexBundle\Entity\Ern43\ReleaseDealType $releaseDeal)
-    {
-        $this->dealList[] = $releaseDeal;
-        return $this;
-    }
-
-    /**
-     * isset dealList
-     *
-     * A Composite containing details of one or more Deals governing the Usage of the Releases in the Message.
-     *
-     * @param int|string $index
-     * @return bool
-     */
-    public function issetDealList($index)
-    {
-        return isset($this->dealList[$index]);
-    }
-
-    /**
-     * unset dealList
-     *
-     * A Composite containing details of one or more Deals governing the Usage of the Releases in the Message.
-     *
-     * @param int|string $index
-     * @return void
-     */
-    public function unsetDealList($index)
-    {
-        unset($this->dealList[$index]);
-    }
-
-    /**
      * Gets as dealList
      *
      * A Composite containing details of one or more Deals governing the Usage of the Releases in the Message.
-     * ERN 4.3 compat: wraps array in Ern43CompatDealList for getReleaseDeal() access.
      *
-     * @return \DedexBundle\Entity\Ern43\ReleaseDealType[]
+     * @return \DedexBundle\Entity\Ern43\DealListType
      */
     public function getDealList()
     {
-        return new Ern43CompatDealList($this->dealList);
+        return $this->dealList;
     }
 
     /**
@@ -549,10 +543,10 @@ class NewReleaseMessage
      *
      * A Composite containing details of one or more Deals governing the Usage of the Releases in the Message.
      *
-     * @param \DedexBundle\Entity\Ern43\ReleaseDealType[] $dealList
+     * @param \DedexBundle\Entity\Ern43\DealListType $dealList
      * @return self
      */
-    public function setDealList(array $dealList)
+    public function setDealList(?\DedexBundle\Entity\Ern43\DealListType $dealList = null)
     {
         $this->dealList = $dealList;
         return $this;
@@ -618,38 +612,28 @@ class NewReleaseMessage
      * @param \DedexBundle\Entity\Ern43\FileType[] $supplementalDocumentList
      * @return self
      */
-    public function setSupplementalDocumentList(array $supplementalDocumentList)
+    public function setSupplementalDocumentList(?array $supplementalDocumentList = null)
     {
         $this->supplementalDocumentList = $supplementalDocumentList;
         return $this;
     }
 
-    /**
-     * Gets as technicalResourceDetailsList
-     *
-     * A Composite containing technical details of Resources.
-     *
-     * @return \DedexBundle\Entity\Ern43\TechnicalResourceDetailsListType
-     */
-    public function getTechnicalResourceDetailsList()
+    // --- ERN 4.3 compat: build party reference → name map ---
+
+    public function getPartyMap()
     {
-        return $this->technicalResourceDetailsList;
+        if ($this->_partyMap === null) {
+            $this->_partyMap = [];
+            if (is_array($this->partyList)) {
+                foreach ($this->partyList as $party) {
+                    $ref = $party->getPartyReference();
+                    $names = $party->getPartyName();
+                    if ($ref && !empty($names)) {
+                        $this->_partyMap[$ref] = $names[0]->getFullName();
+                    }
+                }
+            }
+        }
+        return $this->_partyMap;
     }
-
-    /**
-     * Sets a new technicalResourceDetailsList
-     *
-     * A Composite containing technical details of Resources.
-     *
-     * @param \DedexBundle\Entity\Ern43\TechnicalResourceDetailsListType $technicalResourceDetailsList
-     * @return self
-     */
-    public function setTechnicalResourceDetailsList(\DedexBundle\Entity\Ern43\TechnicalResourceDetailsListType $technicalResourceDetailsList)
-    {
-        $this->technicalResourceDetailsList = $technicalResourceDetailsList;
-        return $this;
-    }
-
-
 }
-

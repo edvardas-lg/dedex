@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class ExtentType
 {
-
     /**
      * @var float $__value
      */
@@ -82,7 +81,5 @@ class ExtentType
         $this->unitOfMeasure = $unitOfMeasure;
         return $this;
     }
-
-
 }
 

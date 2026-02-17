@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class SamplingRateType
 {
-
     /**
      * @var float $__value
      */
@@ -82,7 +81,5 @@ class SamplingRateType
         $this->unitOfMeasure = $unitOfMeasure;
         return $this;
     }
-
-
 }
 

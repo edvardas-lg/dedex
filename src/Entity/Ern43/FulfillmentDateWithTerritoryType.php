@@ -6,11 +6,11 @@ namespace DedexBundle\Entity\Ern43;
  * Class representing FulfillmentDateWithTerritoryType
  *
  * A Composite containing details of a FulfillmentDate.
+ * Explanatory Note: This Composite is named FulfillmentDateWithTerritory to disambiguate it from the basic FulfillmentDate Composite.
  * XSD Type: FulfillmentDateWithTerritory
  */
 class FulfillmentDateWithTerritoryType
 {
-
     /**
      * A Territory to which the FulfillmentDate applies. The use of ISO TerritoryCodes (or the term 'Worldwide') is strongly encouraged; TIS TerritoryCodes should only be used if both MessageSender and MessageRecipient are familiar with this standard.
      *
@@ -26,7 +26,7 @@ class FulfillmentDateWithTerritoryType
     private $isDefault = null;
 
     /**
-     * A Date after which an end user can receive the Resource (in ISO 8601:2004 format: YYYY-MM-DD). If no FulfillmentDate is provided the FulfillmentDate is the StartDate of the respective Deal.
+     * A Date after which an end user can receive the Resource (in ISO 8601 format: YYYY-MM-DD). If no FulfillmentDate is provided the FulfillmentDate is the StartDate of the respective Deal.
      *
      * @var string $fulfillmentDate
      */
@@ -96,7 +96,7 @@ class FulfillmentDateWithTerritoryType
     /**
      * Gets as fulfillmentDate
      *
-     * A Date after which an end user can receive the Resource (in ISO 8601:2004 format: YYYY-MM-DD). If no FulfillmentDate is provided the FulfillmentDate is the StartDate of the respective Deal.
+     * A Date after which an end user can receive the Resource (in ISO 8601 format: YYYY-MM-DD). If no FulfillmentDate is provided the FulfillmentDate is the StartDate of the respective Deal.
      *
      * @return string
      */
@@ -108,7 +108,7 @@ class FulfillmentDateWithTerritoryType
     /**
      * Sets a new fulfillmentDate
      *
-     * A Date after which an end user can receive the Resource (in ISO 8601:2004 format: YYYY-MM-DD). If no FulfillmentDate is provided the FulfillmentDate is the StartDate of the respective Deal.
+     * A Date after which an end user can receive the Resource (in ISO 8601 format: YYYY-MM-DD). If no FulfillmentDate is provided the FulfillmentDate is the StartDate of the respective Deal.
      *
      * @param string $fulfillmentDate
      * @return self
@@ -179,12 +179,10 @@ class FulfillmentDateWithTerritoryType
      * @param string $resourceReleaseReference
      * @return self
      */
-    public function setResourceReleaseReference(array $resourceReleaseReference)
+    public function setResourceReleaseReference(?array $resourceReleaseReference = null)
     {
         $this->resourceReleaseReference = $resourceReleaseReference;
         return $this;
     }
-
-
 }
 

@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class SoundRecordingIdType
 {
-
     /**
      * The Flag indicating whether this Identifier is old and has been replaced by a new one (=true) or not (=false). The Flag may only be set to True when the new Identifier is also provided. If the Flag is not set, this Identifier is deemed to be the current one.
      *
@@ -113,7 +112,7 @@ class SoundRecordingIdType
      * @param \DedexBundle\Entity\Ern43\CatalogNumberType $catalogNumber
      * @return self
      */
-    public function setCatalogNumber(\DedexBundle\Entity\Ern43\CatalogNumberType $catalogNumber)
+    public function setCatalogNumber(?\DedexBundle\Entity\Ern43\CatalogNumberType $catalogNumber = null)
     {
         $this->catalogNumber = $catalogNumber;
         return $this;
@@ -179,12 +178,10 @@ class SoundRecordingIdType
      * @param \DedexBundle\Entity\Ern43\ProprietaryIdType[] $proprietaryId
      * @return self
      */
-    public function setProprietaryId(array $proprietaryId)
+    public function setProprietaryId(?array $proprietaryId = null)
     {
         $this->proprietaryId = $proprietaryId;
         return $this;
     }
-
-
 }
 

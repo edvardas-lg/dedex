@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class MessageAuditTrailEventType
 {
-
     /**
      * A Composite containing details of a MessagingParty.
      *
@@ -19,7 +18,7 @@ class MessageAuditTrailEventType
     private $messagingPartyDescriptor = null;
 
     /**
-     * The DateTime at which the Message was handled by the MessagingParty (the only allowed format is ISO 8601:2004: YYYY-MM-DDThh:mm:ssTZD).
+     * The DateTime at which the Message was handled by the MessagingParty (the only allowed format is ISO 8601: YYYY-MM-DDThh:mm:ssTZD).
      *
      * @var \DateTime $dateTime
      */
@@ -54,7 +53,7 @@ class MessageAuditTrailEventType
     /**
      * Gets as dateTime
      *
-     * The DateTime at which the Message was handled by the MessagingParty (the only allowed format is ISO 8601:2004: YYYY-MM-DDThh:mm:ssTZD).
+     * The DateTime at which the Message was handled by the MessagingParty (the only allowed format is ISO 8601: YYYY-MM-DDThh:mm:ssTZD).
      *
      * @return \DateTime
      */
@@ -66,7 +65,7 @@ class MessageAuditTrailEventType
     /**
      * Sets a new dateTime
      *
-     * The DateTime at which the Message was handled by the MessagingParty (the only allowed format is ISO 8601:2004: YYYY-MM-DDThh:mm:ssTZD).
+     * The DateTime at which the Message was handled by the MessagingParty (the only allowed format is ISO 8601: YYYY-MM-DDThh:mm:ssTZD).
      *
      * @param \DateTime $dateTime
      * @return self
@@ -76,7 +75,5 @@ class MessageAuditTrailEventType
         $this->dateTime = $dateTime;
         return $this;
     }
-
-
 }
 

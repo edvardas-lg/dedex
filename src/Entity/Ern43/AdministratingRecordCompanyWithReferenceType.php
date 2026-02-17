@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class AdministratingRecordCompanyWithReferenceType
 {
-
     /**
      * A Reference for a Party (specific to this Message). This is a LocalPartyAnchorReference starting with the letter P.
      *
@@ -76,7 +75,5 @@ class AdministratingRecordCompanyWithReferenceType
         $this->role = $role;
         return $this;
     }
-
-
 }
 

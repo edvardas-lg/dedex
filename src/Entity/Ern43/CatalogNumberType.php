@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class CatalogNumberType
 {
-
     /**
      * @var string $__value
      */
@@ -82,7 +81,5 @@ class CatalogNumberType
         $this->namespace = $namespace;
         return $this;
     }
-
-
 }
 

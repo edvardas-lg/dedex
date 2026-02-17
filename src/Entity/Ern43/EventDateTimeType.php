@@ -10,7 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class EventDateTimeType
 {
-
     /**
      * @var \DateTime $__value
      */
@@ -247,7 +246,5 @@ class EventDateTimeType
         $this->languageAndScriptCode = $languageAndScriptCode;
         return $this;
     }
-
-
 }
 
