@@ -65,3 +65,21 @@ Example for generating DDEX 411 entity classes:
 ```
 ./vendor/goetas-webservices/xsd2php/bin/xsd2php convert config/xsd2php.yaml xsd/release_notification/411/*.xsd
 ```
+
+With the following config file `config/xsd2php.yaml`:
+
+```yaml
+xsd2php:
+  namespaces:
+    'http://ddex.net/xml/ern/42': 'DedexBundle\Entity\Ern42'
+    'http://ddex.net/xml/avs/avs': 'DedexBundle\Entity\Ern42\Avs'
+  destinations_php:
+    'DedexBundle\Entity\Ern42': src/Entity/Ern42
+    'DedexBundle\Entity\Ern42\Avs': src/Entity/Ern42/Avs
+
+  destinations_jms:
+    'DedexBundle\Entity\Ern42': src/Entity/Ern42/metadata
+
+  naming_strategy: long # needed to avoid conflicts on Type files
+  path_generator: psr4 # optional and default
+```
