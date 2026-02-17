@@ -1,0 +1,34 @@
+DedexBundle\Entity\Ern42\ReleaseVisibilityType:
+    properties:
+        visibilityReference:
+            expose: true
+            access_type: public_method
+            serialized_name: VisibilityReference
+            accessor:
+                getter: getVisibilityReference
+                setter: setVisibilityReference
+            type: string
+        releaseDisplayStartDateTime:
+            expose: true
+            access_type: public_method
+            serialized_name: ReleaseDisplayStartDateTime
+            accessor:
+                getter: getReleaseDisplayStartDateTime
+                setter: setReleaseDisplayStartDateTime
+            type: GoetasWebservices\Xsd\XsdToPhp\XMLSchema\DateTime
+        coverArtPreviewStartDateTime:
+            expose: true
+            access_type: public_method
+            serialized_name: CoverArtPreviewStartDateTime
+            accessor:
+                getter: getCoverArtPreviewStartDateTime
+                setter: setCoverArtPreviewStartDateTime
+            type: GoetasWebservices\Xsd\XsdToPhp\XMLSchema\DateTime
+        fullTrackListingPreviewStartDateTime:
+            expose: true
+            access_type: public_method
+            serialized_name: FullTrackListingPreviewStartDateTime
+            accessor:
+                getter: getFullTrackListingPreviewStartDateTime
+                setter: setFullTrackListingPreviewStartDateTime
+            type: GoetasWebservices\Xsd\XsdToPhp\XMLSchema\DateTime

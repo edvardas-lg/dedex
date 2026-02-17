@@ -219,20 +219,36 @@ class ParserControllerTest extends TestCase {
     $this->assertEquals("Šumadijsko lagano kolo", $resource_three->getReferenceTitle()->getTitleText());
   }
 
-  /**
-   * Test ERN 411 is parsed correctly
-   */
-  public function testSample015Ern411() {
-    $xml_path = "tests/samples/015_ern411.xml";
-    $parser_controller = new ErnParserController();
-    // Set this to true to see logs from the parser
-    $parser_controller->setDisplayLog(false);
-    /* @var $ddex NewReleaseMessage */
-    $ddex = $parser_controller->parse($xml_path);
+    /**
+     * Test ERN 411 is parsed correctly
+     */
+    public function testSample015Ern411() {
+        $xml_path = "tests/samples/015_ern411.xml";
+        $parser_controller = new ErnParserController();
+        // Set this to true to see logs from the parser
+        $parser_controller->setDisplayLog(false);
+        /* @var $ddex NewReleaseMessage */
+        $ddex = $parser_controller->parse($xml_path);
 
-    // ERN version is now 411. It is using classes with namespace 411.
-    // ERN 411 does not have a getMessageSchemaVersionId() function
-    $this->assertEquals('DedexBundle\Entity\Ern411\NewReleaseMessage', get_class($ddex));
-  }
+        // ERN version is now 411. It is using classes with namespace 411.
+        // ERN 411 does not have a getMessageSchemaVersionId() function
+        $this->assertEquals('DedexBundle\Entity\Ern411\NewReleaseMessage', get_class($ddex));
+    }
+
+    /**
+     * Test ERN 42 is parsed correctly
+     */
+    public function testSample015Ern42() {
+        $xml_path = "tests/samples/018_ern42.xml";
+        $parser_controller = new ErnParserController();
+        // Set this to true to see logs from the parser
+        $parser_controller->setDisplayLog(false);
+        /* @var $ddex NewReleaseMessage */
+        $ddex = $parser_controller->parse($xml_path);
+
+        // ERN version is now 411. It is using classes with namespace 411.
+        // ERN 411 does not have a getMessageSchemaVersionId() function
+        $this->assertEquals('DedexBundle\Entity\Ern42\NewReleaseMessage', get_class($ddex));
+    }
 
 }
