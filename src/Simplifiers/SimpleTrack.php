@@ -104,6 +104,11 @@ class SimpleTrack extends SimpleEntity {
 	 * @return string FilePath as given in dedex or empty string if not specified
 	 */
 	public function getFilePath() {
+		if ($this->isVersion4x($this->version)) {
+			// ERN 4.x: no separate FilePath, URI contains the full path
+			return "";
+		}
+		// ERN 3.x: FilePath is in TechnicalSoundRecordingDetails/File
 		try {
 			return $this->ddexDetails->getTechnicalSoundRecordingDetails()[0]->getFile()[0]->getFilePath();
 		} catch (Throwable $ex) {
@@ -115,6 +120,15 @@ class SimpleTrack extends SimpleEntity {
 	 * @return string FileName as given in dedex or empty string if not specified
 	 */
 	public function getFileName() {
+		if ($this->isVersion4x($this->version)) {
+			// ERN 4.x: URI in TechnicalDetails/File
+			try {
+				return $this->ddexDetails->getTechnicalDetails()[0]->getFile()->getURI();
+			} catch (Throwable $ex) {
+				return "";
+			}
+		}
+		// ERN 3.x: FileName is in TechnicalSoundRecordingDetails/File
 		try {
 			return $this->ddexDetails->getTechnicalSoundRecordingDetails()[0]->getFile()[0]->getFileName();
 		} catch (Throwable $ex) {
@@ -138,6 +152,15 @@ class SimpleTrack extends SimpleEntity {
 	 * @return string or null
 	 */
 	public function getIsrc(): ?string {
+		if ($this->isVersion4x($this->version)) {
+			// ERN 4.x: ResourceId instead of SoundRecordingId
+			try {
+				return $this->ddexSoundrecording->getResourceId()[0]->getISRC();
+			} catch (Throwable $ex) {
+				return null;
+			}
+		}
+		// ERN 3.x: SoundRecordingId
 		try {
 			return $this->ddexSoundrecording->getSoundRecordingId()[0]->getISRC();
 		} catch (Throwable $ex) {
@@ -203,25 +226,23 @@ class SimpleTrack extends SimpleEntity {
 	 * @return string|null
 	 */
 	public function getTitle(): ?string {
-		$title = $this->getReferenceTitle();
-
-		if ($title === null) {
-			$title = $this->getDisplayTitle();
-		}
-
-		if ($title === null) {
-			$title = $this->getFormalTitle();
-		}
-
-		// Fallback for ERN 4.x where DisplayTitleText is directly on the SoundRecording
-		if ($title === null) {
+		if ($this->isVersion4x($this->version)) {
+			// ERN 4.x: DisplayTitleText is directly on the SoundRecording
 			try {
-				$title = $this->ddexSoundrecording->getDisplayTitleText()[0]->value();
+				return $this->ddexSoundrecording->getDisplayTitleText()[0]->value();
 			} catch (Throwable $ex) {
-				// not available
+				return null;
 			}
 		}
 
+		// ERN 3.x: ReferenceTitle, then DisplayTitle, then FormalTitle
+		$title = $this->getReferenceTitle();
+		if ($title === null) {
+			$title = $this->getDisplayTitle();
+		}
+		if ($title === null) {
+			$title = $this->getFormalTitle();
+		}
 		return $title;
 	}
 
@@ -286,14 +307,7 @@ class SimpleTrack extends SimpleEntity {
 	 * @return SimpleArtist[]
 	 */
 	public function getArtistsFromResourceContributors() {
-		try {
-			// ERN 3.x: getResourceContributor()
-			return $this->resolveContributors(
-				$this->ddexDetails->getResourceContributor(),
-				$this->partyIndex,
-				'getResourceContributorRole'
-			);
-		} catch (Throwable $ex) {
+		if ($this->isVersion4x($this->version)) {
 			// ERN 4.x: getContributor() replaces getResourceContributor()
 			try {
 				return $this->resolveContributors(
@@ -305,6 +319,16 @@ class SimpleTrack extends SimpleEntity {
 				return [];
 			}
 		}
+		// ERN 3.x: getResourceContributor()
+		try {
+			return $this->resolveContributors(
+				$this->ddexDetails->getResourceContributor(),
+				$this->partyIndex,
+				'getResourceContributorRole'
+			);
+		} catch (Throwable $ex) {
+			return [];
+		}
 	}
 	
 	/**
@@ -312,14 +336,20 @@ class SimpleTrack extends SimpleEntity {
 	 * @return SimpleArtist[]
 	 */
 	public function getArtistsFromIndirectResourceContributors() {
-		if (!method_exists($this->ddexDetails, 'getIndirectResourceContributor')) {
+		if ($this->isVersion4x($this->version)) {
+			// ERN 4.x: no IndirectResourceContributor
 			return [];
 		}
-		return $this->resolveContributors(
-			$this->ddexDetails->getIndirectResourceContributor(),
-			$this->partyIndex,
-			'getIndirectResourceContributorRole'
-		);
+		// ERN 3.x: IndirectResourceContributor
+		try {
+			return $this->resolveContributors(
+				$this->ddexDetails->getIndirectResourceContributor(),
+				$this->partyIndex,
+				'getIndirectResourceContributorRole'
+			);
+		} catch (Throwable $ex) {
+			return [];
+		}
 	}
 	
 	/**
@@ -347,11 +377,14 @@ class SimpleTrack extends SimpleEntity {
 	 * @return string|null
 	 */
 	public function getLabelName(): ?string {
+		if ($this->isVersion4x($this->version)) {
+			// ERN 4.x: no LabelName on SoundRecordingType
+			return null;
+		}
+		// ERN 3.x: LabelName is an object with value()
 		try {
 			return $this->ddexDetails->getLabelName()[0]->value();
 		} catch (Throwable $ex) {
-			return null;
-		} catch (Exception $ex) {
 			return null;
 		}
 	}
@@ -392,26 +425,32 @@ class SimpleTrack extends SimpleEntity {
 	 * @return string|null
 	 */
 	public function getGenre(): ?string {
+		if ($this->isVersion4x($this->version)) {
+			// ERN 4.x: no Genre on SoundRecordingType
+			return null;
+		}
+		// ERN 3.x: GenreText is an object with value()
 		try {
 			return $this->ddexDetails->getGenre()[0]->getGenreText()->value();
 		} catch (Throwable $ex) {
 			return null;
-		} catch (Exception $ex) {
-			return null;
 		}
 	}
-	
+
 	/**
 	 * Supposes only one genre (and one sub genre)
-	 * 
+	 *
 	 * @return string|null
 	 */
 	public function getSubGenre(): ?string {
+		if ($this->isVersion4x($this->version)) {
+			// ERN 4.x: no SubGenre on SoundRecordingType
+			return null;
+		}
+		// ERN 3.x: SubGenre is an object with value()
 		try {
 			return $this->ddexDetails->getGenre()[0]->getSubGenre()->value();
 		} catch (Throwable $ex) {
-			return null;
-		} catch (Exception $ex) {
 			return null;
 		}
 	}
@@ -422,11 +461,18 @@ class SimpleTrack extends SimpleEntity {
 	 * @return string|null
 	 */
 	public function getParentalWarningType(): ?string {
+		if ($this->isVersion4x($this->version)) {
+			// ERN 4.x: ParentalWarningType has value() method
+			try {
+				return $this->ddexDetails->getParentalWarningType()[0]->value();
+			} catch (Throwable $ex) {
+				return null;
+			}
+		}
+		// ERN 3.x: ParentalWarningType may be a UserDefinedValue
 		try {
 			return $this->getUserDefinedValue($this->ddexDetails->getParentalWarningType()[0]);
 		} catch (Throwable $ex) {
-			return null;
-		} catch (Exception $ex) {
 			return null;
 		}
 	}
@@ -437,26 +483,40 @@ class SimpleTrack extends SimpleEntity {
 	 * @return string|null
 	 */
 	public function getHashSum(): ?string {
+		if ($this->isVersion4x($this->version)) {
+			// ERN 4.x: TechnicalDetails/File (single)/HashSum/HashSumValue
+			try {
+				return $this->ddexDetails->getTechnicalDetails()[0]->getFile()->getHashSum()->getHashSumValue();
+			} catch (Throwable $ex) {
+				return null;
+			}
+		}
+		// ERN 3.x: TechnicalSoundRecordingDetails/File (array)/HashSum
 		try {
 			return $this->ddexDetails->getTechnicalSoundRecordingDetails()[0]->getFile()[0]->getHashSum()->getHashSum();
 		} catch (Throwable $ex) {
 			return null;
-		} catch (Exception $ex) {
-			return null;
 		}
 	}
-	
+
 	/**
 	 * Supposes one file technical details and one hash sum.
-	 * 
+	 *
 	 * @return string|null
 	 */
 	public function getHashSumAlgorithm(): ?string {
+		if ($this->isVersion4x($this->version)) {
+			// ERN 4.x: TechnicalDetails/File (single)/HashSum/Algorithm
+			try {
+				return $this->ddexDetails->getTechnicalDetails()[0]->getFile()->getHashSum()->getAlgorithm();
+			} catch (Throwable $ex) {
+				return null;
+			}
+		}
+		// ERN 3.x: TechnicalSoundRecordingDetails/File (array)/HashSum/HashSumAlgorithmType
 		try {
 			return $this->getUserDefinedValue($this->ddexDetails->getTechnicalSoundRecordingDetails()[0]->getFile()[0]->getHashSum()->getHashSumAlgorithmType());
 		} catch (Throwable $ex) {
-			return null;
-		} catch (Exception $ex) {
 			return null;
 		}
 	}

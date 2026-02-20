@@ -227,7 +227,7 @@ class SimpleAlbum extends SimpleEntity {
   private function indexDealsByReleaseReference() {
     foreach ($this->ern->getDealList()->getReleaseDeal() as $releaseDeal) {
       /* @var $releaseDeal ReleaseDealType */
-      $this->dealsByReleaseReference[$releaseDeal->getDealReleaseReference()[0]] = new SimpleDeal($releaseDeal);
+      $this->dealsByReleaseReference[$releaseDeal->getDealReleaseReference()[0]] = new SimpleDeal($releaseDeal, $this->version);
       
       // find release for this deal
       $deal_release_reference = $releaseDeal->getDealReleaseReference()[0];
@@ -264,7 +264,7 @@ class SimpleAlbum extends SimpleEntity {
   private function indexDealsByReleaseReference4x() {
     try {
       foreach ($this->ern->getDealList()->getReleaseDeal() as $releaseDeal) {
-        $deal = new SimpleDeal($releaseDeal);
+        $deal = new SimpleDeal($releaseDeal, $this->version);
         foreach ($releaseDeal->getDealReleaseReference() as $ref) {
           $this->dealsByReleaseReference[$ref] = $deal;
 
@@ -337,7 +337,7 @@ class SimpleAlbum extends SimpleEntity {
       $track = $this->resourcesByReference[$track_reference];
 
       $track_deal = array_key_exists($track_reference, $this->dealsByResourceReference ?? [])
-              ? new SimpleDeal($this->dealsByResourceReference[$track_reference])
+              ? new SimpleDeal($this->dealsByResourceReference[$track_reference], $this->version)
               : null;
 
       $this->tracksPerCd[$cd_num][$track_num] = new SimpleTrack($track, $track_deal, $this->version, $this->partyIndex);
@@ -413,7 +413,7 @@ class SimpleAlbum extends SimpleEntity {
           // Find deal for this track (sound recording)
           // Find release first. Assumption: one release per track
           $track_deal = array_key_exists($track_reference, $this->dealsByResourceReference ?? []) 
-                  ? new SimpleDeal($this->dealsByResourceReference[$track_reference]) 
+                  ? new SimpleDeal($this->dealsByResourceReference[$track_reference], $this->version) 
                   : null;
           
           $this->tracksPerCd[$cd_num][$track_num] = new SimpleTrack($track, $track_deal, $this->version, $this->partyIndex);
@@ -518,6 +518,16 @@ class SimpleAlbum extends SimpleEntity {
    * @return string|null
    */
   public function getTitle(): ?string {
+    if ($this->isVersion4x($this->version)) {
+      // ERN 4.x: DisplayTitleText is directly on the Release
+      try {
+        return $this->ddexReleaseAlbum->getDisplayTitleText()[0]->value();
+      } catch (Throwable $ex) {
+        return null;
+      }
+    }
+
+    // ERN 3.x: ReferenceTitle, then DisplayTitle, then FormalTitle
     $title = $this->getReferenceTitle();
 
     if ($title === null) {
@@ -526,15 +536,6 @@ class SimpleAlbum extends SimpleEntity {
 
     if ($title === null) {
       $title = $this->getFormalTitle();
-    }
-
-    // Fallback for ERN 4.x where DisplayTitleText is directly on the Release
-    if ($title === null) {
-      try {
-        $title = $this->ddexReleaseAlbum->getDisplayTitleText()[0]->value();
-      } catch (Throwable $ex) {
-        // not available
-      }
     }
 
     return $title;
@@ -546,6 +547,15 @@ class SimpleAlbum extends SimpleEntity {
    * @return string|null
    */
   public function getLabelName(): ?string {
+    if ($this->isVersion4x($this->version)) {
+      // ERN 4.x: LabelName is a string directly on the Release
+      try {
+        return $this->ddexDetails->getLabelName()[0];
+      } catch (Throwable $ex) {
+        return null;
+      }
+    }
+    // ERN 3.x: LabelName is an object with value()
     try {
       return $this->ddexDetails->getLabelName()[0]->value();
     } catch (Throwable $ex) {
@@ -569,6 +579,15 @@ class SimpleAlbum extends SimpleEntity {
    * @return string|null
    */
   public function getParentalWarningType(): ?string {
+    if ($this->isVersion4x($this->version)) {
+      // ERN 4.x: ParentalWarningType has value() method
+      try {
+        return $this->ddexDetails->getParentalWarningType()[0]->value();
+      } catch (Throwable $ex) {
+        return null;
+      }
+    }
+    // ERN 3.x: ParentalWarningType may be a UserDefinedValue
     try {
       return $this->getUserDefinedValue($this->ddexDetails->getParentalWarningType()[0]);
     } catch (Throwable $ex) {
@@ -582,12 +601,19 @@ class SimpleAlbum extends SimpleEntity {
    * @return string|null
    */
   public function getGenre(): ?string {
+    if ($this->isVersion4x($this->version)) {
+      // ERN 4.x: GenreText is a string directly
+      try {
+        return $this->ddexDetails->getGenre()[0]->getGenreText();
+      } catch (Throwable $ex) {
+        return null;
+      }
+    }
+    // ERN 3.x: GenreText is an object with value()
     try {
-      // ERN 3.x: GenreText is in Genre element of DetailsByTerritory
       return $this->ddexDetails->getGenre()[0]->getGenreText()->value();
     } catch (Throwable $ex) {
-      // ERN 4.x: GenreText is directly in Genre element of Release
-      return $this->ddexDetails->getGenre()[0]->getGenreText();
+      return null;
     }
   }
   
@@ -597,12 +623,19 @@ class SimpleAlbum extends SimpleEntity {
    * @return string|null
    */
   public function getSubGenre(): ?string {
+    if ($this->isVersion4x($this->version)) {
+      // ERN 4.x: SubGenre is a string directly
+      try {
+        return $this->ddexDetails->getGenre()[0]->getSubGenre();
+      } catch (Throwable $ex) {
+        return null;
+      }
+    }
+    // ERN 3.x: SubGenre is an object with value()
     try {
-      // ERN 3.X
       return $this->ddexDetails->getGenre()[0]->getSubGenre()->value();
     } catch (Throwable $ex) {
-        // ERN 4.X
-      return $this->ddexDetails->getGenre()[0]->getSubGenre();
+      return null;
     }
   }
   
@@ -611,16 +644,24 @@ class SimpleAlbum extends SimpleEntity {
    * @return DateTimeImmutable
    */
   public function getOriginalReleaseDate(): ?DateTimeImmutable {
-    try {
-      // ERN 3.x
-      return DateTimeImmutable::createFromFormat("Y-m-d", $this->ddexDetails->getOriginalReleaseDate()->value());
-    } catch (Throwable $ex) {
-      // ERN 4.x
-      if (count($this->ddexDetails->getOriginalReleaseDate()) > 0) {
-        return DateTimeImmutable::createFromFormat("Y-m-d", $this->ddexDetails->getOriginalReleaseDate()[0]);
+    if ($this->isVersion4x($this->version)) {
+      // ERN 4.x: OriginalReleaseDate is an array of strings
+      try {
+        $dates = $this->ddexDetails->getOriginalReleaseDate();
+        if (count($dates) > 0) {
+          return DateTimeImmutable::createFromFormat("Y-m-d", $dates[0]) ?: null;
+        }
+      } catch (Throwable $ex) {
+        return null;
       }
+      return null;
     }
-    return null;
+    // ERN 3.x: OriginalReleaseDate is an object with value()
+    try {
+      return DateTimeImmutable::createFromFormat("Y-m-d", $this->ddexDetails->getOriginalReleaseDate()->value()) ?: null;
+    } catch (Throwable $ex) {
+      return null;
+    }
   }
   
   /**
@@ -628,8 +669,13 @@ class SimpleAlbum extends SimpleEntity {
    * @return DateTimeImmutable
    */
   public function getOriginalDigitalReleaseDate(): ?DateTimeImmutable {
+    if ($this->isVersion4x($this->version)) {
+      // ERN 4.x: no OriginalDigitalReleaseDate
+      return null;
+    }
+    // ERN 3.x: OriginalDigitalReleaseDate is an object with value()
     try {
-      return DateTimeImmutable::createFromFormat("Y-m-d", $this->ddexDetails->getOriginalDigitalReleaseDate()->value());
+      return DateTimeImmutable::createFromFormat("Y-m-d", $this->ddexDetails->getOriginalDigitalReleaseDate()->value()) ?: null;
     } catch (Throwable $ex) {
       return null;
     }
@@ -693,6 +739,15 @@ class SimpleAlbum extends SimpleEntity {
    * @return string|null
    */
   public function getGrid(): ?string {
+    if ($this->isVersion4x($this->version)) {
+      // ERN 4.x: ReleaseId is a single object
+      try {
+        return $this->ddexReleaseAlbum->getReleaseId()->getGRid();
+      } catch (Throwable $ex) {
+        return null;
+      }
+    }
+    // ERN 3.x: ReleaseId is an array
     try {
       return $this->ddexReleaseAlbum->getReleaseId()[0]->getGRid();
     } catch (Throwable $ex) {
@@ -706,12 +761,19 @@ class SimpleAlbum extends SimpleEntity {
    * @return string|null
    */
   public function getIcpn(): ?string {
+    if ($this->isVersion4x($this->version)) {
+      // ERN 4.x: ReleaseId is a single object
+      try {
+        return $this->ddexReleaseAlbum->getReleaseId()->getICPN();
+      } catch (Throwable $ex) {
+        return null;
+      }
+    }
+    // ERN 3.x: ReleaseId is an array
     try {
-      // ERN 3.x: ReleaseId is an array
       return $this->ddexReleaseAlbum->getReleaseId()[0]->getICPN();
     } catch (Throwable $ex) {
-      // ERN 4.x: ReleaseId is a single object
-      return $this->ddexReleaseAlbum->getReleaseId()->getICPN();
+      return null;
     }
   }
   
@@ -721,6 +783,15 @@ class SimpleAlbum extends SimpleEntity {
    * @return string|null
    */
   public function getCatalogNumber(): ?string {
+    if ($this->isVersion4x($this->version)) {
+      // ERN 4.x: ReleaseId is a single object
+      try {
+        return $this->ddexReleaseAlbum->getReleaseId()->getCatalogNumber();
+      } catch (Throwable $ex) {
+        return null;
+      }
+    }
+    // ERN 3.x: ReleaseId is an array
     try {
       return $this->ddexReleaseAlbum->getReleaseId()[0]->getCatalogNumber();
     } catch (Throwable $ex) {
