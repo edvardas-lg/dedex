@@ -83,23 +83,33 @@ class SimpleDeal extends SimpleEntity {
 		/* @var $deal DealType */
 		$deal = $ddexDeal->getDeal()[0];
 		$this->ddexDeal = $deal;
-		
+
 		// Get all commercial model types
 		foreach ($deal->getDealTerms()->getCommercialModelType() as $cmt) {
 			$this->commercialModelTypes[] = $this->getUserDefinedValue($cmt);
 		}
 
-		foreach ($deal->getDealTerms()->getUsage() as $usage) {
-			// Get all use types
-			foreach ($usage->getUseType() as $usetype) {
-				$this->useTypes[] = $this->getUserDefinedValue($usetype);	
+		try {
+			// ERN 3.x: UseType and DistributionChannelType are nested under Usage
+			foreach ($deal->getDealTerms()->getUsage() as $usage) {
+				foreach ($usage->getUseType() as $usetype) {
+					$this->useTypes[] = $this->getUserDefinedValue($usetype);
+				}
+				foreach ($usage->getDistributionChannelType() as $distribchanneltype) {
+					$this->distributionChannelTypes[] = $this->getUserDefinedValue($distribchanneltype);
+				}
 			}
-			// Get all distribution channel type
-			foreach ($usage->getDistributionChannelType() as $distribchanneltype) {
-				$this->distributionChannelTypes[] = $this->getUserDefinedValue($distribchanneltype);	
+		} catch (Throwable $ex) {
+			// ERN 4.x: UseType is directly on DealTerms, no Usage wrapper
+			try {
+				foreach ($deal->getDealTerms()->getUseType() as $usetype) {
+					$this->useTypes[] = $this->getUserDefinedValue($usetype);
+				}
+			} catch (Throwable $ex2) {
+				// no use types
 			}
 		}
-		
+
 		// Territory codes
 		foreach ($deal->getDealTerms()->getTerritoryCode() as $territory) {
 			$this->territories[] = $territory;

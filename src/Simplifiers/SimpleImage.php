@@ -51,11 +51,17 @@ class SimpleImage extends SimpleEntity {
 	
 	/**
 	 * @param ImageType $image
+	 * @param string $version version string as detected by ErnParserController
 	 */
-	public function __construct($image) {
+	public function __construct($image, string $version = "382") {
 		$this->ddexImage = $image;
-		
-		$this->details = $this->getDetailsByTerritory($image, "image", "worldwide");
+
+		if ($this->isVersion4x($version)) {
+			// ERN 4.x: no DetailsByTerritory, the Image itself holds the details
+			$this->details = $image;
+		} else {
+			$this->details = $this->getDetailsByTerritory($image, "image", "worldwide");
+		}
 	}
 	
 	/**
@@ -74,9 +80,11 @@ class SimpleImage extends SimpleEntity {
 	 */
 	public function getFileName() {
 		try {
+            // ERN 3.x: FilePath and FileName are in the File element, which is in the TechnicalImageDetails element
 			return $this->details->getTechnicalImageDetails()[0]->getFile()[0]->getFileName();
 		} catch (Throwable $ex) {
-			return "";
+            // ERN 4.x: FilePath and FileName are in the TechnicalDetails/File
+            return $this->details->getTechnicalDetails()[0]->getFile()->getURI();
 		}
 	}
 	

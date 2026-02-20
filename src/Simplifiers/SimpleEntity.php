@@ -70,7 +70,94 @@ class SimpleEntity {
 		if (strtolower($object->value()) === "userdefined") {
 			return $object->getUserDefinedValue();
 		}
-		
+
 		return $object->value();
+	}
+
+	/**
+	 * Check if the version string corresponds to an ERN 4.x version.
+	 *
+	 * @param string $version version string as detected by ErnParserController
+	 * @return bool
+	 */
+	protected function isVersion4x(string $version): bool {
+		return $version[0] === '4';
+	}
+
+	/**
+	 * Build an index of party references to full names from the PartyList.
+	 * Used for ERN 4.x where artist/contributor names are stored in a
+	 * central PartyList and referenced by ID.
+	 *
+	 * @param mixed $ern the NewReleaseMessage
+	 * @return array [partyReference => fullName string]
+	 */
+	protected function buildPartyIndex($ern): array {
+		$index = [];
+		if (!method_exists($ern, 'getPartyList') || $ern->getPartyList() === null) {
+			return $index;
+		}
+		foreach ($ern->getPartyList() as $party) {
+			$ref = $party->getPartyReference();
+			$fullName = $party->getPartyName()[0]->getFullName();
+            // getFullName() returns a string in Ern41/411, a NameType object in Ern42
+			$index[$ref] = (string) $fullName;
+		}
+		return $index;
+	}
+
+	/**
+	 * Resolve display artists to SimpleArtist array, handling both
+	 * ERN 3.x (inline names) and ERN 4.x (PartyList references).
+	 *
+	 * @param array $displayArtists
+	 * @param array|null $partyIndex null for 3.x, [ref => name] for 4.x
+	 * @return SimpleArtist[]
+	 */
+	protected function resolveDisplayArtists(array $displayArtists, ?array $partyIndex): array {
+		$artists = [];
+		foreach ($displayArtists as $artist) {
+			try {
+				if ($partyIndex !== null) {
+					$name = $partyIndex[$artist->getArtistPartyReference()] ?? null;
+					$role = $this->getUserDefinedValue($artist->getDisplayArtistRole());
+				} else {
+					$name = $artist->getPartyName()[0]->getFullName();
+					$role = $this->getUserDefinedValue($artist->getArtistRole()[0]);
+				}
+				$artists[] = new SimpleArtist($name, $role);
+			} catch (\Throwable $ex) {
+				continue;
+			}
+		}
+		return $artists;
+	}
+
+	/**
+	 * Resolve contributors to SimpleArtist array, handling both
+	 * ERN 3.x (inline names) and ERN 4.x (PartyList references).
+	 *
+	 * @param array $contributors
+	 * @param array|null $partyIndex null for 3.x, [ref => name] for 4.x
+	 * @param string $roleGetter method name for 3.x role getter (e.g. 'getResourceContributorRole')
+	 * @return SimpleArtist[]
+	 */
+	protected function resolveContributors(array $contributors, ?array $partyIndex, string $roleGetter = 'getResourceContributorRole'): array {
+		$artists = [];
+		foreach ($contributors as $contributor) {
+			try {
+				if ($partyIndex !== null) {
+					$name = $partyIndex[$contributor->getContributorPartyReference()] ?? null;
+					$role = $this->getUserDefinedValue($contributor->getRole()[0]);
+				} else {
+					$name = $contributor->getPartyName()[0]->getFullName();
+					$role = $this->getUserDefinedValue($contributor->$roleGetter()[0]);
+				}
+				$artists[] = new SimpleArtist($name, $role);
+			} catch (\Throwable $ex) {
+				continue;
+			}
+		}
+		return $artists;
 	}
 }

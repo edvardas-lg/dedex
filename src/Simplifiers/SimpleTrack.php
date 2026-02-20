@@ -58,13 +58,38 @@ class SimpleTrack extends SimpleEntity {
 	private $deal;
 
 	/**
-	 * @param SoundRecordingType $soundrecording
+	 * Party index for ERN 4.x. Maps party references to full names.
+	 * Null for ERN 3.x where names are inline.
+	 *
+	 * @var array|null
 	 */
-	public function __construct($soundrecording, ?SimpleDeal $deal) {
+	private $partyIndex = null;
+
+	/**
+	 * Version string as detected by ErnParserController.
+	 *
+	 * @var string
+	 */
+	private $version;
+
+	/**
+	 * @param SoundRecordingType $soundrecording
+	 * @param SimpleDeal|null $deal
+	 * @param string $version version string as detected by ErnParserController
+	 * @param array|null $partyIndex party index for ERN 4.x, null for 3.x
+	 */
+	public function __construct($soundrecording, ?SimpleDeal $deal, string $version, ?array $partyIndex = null) {
 		$this->ddexSoundrecording = $soundrecording;
 		$this->deal = $deal;
+		$this->version = $version;
+		$this->partyIndex = $partyIndex;
 
-		$this->ddexDetails = $this->getDetailsByTerritory($soundrecording, "soundrecording", "worldwide");
+		if ($this->isVersion4x($version)) {
+			// ERN 4.x: no DetailsByTerritory, the SoundRecording itself holds the details
+			$this->ddexDetails = $soundrecording;
+		} else {
+			$this->ddexDetails = $this->getDetailsByTerritory($soundrecording, "soundrecording", "worldwide");
+		}
 	}
   
   /**
@@ -173,7 +198,8 @@ class SimpleTrack extends SimpleEntity {
 	}
 
 	/**
-	 * Get title from ReferenceTitle, or DisplayTitle or FormalTitle, in that order
+	 * Get title from ReferenceTitle, or DisplayTitle, FormalTitle,
+	 * or DisplayTitleText, in that order.
 	 * @return string|null
 	 */
 	public function getTitle(): ?string {
@@ -185,6 +211,15 @@ class SimpleTrack extends SimpleEntity {
 
 		if ($title === null) {
 			$title = $this->getFormalTitle();
+		}
+
+		// Fallback for ERN 4.x where DisplayTitleText is directly on the SoundRecording
+		if ($title === null) {
+			try {
+				$title = $this->ddexSoundrecording->getDisplayTitleText()[0]->value();
+			} catch (Throwable $ex) {
+				// not available
+			}
 		}
 
 		return $title;
@@ -239,66 +274,52 @@ class SimpleTrack extends SimpleEntity {
 	}
 	
 	/**
-	 * 
+	 *
 	 * @return SimpleArtist[]
 	 */
 	public function getDisplayArtists() {
-		$artists = [];
-		
-		foreach ($this->ddexDetails->getDisplayArtist() as $artist) {
-			try {
-				$name = $artist->getPartyName()[0]->getFullName();
-				$role = $this->getUserDefinedValue($artist->getArtistRole()[0]);
-				$artists[] = new SimpleArtist($name, $role);
-			} catch (Throwable $ex) {
-				// skip this artist
-				continue;
-			}
-		}
-		
-		return $artists;
+		return $this->resolveDisplayArtists($this->ddexDetails->getDisplayArtist(), $this->partyIndex);
 	}
 	
 	/**
-	 * 
-	 * @return SimpleArtist
+	 *
+	 * @return SimpleArtist[]
 	 */
 	public function getArtistsFromResourceContributors() {
-		$artists = [];
-		
-		foreach ($this->ddexDetails->getResourceContributor() as $artist) {
+		try {
+			// ERN 3.x: getResourceContributor()
+			return $this->resolveContributors(
+				$this->ddexDetails->getResourceContributor(),
+				$this->partyIndex,
+				'getResourceContributorRole'
+			);
+		} catch (Throwable $ex) {
+			// ERN 4.x: getContributor() replaces getResourceContributor()
 			try {
-				$name = $artist->getPartyName()[0]->getFullName();
-				$role = $this->getUserDefinedValue($artist->getResourceContributorRole()[0]);
-				$artists[] = new SimpleArtist($name, $role);
+				return $this->resolveContributors(
+					$this->ddexDetails->getContributor(),
+					$this->partyIndex,
+					'getRole'
+				);
 			} catch (Throwable $ex) {
-				// skip this artist
-				continue;
+				return [];
 			}
 		}
-		
-		return $artists;
 	}
 	
 	/**
-	 * 
-	 * @return SimpleArtist
+	 *
+	 * @return SimpleArtist[]
 	 */
 	public function getArtistsFromIndirectResourceContributors() {
-		$artists = [];
-		
-		foreach ($this->ddexDetails->getIndirectResourceContributor() as $artist) {
-			try {
-				$name = $artist->getPartyName()[0]->getFullName();
-				$role = $this->getUserDefinedValue($artist->getIndirectResourceContributorRole()[0]);
-				$artists[] = new SimpleArtist($name, $role);
-			} catch (Throwable $ex) {
-				// skip this artist
-				continue;
-			}
+		if (!method_exists($this->ddexDetails, 'getIndirectResourceContributor')) {
+			return [];
 		}
-		
-		return $artists;
+		return $this->resolveContributors(
+			$this->ddexDetails->getIndirectResourceContributor(),
+			$this->partyIndex,
+			'getIndirectResourceContributorRole'
+		);
 	}
 	
 	/**

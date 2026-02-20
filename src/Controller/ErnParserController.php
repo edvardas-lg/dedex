@@ -756,6 +756,16 @@ class ErnParserController {
   }
 
   /**
+   * Return the detected version string (e.g. "382", "41", "411", "42").
+   * Available after parse() has been called.
+   *
+   * @return string|null
+   */
+  public function getVersion(): ?string {
+    return $this->version;
+  }
+
+  /**
    * This is the main parsing function that will go through the whole XML
    * 
    * @param string $file_path Location of XML path
