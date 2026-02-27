@@ -10,11 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class ReleaseType
 {
-    // ERN 4.3 compat: party reference → name map
-    private $_partyMap = [];
-    private $_soundRecordingRefs = [];
-    private $_imageRefs = [];
-
     /**
      * The Language and script for the Elements of the Release as defined in IETF RfC 5646. Language and Script are provided as lang[-script][-region][-variant]. This is represented in an XML schema as an XML Attribute.
      *
@@ -379,7 +374,7 @@ class ReleaseType
      */
     public function getReleaseReference()
     {
-        return [$this->releaseReference];
+        return $this->releaseReference;
     }
 
     /**
@@ -449,22 +444,6 @@ class ReleaseType
      */
     public function getReleaseType()
     {
-        $types = [new Ern43CompatValue("Album")];
-        if (is_array($this->releaseType)) {
-            foreach ($this->releaseType as $rt) {
-                $types[] = $rt;
-            }
-        }
-        return $types;
-    }
-
-    /**
-     * Returns the actual release type values from the XML.
-     *
-     * @return \DedexBundle\Entity\Ern43\ReleaseTypeForReleaseNotificationType[]
-     */
-    public function getRawReleaseType()
-    {
         return $this->releaseType;
     }
 
@@ -492,7 +471,7 @@ class ReleaseType
      */
     public function getReleaseId()
     {
-        return $this->releaseId !== null ? [$this->releaseId] : [];
+        return $this->releaseId;
     }
 
     /**
@@ -839,13 +818,7 @@ class ReleaseType
      */
     public function getDisplayArtistName()
     {
-        $names = [];
-        if (is_array($this->displayArtistName)) {
-            foreach ($this->displayArtistName as $dan) {
-                $names[] = (string) $dan;
-            }
-        }
-        return $names;
+        return $this->displayArtistName;
     }
 
     /**
@@ -926,21 +899,7 @@ class ReleaseType
      */
     public function getDisplayArtist()
     {
-        $artists = $this->displayArtist;
-        if (is_array($artists) && is_array($this->displayArtistName)) {
-            foreach ($artists as $i => $artist) {
-                if (isset($this->displayArtistName[$i])) {
-                    $name = (string) $this->displayArtistName[$i];
-                    $artist->setCompatName($name);
-                } elseif (!empty($this->_partyMap) && $artist->getArtistPartyReference()) {
-                    $ref = $artist->getArtistPartyReference();
-                    if (isset($this->_partyMap[$ref])) {
-                        $artist->setCompatName($this->_partyMap[$ref]);
-                    }
-                }
-            }
-        }
-        return $artists;
+        return $this->displayArtist;
     }
 
     /**
@@ -1497,10 +1456,7 @@ class ReleaseType
      */
     public function getOriginalReleaseDate()
     {
-        if (!empty($this->originalReleaseDate)) {
-            return $this->originalReleaseDate[0];
-        }
-        return null;
+        return $this->originalReleaseDate;
     }
 
     /**
@@ -1909,9 +1865,7 @@ class ReleaseType
      */
     public function getResourceGroup()
     {
-        return $this->resourceGroup !== null
-            ? [new Ern43CompatResourceGroupWrapper($this->resourceGroup, $this->_soundRecordingRefs, $this->_imageRefs)]
-            : [];
+        return $this->resourceGroup;
     }
 
     /**
@@ -2495,103 +2449,5 @@ class ReleaseType
         return $this;
     }
 
-    // --- ERN 4.3 compat methods for Simplifiers ---
-
-    public function setPartyMap(array $map)
-    {
-        $this->_partyMap = $map;
-    }
-
-    public function setSoundRecordingReferences(array $refs)
-    {
-        $this->_soundRecordingRefs = $refs;
-    }
-
-    public function setImageReferences(array $refs)
-    {
-        $this->_imageRefs = $refs;
-    }
-
-    public function getReleaseDetailsByTerritory()
-    {
-        return [$this];
-    }
-
-    public function getTerritoryCode()
-    {
-        return [new Ern43CompatValue("Worldwide")];
-    }
-
-    public function getIsMainRelease()
-    {
-        return "true";
-    }
-
-    public function getReferenceTitle()
-    {
-        $text = null;
-        if (!empty($this->displayTitleText)) {
-            $text = (string) $this->displayTitleText[0];
-        } elseif (!empty($this->displayTitle) && $this->displayTitle[0]->getTitleText()) {
-            $text = $this->displayTitle[0]->getTitleText();
-        }
-        return $text !== null ? new Ern43CompatReferenceTitle($text) : null;
-    }
-
-    public function getTitle()
-    {
-        return [];
-    }
-
-    public function getLabelName()
-    {
-        $labels = [];
-        if (is_array($this->releaseLabelReference)) {
-            foreach ($this->releaseLabelReference as $ref) {
-                $refValue = (string) $ref;
-                if (isset($this->_partyMap[$refValue])) {
-                    $labels[] = new Ern43CompatValue($this->_partyMap[$refValue]);
-                } else {
-                    $labels[] = new Ern43CompatValue($refValue);
-                }
-            }
-        }
-        return $labels;
-    }
-
-    public function getReleaseResourceReferenceList()
-    {
-        $refs = [];
-        if ($this->resourceGroup !== null) {
-            $items = $this->resourceGroup->getResourceGroupContentItem();
-            if (is_array($items)) {
-                foreach ($items as $item) {
-                    $refVal = $item->getReleaseResourceReference();
-                    if ($refVal instanceof Ern43CompatValue) {
-                        $refs[] = new Ern43CompatValue($refVal->value(), null, "PrimaryResource");
-                    } else {
-                        $refs[] = new Ern43CompatValue((string) $refVal, null, "PrimaryResource");
-                    }
-                }
-            }
-            // Also add linked resources (images)
-            $linked = $this->resourceGroup->getLinkedReleaseResourceReference();
-            if (is_array($linked)) {
-                foreach ($linked as $lref) {
-                    $refStr = is_object($lref) && method_exists($lref, 'value') ? $lref->value() : (string) $lref;
-                    $refs[] = new Ern43CompatValue($refStr, null, "SecondaryResource");
-                }
-            }
-        }
-        return $refs;
-    }
-
-    public function getOriginalDigitalReleaseDate()
-    {
-        if (!empty($this->originalReleaseDate)) {
-            return $this->originalReleaseDate[0];
-        }
-        return null;
-    }
 }
 

@@ -10,9 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class ReleaseListType
 {
-    // ERN 4.3 compat: party reference → name map
-    private $_partyMap = [];
-
     /**
      * A Composite containing details of a DDEX Release.
      *
@@ -46,21 +43,6 @@ class ReleaseListType
      * @return \DedexBundle\Entity\Ern43\ReleaseType
      */
     public function getRelease()
-    {
-        $releases = [];
-        if ($this->release !== null) {
-            $this->release->setPartyMap($this->_partyMap);
-            $releases[] = $this->release;
-        }
-        if (is_array($this->trackRelease)) {
-            foreach ($this->trackRelease as $tr) {
-                $releases[] = new Ern43CompatTrackRelease($tr);
-            }
-        }
-        return $releases;
-    }
-
-    public function getRawRelease()
     {
         return $this->release;
     }
@@ -211,11 +193,5 @@ class ReleaseListType
         return $this;
     }
 
-    // --- ERN 4.3 compat ---
-
-    public function setPartyMap(array $map)
-    {
-        $this->_partyMap = $map;
-    }
 }
 

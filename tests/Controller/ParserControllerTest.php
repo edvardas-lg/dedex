@@ -279,7 +279,7 @@ class ParserControllerTest extends TestCase {
     // First sound recording
     $sr0 = $ddex->getResourceList()->getSoundRecording()[0];
     $this->assertEquals("A1", $sr0->getResourceReference());
-    $this->assertEquals("MusicalWorkSoundRecording", (string) $sr0->getSoundRecordingType());
+    $this->assertEquals("MusicalWorkSoundRecording", (string) $sr0->getType());
     $this->assertEquals("TEST00000001", $sr0->getSoundRecordingEdition()[0]->getResourceId()[0]->getISRC());
     $this->assertEquals("Track One", (string) $sr0->getDisplayTitleText()[0]);
     $this->assertEquals("PT0H3M30S", $sr0->getDuration()->format("PT%hH%iM%sS"));
@@ -287,8 +287,8 @@ class ParserControllerTest extends TestCase {
 
     // Sound recording display artist (resolved via PartyList)
     $this->assertCount(1, $sr0->getDisplayArtist());
-    $this->assertEquals("Test Artist", $sr0->getDisplayArtist()[0]->getPartyName()[0]->getFullName());
-    $this->assertEquals("MainArtist", $sr0->getDisplayArtist()[0]->getArtistRole()[0]);
+    $this->assertEquals("Test Artist", $this->resolvePartyName($ddex, $sr0->getDisplayArtist()[0]->getArtistPartyReference()));
+    $this->assertEquals("MainArtist", (string) $sr0->getDisplayArtist()[0]->getDisplayArtistRole());
 
     // Sound recording PLine (from SoundRecordingEdition)
     $pline = $sr0->getPLine()[0];
@@ -296,10 +296,10 @@ class ParserControllerTest extends TestCase {
     $this->assertEquals("(P) 2024 Test Label", $pline->getPLineText());
 
     // Sound recording technical details
-    $techDetails = $sr0->getTechnicalSoundRecordingDetails();
+    $techDetails = $sr0->getTechnicalDetails();
     $this->assertCount(1, $techDetails);
     $this->assertEquals("T1", $techDetails[0]->getTechnicalResourceDetailsReference());
-    $this->assertEquals("track_001.wav", $techDetails[0]->getFile()[0]->getFileName());
+    $this->assertEquals("track_001.wav", $techDetails[0]->getFile()->getFileName());
 
     // Second sound recording
     $sr1 = $ddex->getResourceList()->getSoundRecording()[1];
@@ -312,25 +312,26 @@ class ParserControllerTest extends TestCase {
     $image = $ddex->getResourceList()->getImage()[0];
     $this->assertEquals("A3", $image->getResourceReference());
     $this->assertEquals("FrontCoverImage", (string) $image->getType());
-    $this->assertEquals("test_cover.jpg", $image->getTechnicalDetails()[0]->getFile()[0]->getFileName());
+    $this->assertEquals("test_cover.jpg", $image->getTechnicalDetails()[0]->getFile()->getFileName());
 
-    // Releases (main + 2 track releases via compat layer)
-    $this->assertCount(3, $ddex->getReleaseList()->getRelease());
+    // Releases (1 main release + 2 track releases)
+    $release = $ddex->getReleaseList()->getRelease();
+    $this->assertNotNull($release);
+    $this->assertCount(2, $ddex->getReleaseList()->getTrackRelease());
 
     // Main release
-    $release = $ddex->getReleaseList()->getRelease()[0];
-    $this->assertEquals("R0", $release->getReleaseReference()[0]);
+    $this->assertEquals("R0", $release->getReleaseReference());
     $this->assertEquals("Album", (string) $release->getReleaseType()[0]);
-    $this->assertEquals("1234567890123", $release->getReleaseId()[0]->getICPN());
+    $this->assertEquals("1234567890123", $release->getReleaseId()->getICPN());
     $this->assertEquals("Test Album ERN43", (string) $release->getDisplayTitleText()[0]);
 
     // Release display artist (resolved via PartyList)
     $this->assertCount(1, $release->getDisplayArtist());
-    $this->assertEquals("Test Artist", $release->getDisplayArtist()[0]->getPartyName()[0]->getFullName());
-    $this->assertEquals("MainArtist", $release->getDisplayArtist()[0]->getArtistRole()[0]);
+    $this->assertEquals("Test Artist", $this->resolvePartyName($ddex, $release->getDisplayArtist()[0]->getArtistPartyReference()));
+    $this->assertEquals("MainArtist", (string) $release->getDisplayArtist()[0]->getDisplayArtistRole());
 
     // Release label (resolved via PartyList: PLabel1 → Test Label)
-    $this->assertEquals("Test Label", $release->getLabelName()[0]->value());
+    $this->assertEquals("Test Label", $this->resolvePartyName($ddex, $release->getReleaseLabelReference()[0]->value()));
 
     // Release genre
     $this->assertCount(1, $release->getGenre());
@@ -348,7 +349,7 @@ class ParserControllerTest extends TestCase {
     $this->assertEquals("NotExplicit", (string) $release->getParentalWarningType()[0]);
 
     // Release original release date
-    $this->assertEquals("2024-01-15", $release->getOriginalReleaseDate()->value());
+    $this->assertEquals("2024-01-15", $release->getOriginalReleaseDate()[0]->value());
   }
 
   /**
@@ -380,21 +381,21 @@ class ParserControllerTest extends TestCase {
 
     // Display artist resolved from PartyList (P1 → Lucas Avery)
     $this->assertCount(1, $sr0->getDisplayArtist());
-    $this->assertEquals("Lucas Avery", $sr0->getDisplayArtist()[0]->getPartyName()[0]->getFullName());
-    $this->assertEquals("MainArtist", $sr0->getDisplayArtist()[0]->getArtistRole()[0]);
+    $this->assertEquals("Lucas Avery", $this->resolvePartyName($ddex, $sr0->getDisplayArtist()[0]->getArtistPartyReference()));
+    $this->assertEquals("MainArtist", (string) $sr0->getDisplayArtist()[0]->getDisplayArtistRole());
 
     // Contributor resolved from PartyList (P2 → Luke Hebblethwaite, Composer)
-    $contributors = $sr0->getResourceContributor();
+    $contributors = $sr0->getContributor();
     $this->assertCount(1, $contributors);
-    $this->assertEquals("Luke Hebblethwaite", $contributors[0]->getPartyName()[0]->getFullName());
-    $this->assertEquals("Composer", $contributors[0]->getResourceContributorRole()[0]);
+    $this->assertEquals("Luke Hebblethwaite", $this->resolvePartyName($ddex, $contributors[0]->getContributorPartyReference()));
+    $this->assertEquals("Composer", (string) $contributors[0]->getRole()[0]);
 
     // PLine from SoundRecordingEdition
     $this->assertEquals("2025", $sr0->getPLine()[0]->getYear());
     $this->assertEquals("(P) 2025 Sky High Trance", $sr0->getPLine()[0]->getPLineText());
 
     // Technical details and file
-    $this->assertEquals("5063642055734_T1_001.wav", $sr0->getTechnicalSoundRecordingDetails()[0]->getFile()[0]->getFileName());
+    $this->assertEquals("5063642055734_T1_001.wav", $sr0->getTechnicalDetails()[0]->getFile()->getFileName());
 
     // Second sound recording (A2) - Radio Edit
     $sr1 = $ddex->getResourceList()->getSoundRecording()[1];
@@ -405,23 +406,23 @@ class ParserControllerTest extends TestCase {
     $image = $ddex->getResourceList()->getImage()[0];
     $this->assertEquals("A3", $image->getResourceReference());
     $this->assertEquals("FrontCoverImage", (string) $image->getType());
-    $this->assertEquals("5063642055734_T3.jpg", $image->getTechnicalDetails()[0]->getFile()[0]->getFileName());
+    $this->assertEquals("5063642055734_T3.jpg", $image->getTechnicalDetails()[0]->getFile()->getFileName());
 
     // Releases: 1 main + 2 track releases
-    $releases = $ddex->getReleaseList()->getRelease();
-    $this->assertCount(3, $releases);
+    $release = $ddex->getReleaseList()->getRelease();
+    $this->assertNotNull($release);
+    $this->assertCount(2, $ddex->getReleaseList()->getTrackRelease());
 
     // Main release (Single type)
-    $release = $releases[0];
-    $this->assertEquals("R0", $release->getReleaseReference()[0]);
-    $this->assertEquals("Single", (string) $release->getRawReleaseType()[0]);
-    $this->assertEquals("5063642055734", $release->getReleaseId()[0]->getICPN());
+    $this->assertEquals("R0", $release->getReleaseReference());
+    $this->assertEquals("Single", (string) $release->getReleaseType()[0]);
+    $this->assertEquals("5063642055734", $release->getReleaseId()->getICPN());
 
     // Catalog number
-    $this->assertEquals("SKT-001", (string) $release->getReleaseId()[0]->getCatalogNumber());
+    $this->assertEquals("SKT-001", (string) $release->getReleaseId()->getCatalogNumber());
 
     // Label resolved from PartyList (PLabel → Sky High Trance)
-    $this->assertEquals("Sky High Trance", $release->getLabelName()[0]->value());
+    $this->assertEquals("Sky High Trance", $this->resolvePartyName($ddex, $release->getReleaseLabelReference()[0]->value()));
 
     // Genre
     $this->assertEquals("Trance", (string) $release->getGenre()[0]->getGenreText());
@@ -456,7 +457,7 @@ class ParserControllerTest extends TestCase {
 
     // Artist resolved from PartyList (PSaekoShu → Saeko Shu)
     $this->assertCount(1, $sr0->getDisplayArtist());
-    $this->assertEquals("Saeko Shu", $sr0->getDisplayArtist()[0]->getPartyName()[0]->getFullName());
+    $this->assertEquals("Saeko Shu", $this->resolvePartyName($ddex, $sr0->getDisplayArtist()[0]->getArtistPartyReference()));
   }
 
   /**
@@ -488,17 +489,17 @@ class ParserControllerTest extends TestCase {
     $this->assertEquals("VideoScreenCapture", (string) $images[2]->getType());
 
     // Main release (VideoAlbum type)
-    $releases = $ddex->getReleaseList()->getRelease();
-    $this->assertCount(3, $releases); // 1 main + 2 track
-    $release = $releases[0];
-    $this->assertEquals("VideoAlbum", (string) $release->getRawReleaseType()[0]);
-    $this->assertEquals("05099962136853", $release->getReleaseId()[0]->getICPN());
+    $release = $ddex->getReleaseList()->getRelease();
+    $this->assertNotNull($release);
+    $this->assertCount(2, $ddex->getReleaseList()->getTrackRelease());
+    $this->assertEquals("VideoAlbum", (string) $release->getReleaseType()[0]);
+    $this->assertEquals("05099962136853", $release->getReleaseId()->getICPN());
 
     // Label resolved from PartyList (PCAPITOL → Capitol Records)
-    $this->assertEquals("Capitol Records", $release->getLabelName()[0]->value());
+    $this->assertEquals("Capitol Records", $this->resolvePartyName($ddex, $release->getReleaseLabelReference()[0]->value()));
 
     // Display artist
-    $this->assertEquals("Lolita Jolie", $release->getDisplayArtist()[0]->getPartyName()[0]->getFullName());
+    $this->assertEquals("Lolita Jolie", $this->resolvePartyName($ddex, $release->getDisplayArtist()[0]->getArtistPartyReference()));
   }
 
   /**
@@ -521,28 +522,25 @@ class ParserControllerTest extends TestCase {
     $this->assertEquals("A1", $sr0->getResourceReference());
     $this->assertEquals("DE0000311111", $sr0->getSoundRecordingEdition()[0]->getResourceId()[0]->getISRC());
 
-    // 3 display artists: DisplayArtistName is a single concatenated display string,
-    // DisplayArtist entries are individual with party references resolved via PartyList
+    // 3 display artists resolved via PartyList
     $artists = $sr0->getDisplayArtist();
     $this->assertCount(3, $artists);
-    // Artist[0] gets the DisplayArtistName[0] (full display string)
-    $this->assertEquals("The English Concert, Simon Standage, Trevor Pinnock", $artists[0]->getPartyName()[0]->getFullName());
-    // Artist[1,2] fall back to PartyList resolution
-    $this->assertEquals("Simon Standage", $artists[1]->getPartyName()[0]->getFullName());
-    $this->assertEquals("Trevor Pinnock", $artists[2]->getPartyName()[0]->getFullName());
+    $this->assertEquals("The English Concert", $this->resolvePartyName($ddex, $artists[0]->getArtistPartyReference()));
+    $this->assertEquals("Simon Standage", $this->resolvePartyName($ddex, $artists[1]->getArtistPartyReference()));
+    $this->assertEquals("Trevor Pinnock", $this->resolvePartyName($ddex, $artists[2]->getArtistPartyReference()));
 
     // 4 contributors: Vivaldi (Composer), English Concert (Orchestra), Pinnock (Soloist), Standage (Soloist)
-    $contributors = $sr0->getResourceContributor();
+    $contributors = $sr0->getContributor();
     $this->assertCount(4, $contributors);
-    $this->assertEquals("Antonio Vivaldi", $contributors[0]->getPartyName()[0]->getFullName());
-    $this->assertEquals("Composer", $contributors[0]->getResourceContributorRole()[0]);
-    $this->assertEquals("The English Concert", $contributors[1]->getPartyName()[0]->getFullName());
-    $this->assertEquals("Orchestra", $contributors[1]->getResourceContributorRole()[0]);
+    $this->assertEquals("Antonio Vivaldi", $this->resolvePartyName($ddex, $contributors[0]->getContributorPartyReference()));
+    $this->assertEquals("Composer", (string) $contributors[0]->getRole()[0]);
+    $this->assertEquals("The English Concert", $this->resolvePartyName($ddex, $contributors[1]->getContributorPartyReference()));
+    $this->assertEquals("Orchestra", (string) $contributors[1]->getRole()[0]);
 
     // Technical details with hash sum
-    $techDetails = $sr0->getTechnicalSoundRecordingDetails();
+    $techDetails = $sr0->getTechnicalDetails();
     $this->assertCount(1, $techDetails);
-    $this->assertEquals("1.flac", $techDetails[0]->getFile()[0]->getFileName());
+    $this->assertEquals("1.flac", $techDetails[0]->getFile()->getFileName());
   }
 
   /**
@@ -587,8 +585,8 @@ class ParserControllerTest extends TestCase {
     // Display artist resolved via PartyList
     $artists = $sr0->getDisplayArtist();
     $this->assertCount(1, $artists);
-    $this->assertEquals("Anna-Maria Zimmermann", $artists[0]->getPartyName()[0]->getFullName());
-    $this->assertEquals("MainArtist", $artists[0]->getArtistRole()[0]);
+    $this->assertEquals("Anna-Maria Zimmermann", $this->resolvePartyName($ddex, $artists[0]->getArtistPartyReference()));
+    $this->assertEquals("MainArtist", (string) $artists[0]->getDisplayArtistRole());
 
     // First video resource
     $vid0 = $videos[0];
@@ -600,19 +598,19 @@ class ParserControllerTest extends TestCase {
     $this->assertEquals("A22", $text0->getResourceReference());
 
     // Image types: 1 FrontCoverImage + 3 VideoScreenCapture
-    $this->assertEquals("FrontCoverImage", (string) $images[0]->getImageType());
+    $this->assertEquals("FrontCoverImage", (string) $images[0]->getType());
 
-    // Releases: 1 main + 17 track releases = 18 total
-    $releases = $ddex->getReleaseList()->getRelease();
-    $mainRelease = $releases[0];
-    $this->assertEquals("Bundle", (string) $mainRelease->getRawReleaseType()[0]);
-    $this->assertEquals("05099907138655", (string) $mainRelease->getReleaseId()[0]->getICPN());
+    // Releases: 1 main release + 17 track releases
+    $mainRelease = $ddex->getReleaseList()->getRelease();
+    $this->assertNotNull($mainRelease);
+    $this->assertEquals("Bundle", (string) $mainRelease->getReleaseType()[0]);
+    $this->assertEquals("05099907138655", (string) $mainRelease->getReleaseId()->getICPN());
     $this->assertEquals("Einfach Anna!", (string) $mainRelease->getDisplayTitleText()[0]);
 
     // Label resolved via PartyList: PEMI -> EMI
-    $labelName = $mainRelease->getLabelName();
-    $this->assertNotEmpty($labelName);
-    $this->assertEquals("EMI", $labelName[0]->value());
+    $labelRef = $mainRelease->getReleaseLabelReference();
+    $this->assertNotEmpty($labelRef);
+    $this->assertEquals("EMI", $this->resolvePartyName($ddex, $labelRef[0]->value()));
 
     // Genre
     $this->assertEquals("German Pop", (string) $mainRelease->getGenre()[0]->getGenreText());
@@ -661,37 +659,37 @@ class ParserControllerTest extends TestCase {
     // Display artist
     $artists = $sr0->getDisplayArtist();
     $this->assertCount(1, $artists);
-    $this->assertEquals("RIOPY", $artists[0]->getPartyName()[0]->getFullName());
+    $this->assertEquals("RIOPY", $this->resolvePartyName($ddex, $artists[0]->getArtistPartyReference()));
 
     // PLine
     $pline = $sr0->getPLine()[0];
     $this->assertEquals("2015", $pline->getYear());
 
     // Image: FrontCoverImage
-    $this->assertEquals("FrontCoverImage", (string) $images[0]->getImageType());
+    $this->assertEquals("FrontCoverImage", (string) $images[0]->getType());
 
     // Release: SingleResourceRelease
-    $releases = $ddex->getReleaseList()->getRelease();
-    $mainRelease = $releases[0];
-    $this->assertEquals("SingleResourceRelease", (string) $mainRelease->getRawReleaseType()[0]);
+    $mainRelease = $ddex->getReleaseList()->getRelease();
+    $this->assertNotNull($mainRelease);
+    $this->assertEquals("SingleResourceRelease", (string) $mainRelease->getReleaseType()[0]);
 
     // GRid on release
-    $this->assertEquals("A10302B0003989564F", (string) $mainRelease->getReleaseId()[0]->getGRid());
+    $this->assertEquals("A10302B0003989564F", (string) $mainRelease->getReleaseId()->getGRid());
 
     // Display artist on release
     $releaseArtists = $mainRelease->getDisplayArtist();
     $this->assertCount(1, $releaseArtists);
-    $this->assertEquals("RIOPY", $releaseArtists[0]->getPartyName()[0]->getFullName());
-    $this->assertEquals("MainArtist", $releaseArtists[0]->getArtistRole()[0]);
+    $this->assertEquals("RIOPY", $this->resolvePartyName($ddex, $releaseArtists[0]->getArtistPartyReference()));
+    $this->assertEquals("MainArtist", (string) $releaseArtists[0]->getDisplayArtistRole());
 
     // Label: Warner Classics
-    $labelName = $mainRelease->getLabelName();
-    $this->assertNotEmpty($labelName);
-    $this->assertEquals("Warner Classics", $labelName[0]->value());
+    $labelRef = $mainRelease->getReleaseLabelReference();
+    $this->assertNotEmpty($labelRef);
+    $this->assertEquals("Warner Classics", $this->resolvePartyName($ddex, $labelRef[0]->value()));
 
     // Genre + SubGenre
     $this->assertEquals("Classical", (string) $mainRelease->getGenre()[0]->getGenreText());
-    $this->assertEquals("Classical Crossover", (string) $mainRelease->getGenre()[0]->getSubGenre()->value());
+    $this->assertEquals("Classical Crossover", $mainRelease->getGenre()[0]->getSubGenre());
 
     // PLine/CLine on release
     $this->assertEquals("2015", $mainRelease->getPLine()[0]->getYear());
@@ -741,23 +739,23 @@ class ParserControllerTest extends TestCase {
     $this->assertEquals("ZA34L1600009", $vid0->getVideoEdition()[0]->getResourceId()[0]->getISRC());
 
     // Image: VideoScreenCapture
-    $this->assertEquals("VideoScreenCapture", (string) $images[0]->getImageType());
+    $this->assertEquals("VideoScreenCapture", (string) $images[0]->getType());
 
     // Release: SingleResourceRelease (Video)
-    $releases = $ddex->getReleaseList()->getRelease();
-    $mainRelease = $releases[0];
-    $this->assertEquals("SingleResourceRelease", (string) $mainRelease->getRawReleaseType()[0]);
+    $mainRelease = $ddex->getReleaseList()->getRelease();
+    $this->assertNotNull($mainRelease);
+    $this->assertEquals("SingleResourceRelease", (string) $mainRelease->getReleaseType()[0]);
     $this->assertEquals("Been Waiting", (string) $mainRelease->getDisplayTitleText()[0]);
 
     // Display artist
     $releaseArtists = $mainRelease->getDisplayArtist();
     $this->assertCount(1, $releaseArtists);
-    $this->assertEquals("Ash", $releaseArtists[0]->getPartyName()[0]->getFullName());
+    $this->assertEquals("Ash", $this->resolvePartyName($ddex, $releaseArtists[0]->getArtistPartyReference()));
 
     // Label: WM South Africa
-    $labelName = $mainRelease->getLabelName();
-    $this->assertNotEmpty($labelName);
-    $this->assertEquals("WM South Africa", $labelName[0]->value());
+    $labelRef = $mainRelease->getReleaseLabelReference();
+    $this->assertNotEmpty($labelRef);
+    $this->assertEquals("WM South Africa", $this->resolvePartyName($ddex, $labelRef[0]->value()));
 
     // Genre: R&B
     $this->assertEquals("R&B", (string) $mainRelease->getGenre()[0]->getGenreText());
@@ -800,29 +798,37 @@ class ParserControllerTest extends TestCase {
     $this->assertEquals("PT0H0M30S", $sr0->getDuration()->format("PT%hH%iM%sS"));
 
     // 15 contributors on this track
-    $contributors = $sr0->getResourceContributor();
+    $contributors = $sr0->getContributor();
     $this->assertCount(15, $contributors);
 
     // Image: FrontCoverImage
-    $this->assertEquals("FrontCoverImage", (string) $images[0]->getImageType());
+    $this->assertEquals("FrontCoverImage", (string) $images[0]->getType());
 
     // Release: RingtoneRelease
-    $releases = $ddex->getReleaseList()->getRelease();
-    $mainRelease = $releases[0];
-    $this->assertEquals("RingtoneRelease", (string) $mainRelease->getRawReleaseType()[0]);
+    $mainRelease = $ddex->getReleaseList()->getRelease();
+    $this->assertEquals("RingtoneRelease", (string) $mainRelease->getReleaseType()[0]);
     $this->assertEquals("Middle of a Memory", (string) $mainRelease->getDisplayTitleText()[0]);
 
     // GRid
-    $this->assertEquals("A10302B0003814379B", (string) $mainRelease->getReleaseId()[0]->getGRid());
+    $this->assertEquals("A10302B0003814379B", (string) $mainRelease->getReleaseId()->getGRid());
 
-    // Display artist: Cole Swindell
+    // Display artist: Cole Swindell (resolved via PartyList)
     $releaseArtists = $mainRelease->getDisplayArtist();
     $this->assertCount(1, $releaseArtists);
-    $this->assertEquals("Cole Swindell", $releaseArtists[0]->getPartyName()[0]->getFullName());
+    $partyRef = $releaseArtists[0]->getArtistPartyReference();
+    $this->assertNotEmpty($partyRef);
+    $artistName = null;
+    foreach ($ddex->getPartyList() as $party) {
+      if ($party->getPartyReference() === $partyRef) {
+        $artistName = $party->getPartyName()[0]->getFullName();
+        break;
+      }
+    }
+    $this->assertEquals("Cole Swindell", $artistName);
 
-    // Label: Warner Bros./Nashville (default) + Warner Bros. (MajorLabel)
-    $labelName = $mainRelease->getLabelName();
-    $this->assertNotEmpty($labelName);
+    // Label: resolved via ReleaseLabelReference + PartyList
+    $labelRef = $mainRelease->getReleaseLabelReference();
+    $this->assertNotEmpty($labelRef);
 
     // Genre: Country
     $this->assertEquals("Country", (string) $mainRelease->getGenre()[0]->getGenreText());
@@ -880,27 +886,42 @@ class ParserControllerTest extends TestCase {
     $this->assertEquals("FeaturedArtist", $trailerArtists[1]->getDisplayArtistRole());
 
     // Images: 13 VideoScreenCapture + 1 FrontCoverImage
-    $frontCovers = array_filter($images, fn($img) => (string) $img->getImageType() === "FrontCoverImage");
-    $screenCaptures = array_filter($images, fn($img) => (string) $img->getImageType() === "VideoScreenCapture");
+    $frontCovers = array_filter($images, fn($img) => (string) $img->getType() === "FrontCoverImage");
+    $screenCaptures = array_filter($images, fn($img) => (string) $img->getType() === "VideoScreenCapture");
     $this->assertCount(1, $frontCovers);
     $this->assertCount(13, $screenCaptures);
 
     // Release: LongFormMusicalWorkVideoRelease
-    $releases = $ddex->getReleaseList()->getRelease();
-    $mainRelease = $releases[0];
-    $this->assertEquals("LongFormMusicalWorkVideoRelease", (string) $mainRelease->getRawReleaseType()[0]);
-    $this->assertEquals("00602537022502", (string) $mainRelease->getReleaseId()[0]->getICPN());
+    $mainRelease = $ddex->getReleaseList()->getRelease();
+    $this->assertEquals("LongFormMusicalWorkVideoRelease", (string) $mainRelease->getReleaseType()[0]);
+    $this->assertEquals("00602537022502", (string) $mainRelease->getReleaseId()->getICPN());
     $this->assertStringContainsString("The Italian", (string) $mainRelease->getDisplayTitleText()[0]);
 
-    // Display artist on release
+    // Display artist on release (resolved via PartyList)
     $releaseArtists = $mainRelease->getDisplayArtist();
     $this->assertCount(1, $releaseArtists);
-    $this->assertEquals("Patrizio Buanne", $releaseArtists[0]->getPartyName()[0]->getFullName());
+    $partyRef = $releaseArtists[0]->getArtistPartyReference();
+    $this->assertNotEmpty($partyRef);
+    $artistName = null;
+    foreach ($ddex->getPartyList() as $party) {
+      if ($party->getPartyReference() === $partyRef) {
+        $artistName = $party->getPartyName()[0]->getFullName();
+        break;
+      }
+    }
+    $this->assertEquals("Patrizio Buanne", $artistName);
 
-    // Label: Universal Music Ltd.
-    $labelName = $mainRelease->getLabelName();
-    $this->assertNotEmpty($labelName);
-    $this->assertEquals("Universal Music Ltd.", $labelName[0]->value());
+    // Label: resolved via ReleaseLabelReference + PartyList
+    $labelRef = (string) $mainRelease->getReleaseLabelReference()[0];
+    $this->assertNotEmpty($labelRef);
+    $labelName = null;
+    foreach ($ddex->getPartyList() as $party) {
+      if ($party->getPartyReference() === $labelRef) {
+        $labelName = $party->getPartyName()[0]->getFullName();
+        break;
+      }
+    }
+    $this->assertEquals("Universal Music Ltd.", $labelName);
 
     // Genre: Easy Listening
     $this->assertEquals("Easy Listening", (string) $mainRelease->getGenre()[0]->getGenreText());
@@ -973,14 +994,13 @@ class ParserControllerTest extends TestCase {
     $this->assertEquals("FrontCoverImage", (string) $images[0]->getType());
 
     // Release: Single
-    $releases = $ddex->getReleaseList()->getRelease();
-    $mainRelease = $releases[0];
-    $this->assertEquals("9876543210123", (string) $mainRelease->getReleaseId()[0]->getICPN());
+    $mainRelease = $ddex->getReleaseList()->getRelease();
+    $this->assertEquals("9876543210123", (string) $mainRelease->getReleaseId()->getICPN());
     $this->assertEquals("Summer Breeze", (string) $mainRelease->getDisplayTitleText()[0]);
 
     // Genre + SubGenre
     $this->assertEquals("Electronic", (string) $mainRelease->getGenre()[0]->getGenreText());
-    $this->assertEquals("Trance", $mainRelease->getGenre()[0]->getSubGenre()->value());
+    $this->assertEquals("Trance", $mainRelease->getGenre()[0]->getSubGenre());
 
     // PLine/CLine on release
     $this->assertEquals("2024", $mainRelease->getPLine()[0]->getYear());
@@ -989,7 +1009,7 @@ class ParserControllerTest extends TestCase {
     $this->assertEquals("Test Label", $mainRelease->getCLine()[0]->getCLineText());
 
     // OriginalReleaseDate
-    $this->assertStringContainsString("2024-06-15", (string) $mainRelease->getOriginalReleaseDate());
+    $this->assertStringContainsString("2024-06-15", (string) $mainRelease->getOriginalReleaseDate()[0]);
 
     // ParentalWarningType
     $this->assertEquals("NotExplicit", (string) $mainRelease->getParentalWarningType()[0]);
@@ -1034,10 +1054,19 @@ class ParserControllerTest extends TestCase {
     $this->assertEquals("MMix", (string) $mix->getDisplayTitleText()[0]);
     $this->assertEquals("PT0H12M31S", $mix->getDuration()->format("PT%hH%iM%sS"));
 
-    // Mix display artist
+    // Mix display artist (resolved via PartyList)
     $mixArtists = $mix->getDisplayArtist();
     $this->assertCount(1, $mixArtists);
-    $this->assertEquals("Original Spinner", $mixArtists[0]->getPartyName()[0]->getFullName());
+    $partyRef = $mixArtists[0]->getArtistPartyReference();
+    $this->assertNotEmpty($partyRef);
+    $artistName = null;
+    foreach ($ddex->getPartyList() as $party) {
+      if ($party->getPartyReference() === $partyRef) {
+        $artistName = $party->getPartyName()[0]->getFullName();
+        break;
+      }
+    }
+    $this->assertEquals("Original Spinner", $artistName);
 
     // Supplemental tracks (A2-A9): source content
     $sr1 = $soundRecordings[1];
@@ -1049,19 +1078,25 @@ class ParserControllerTest extends TestCase {
     $this->assertEquals("Get it", (string) $sr8->getDisplayTitleText()[0]);
 
     // Image: FrontCoverImage
-    $this->assertEquals("FrontCoverImage", (string) $images[0]->getImageType());
+    $this->assertEquals("FrontCoverImage", (string) $images[0]->getType());
 
     // Release: DjMix type
-    $releases = $ddex->getReleaseList()->getRelease();
-    $mainRelease = $releases[0];
-    $this->assertEquals("DjMix", (string) $mainRelease->getRawReleaseType()[0]);
-    $this->assertEquals("123123123123", (string) $mainRelease->getReleaseId()[0]->getICPN());
+    $mainRelease = $ddex->getReleaseList()->getRelease();
+    $this->assertEquals("DjMix", (string) $mainRelease->getReleaseType()[0]);
+    $this->assertEquals("123123123123", (string) $mainRelease->getReleaseId()->getICPN());
     $this->assertEquals("MMix", (string) $mainRelease->getDisplayTitleText()[0]);
 
-    // Label: DubSetMedia
-    $labelName = $mainRelease->getLabelName();
-    $this->assertNotEmpty($labelName);
-    $this->assertEquals("DubSetMedia", $labelName[0]->value());
+    // Label: DubSetMedia (resolved via ReleaseLabelReference + PartyList)
+    $labelRef = (string) $mainRelease->getReleaseLabelReference()[0];
+    $this->assertNotEmpty($labelRef);
+    $labelName = null;
+    foreach ($ddex->getPartyList() as $party) {
+      if ($party->getPartyReference() === $labelRef) {
+        $labelName = $party->getPartyName()[0]->getFullName();
+        break;
+      }
+    }
+    $this->assertEquals("DubSetMedia", $labelName);
 
     // Genre: Nu Disco
     $this->assertEquals("Nu Disco", (string) $mainRelease->getGenre()[0]->getGenreText());
@@ -1071,10 +1106,22 @@ class ParserControllerTest extends TestCase {
     $this->assertEquals("2017", $mainRelease->getCLine()[0]->getYear());
 
     // OriginalReleaseDate
-    $this->assertStringContainsString("2017-01-02", (string) $mainRelease->getOriginalReleaseDate());
+    $this->assertStringContainsString("2017-01-02", (string) $mainRelease->getOriginalReleaseDate()[0]);
 
     // ParentalWarningType
     $this->assertEquals("NotExplicit", (string) $mainRelease->getParentalWarningType()[0]);
+  }
+
+  /**
+   * Helper: resolve a party reference to its full name via the PartyList.
+   */
+  private function resolvePartyName($ddex, string $partyRef): ?string {
+    foreach ($ddex->getPartyList() as $party) {
+      if ($party->getPartyReference() === $partyRef) {
+        return (string) $party->getPartyName()[0]->getFullName();
+      }
+    }
+    return null;
   }
 
 }

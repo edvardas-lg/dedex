@@ -10,9 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class SoundRecordingType
 {
-    // ERN 4.3 compat: party reference → name map
-    private $_partyMap = [];
-
     /**
      * The Language and script for the Elements of the SoundRecording as defined in IETF RfC 5646. Language and Script are provided as lang[-script][-region][-variant]. This is represented in an XML schema as an XML Attribute.
      *
@@ -1117,21 +1114,7 @@ class SoundRecordingType
      */
     public function getDisplayArtist()
     {
-        $artists = $this->displayArtist;
-        if (is_array($artists) && is_array($this->displayArtistName)) {
-            foreach ($artists as $i => $artist) {
-                if (isset($this->displayArtistName[$i])) {
-                    $name = (string) $this->displayArtistName[$i];
-                    $artist->setCompatName($name);
-                } elseif (!empty($this->_partyMap) && $artist->getArtistPartyReference()) {
-                    $ref = $artist->getArtistPartyReference();
-                    if (isset($this->_partyMap[$ref])) {
-                        $artist->setCompatName($this->_partyMap[$ref]);
-                    }
-                }
-            }
-        }
-        return $artists;
+        return $this->displayArtist;
     }
 
     /**
@@ -2571,33 +2554,18 @@ class SoundRecordingType
         return $this;
     }
 
-    // --- ERN 4.3 compat methods for Simplifiers ---
+    // --- ERN 4.3 delegation methods ---
+    // In ERN 4.3, IDs, technical details, and PLine live inside
+    // SoundRecordingEdition. These methods delegate to the first edition
+    // so the Simplifiers can use the same API as ERN 4.2.
 
-    public function setPartyMap(array $map)
-    {
-        $this->_partyMap = $map;
-        // Also inject into contributors
-        if (is_array($this->contributor)) {
-            foreach ($this->contributor as $c) {
-                $ref = $c->getContributorPartyReference();
-                if ($ref && isset($map[$ref])) {
-                    $c->setCompatName($map[$ref]);
-                }
-            }
-        }
-    }
-
-    public function getSoundRecordingDetailsByTerritory()
-    {
-        return [$this];
-    }
-
-    public function getTerritoryCode()
-    {
-        return [new Ern43CompatValue("Worldwide")];
-    }
-
-    public function getSoundRecordingId()
+    /**
+     * Delegate to first SoundRecordingEdition's resource IDs.
+     * ERN 4.2 has this directly; ERN 4.3 stores it in editions.
+     *
+     * @return \DedexBundle\Entity\Ern43\ResourceIdType[]
+     */
+    public function getResourceId()
     {
         if (!empty($this->soundRecordingEdition) && $this->soundRecordingEdition[0]) {
             return $this->soundRecordingEdition[0]->getResourceId();
@@ -2605,12 +2573,13 @@ class SoundRecordingType
         return [];
     }
 
-    public function getSoundRecordingType()
-    {
-        return $this->type;
-    }
-
-    public function getTechnicalSoundRecordingDetails()
+    /**
+     * Delegate to first SoundRecordingEdition's technical details.
+     * ERN 4.2 has this directly; ERN 4.3 stores it in editions.
+     *
+     * @return \DedexBundle\Entity\Ern43\TechnicalSoundRecordingDetailsType[]
+     */
+    public function getTechnicalDetails()
     {
         if (!empty($this->soundRecordingEdition) && $this->soundRecordingEdition[0]) {
             return $this->soundRecordingEdition[0]->getTechnicalDetails();
@@ -2618,47 +2587,17 @@ class SoundRecordingType
         return [];
     }
 
-    public function getReferenceTitle()
-    {
-        $text = null;
-        if (!empty($this->displayTitleText)) {
-            $text = (string) $this->displayTitleText[0];
-        } elseif (!empty($this->displayTitle) && $this->displayTitle[0]->getTitleText()) {
-            $text = $this->displayTitle[0]->getTitleText();
-        }
-        return $text !== null ? new Ern43CompatReferenceTitle($text) : null;
-    }
-
-    public function getTitle()
-    {
-        return [];
-    }
-
+    /**
+     * Delegate to first SoundRecordingEdition's PLine.
+     * ERN 4.2 has this directly; ERN 4.3 stores it in editions.
+     *
+     * @return \DedexBundle\Entity\Ern43\PLineWithDefaultType[]
+     */
     public function getPLine()
     {
         if (!empty($this->soundRecordingEdition) && $this->soundRecordingEdition[0]) {
             return $this->soundRecordingEdition[0]->getPLine();
         }
-        return [];
-    }
-
-    public function getResourceContributor()
-    {
-        return $this->contributor;
-    }
-
-    public function getIndirectResourceContributor()
-    {
-        return [];
-    }
-
-    public function getLabelName()
-    {
-        return [];
-    }
-
-    public function getGenre()
-    {
         return [];
     }
 }

@@ -155,9 +155,7 @@ class ResourceGroupContentItemType
      */
     public function getReleaseResourceReference()
     {
-        return $this->releaseResourceReference !== null
-            ? new Ern43CompatValue($this->releaseResourceReference)
-            : null;
+        return $this->releaseResourceReference;
     }
 
     /**

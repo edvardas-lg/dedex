@@ -358,20 +358,19 @@ class TechnicalSoundRecordingDetailsType
         return $this;
     }
 
-    // --- ERN 4.3 compat: collect File objects from DeliveryFile chain ---
+    // --- Delegation: return first File from DeliveryFile chain (matches 41/411/42 single-file API) ---
 
     public function getFile()
     {
-        $files = [];
         if (is_array($this->deliveryFile)) {
             foreach ($this->deliveryFile as $df) {
                 $file = $df->getFile();
                 if ($file !== null) {
-                    $files[] = $file;
+                    return $file;
                 }
             }
         }
-        return $files;
+        return null;
     }
 }
 

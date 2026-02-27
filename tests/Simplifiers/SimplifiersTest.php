@@ -616,8 +616,8 @@ class SimplifiersTest extends TestCase {
     $tracks = $album->getTracksPerCd();
     $this->assertNotEmpty($tracks);
 
-    // Main mix track (CD 0 — no SequenceNumber on ResourceGroup)
-    $track1 = $tracks[0][1];
+    // Main mix track (CD 1 — flat ResourceGroup defaults to CD 1)
+    $track1 = $tracks[1][1];
     $this->assertEquals("MMix", $track1->getTitle());
     $this->assertEquals("USWE34255410", $track1->getIsrc());
     $this->assertEquals("PT0H12M31S", $track1->getDurationIso());

@@ -75,18 +75,13 @@ class SimpleEntity {
 	}
 
 	/**
-	 * Check if the version string corresponds to an ERN 4.x version
-	 * with clean (non-compat-wrapped) entity classes.
-	 *
-	 * ERN 4.3 entities have a compatibility layer that wraps return values
-	 * in arrays to match 3.x-style access patterns, so ERN 4.3 is routed
-	 * through the 3.x code path where that compat layer is designed to work.
+	 * Check if the version string corresponds to an ERN 4.x version.
 	 *
 	 * @param string $version version string as detected by ErnParserController
 	 * @return bool
 	 */
 	protected function isVersion4x(string $version): bool {
-		return $version[0] === '4' && $version !== '43';
+		return $version[0] === '4';
 	}
 
 	/**
@@ -99,7 +94,7 @@ class SimpleEntity {
 	 */
 	protected function buildPartyIndex($ern): array {
 		$index = [];
-		if (!method_exists($ern, 'getPartyList') || $ern->getPartyList() === null) {
+		if ($ern instanceof \DedexBundle\Entity\Ern382\NewReleaseMessage || $ern->getPartyList() === null) {
 			return $index;
 		}
 		foreach ($ern->getPartyList() as $party) {
@@ -119,12 +114,13 @@ class SimpleEntity {
 	 * @param array|null $partyIndex null for 3.x, [ref => name] for 4.x
 	 * @return SimpleArtist[]
 	 */
-	protected function resolveDisplayArtists(array $displayArtists, ?array $partyIndex): array {
+	protected function resolveDisplayArtists(array $displayArtists, ?array $partyIndex, array $displayNames = []): array {
 		$artists = [];
-		foreach ($displayArtists as $artist) {
+		foreach ($displayArtists as $i => $artist) {
 			try {
 				if ($partyIndex !== null) {
-					$name = $partyIndex[$artist->getArtistPartyReference()] ?? null;
+					// Prefer DisplayArtistName when available (display name may differ from PartyList name)
+					$name = isset($displayNames[$i]) ? (string) $displayNames[$i] : ($partyIndex[$artist->getArtistPartyReference()] ?? null);
 					$role = $this->getUserDefinedValue($artist->getDisplayArtistRole());
 				} else {
 					$name = $artist->getPartyName()[0]->getFullName();

@@ -1606,31 +1606,5 @@ class ImageType
         return $this;
     }
 
-    // --- ERN 4.3 compat methods for Simplifiers ---
-
-    public function getImageType()
-    {
-        return $this->type;
-    }
-
-    public function getImageDetailsByTerritory()
-    {
-        return [$this];
-    }
-
-    public function getTechnicalImageDetails()
-    {
-        return $this->technicalDetails;
-    }
-
-    public function getTerritoryCode()
-    {
-        return [new Ern43CompatValue("Worldwide")];
-    }
-
-    public function getImageId()
-    {
-        return $this->resourceId;
-    }
 }
 

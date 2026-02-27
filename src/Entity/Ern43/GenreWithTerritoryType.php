@@ -149,7 +149,7 @@ class GenreWithTerritoryType
      */
     public function getGenreText()
     {
-        return $this->genreText !== null ? new Ern43CompatValue($this->genreText) : null;
+        return $this->genreText;
     }
 
     /**
@@ -175,7 +175,7 @@ class GenreWithTerritoryType
      */
     public function getSubGenre()
     {
-        return $this->subGenre !== null ? new Ern43CompatValue($this->subGenre) : null;
+        return $this->subGenre;
     }
 
     /**

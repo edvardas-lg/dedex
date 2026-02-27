@@ -10,9 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class DisplayArtistType
 {
-    // ERN 4.3 compat: artist name resolved from PartyList
-    private $_compatName = null;
-
     /**
      * The number indicating the order of the Resource DisplayArtist in a group of Artists that have contributed to a Resource. This is represented in an XML schema as an XML Attribute.
      * Further Reading: https://kb.ddex.net/implementing-each-standard/best-practices-for-all-ddex-standards/guidance-on-contributors%2C-artists-and-writers/sequencing-recording-artists-and-writers
@@ -265,21 +262,5 @@ class DisplayArtistType
         return $this;
     }
 
-    // --- ERN 4.3 compat methods for Simplifiers ---
-
-    public function setCompatName($name)
-    {
-        $this->_compatName = $name;
-    }
-
-    public function getPartyName()
-    {
-        return [new Ern43CompatPartyName($this->_compatName ?? '')];
-    }
-
-    public function getArtistRole()
-    {
-        return $this->displayArtistRole !== null ? [$this->displayArtistRole] : [];
-    }
 }
 

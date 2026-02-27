@@ -299,7 +299,11 @@ class SimpleTrack extends SimpleEntity {
 	 * @return SimpleArtist[]
 	 */
 	public function getDisplayArtists() {
-		return $this->resolveDisplayArtists($this->ddexDetails->getDisplayArtist(), $this->partyIndex);
+		$displayNames = [];
+		if ($this->isVersion4x($this->version)) {
+			$displayNames = $this->ddexDetails->getDisplayArtistName() ?? [];
+		}
+		return $this->resolveDisplayArtists($this->ddexDetails->getDisplayArtist(), $this->partyIndex, $displayNames);
 	}
 	
 	/**

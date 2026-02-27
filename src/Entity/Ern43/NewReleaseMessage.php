@@ -10,9 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class NewReleaseMessage
 {
-    // ERN 4.3 compat: party reference → name map built from PartyList
-    private $_partyMap = null;
-
     /**
      * The Identifier of the Version of the release profile used for the Message. This is represented in an XML schema as an XML Attribute.
      *
@@ -445,14 +442,6 @@ class NewReleaseMessage
      */
     public function getResourceList()
     {
-        if ($this->resourceList !== null) {
-            $partyMap = $this->getPartyMap();
-            foreach ($this->resourceList->getSoundRecording() as $sr) {
-                if (method_exists($sr, 'setPartyMap')) {
-                    $sr->setPartyMap($partyMap);
-                }
-            }
-        }
         return $this->resourceList;
     }
 
@@ -506,22 +495,6 @@ class NewReleaseMessage
      */
     public function getReleaseList()
     {
-        if ($this->releaseList !== null) {
-            $this->releaseList->setPartyMap($this->getPartyMap());
-            $rawRelease = $this->releaseList->getRawRelease();
-            if ($rawRelease !== null && $this->resourceList !== null) {
-                $srRefs = [];
-                $imgRefs = [];
-                foreach ($this->resourceList->getSoundRecording() as $sr) {
-                    $srRefs[] = $sr->getResourceReference();
-                }
-                foreach ($this->resourceList->getImage() as $img) {
-                    $imgRefs[] = $img->getResourceReference();
-                }
-                $rawRelease->setSoundRecordingReferences($srRefs);
-                $rawRelease->setImageReferences($imgRefs);
-            }
-        }
         return $this->releaseList;
     }
 
@@ -631,22 +604,4 @@ class NewReleaseMessage
         return $this;
     }
 
-    // --- ERN 4.3 compat: build party reference → name map ---
-
-    public function getPartyMap()
-    {
-        if ($this->_partyMap === null) {
-            $this->_partyMap = [];
-            if (is_array($this->partyList)) {
-                foreach ($this->partyList as $party) {
-                    $ref = $party->getPartyReference();
-                    $names = $party->getPartyName();
-                    if ($ref && !empty($names)) {
-                        $this->_partyMap[$ref] = $names[0]->getFullName();
-                    }
-                }
-            }
-        }
-        return $this->_partyMap;
-    }
 }

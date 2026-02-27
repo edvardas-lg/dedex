@@ -561,7 +561,7 @@ class TechnicalImageDetailsType
      */
     public function getFile()
     {
-        return $this->file !== null ? [$this->file] : [];
+        return $this->file;
     }
 
     /**

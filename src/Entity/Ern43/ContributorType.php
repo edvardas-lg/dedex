@@ -10,9 +10,6 @@ namespace DedexBundle\Entity\Ern43;
  */
 class ContributorType
 {
-    // ERN 4.3 compat: contributor name resolved from PartyList
-    private $_compatName = null;
-
     /**
      * The number indicating the order of the ResourceContributor in a group of ResourceContributors that have contributed to a Resource. This is represented in an XML schema as an XML Attribute.
      *
@@ -403,26 +400,5 @@ class ContributorType
         return $this;
     }
 
-    // --- ERN 4.3 compat methods for Simplifiers ---
-
-    public function setCompatName($name)
-    {
-        $this->_compatName = $name;
-    }
-
-    public function getPartyName()
-    {
-        return [new Ern43CompatPartyName($this->_compatName ?? '')];
-    }
-
-    public function getResourceContributorRole()
-    {
-        return $this->role;
-    }
-
-    public function getIndirectResourceContributorRole()
-    {
-        return $this->role;
-    }
 }
 
