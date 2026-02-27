@@ -58,13 +58,38 @@ class SimpleTrack extends SimpleEntity {
 	private $deal;
 
 	/**
-	 * @param SoundRecordingType $soundrecording
+	 * Party index for ERN 4.x. Maps party references to full names.
+	 * Null for ERN 3.x where names are inline.
+	 *
+	 * @var array|null
 	 */
-	public function __construct($soundrecording, ?SimpleDeal $deal) {
+	private $partyIndex = null;
+
+	/**
+	 * Version string as detected by ErnParserController.
+	 *
+	 * @var string
+	 */
+	private $version;
+
+	/**
+	 * @param SoundRecordingType $soundrecording
+	 * @param SimpleDeal|null $deal
+	 * @param string $version version string as detected by ErnParserController
+	 * @param array|null $partyIndex party index for ERN 4.x, null for 3.x
+	 */
+	public function __construct($soundrecording, ?SimpleDeal $deal, string $version, ?array $partyIndex = null) {
 		$this->ddexSoundrecording = $soundrecording;
 		$this->deal = $deal;
+		$this->version = $version;
+		$this->partyIndex = $partyIndex;
 
-		$this->ddexDetails = $this->getDetailsByTerritory($soundrecording, "soundrecording", "worldwide");
+		if ($this->isVersion4x($version)) {
+			// ERN 4.x: no DetailsByTerritory, the SoundRecording itself holds the details
+			$this->ddexDetails = $soundrecording;
+		} else {
+			$this->ddexDetails = $this->getDetailsByTerritory($soundrecording, "soundrecording", "worldwide");
+		}
 	}
   
   /**
@@ -79,6 +104,11 @@ class SimpleTrack extends SimpleEntity {
 	 * @return string FilePath as given in dedex or empty string if not specified
 	 */
 	public function getFilePath() {
+		if ($this->isVersion4x($this->version)) {
+			// ERN 4.x: no separate FilePath, URI contains the full path
+			return "";
+		}
+		// ERN 3.x: FilePath is in TechnicalSoundRecordingDetails/File
 		try {
 			return $this->ddexDetails->getTechnicalSoundRecordingDetails()[0]->getFile()[0]->getFilePath();
 		} catch (Throwable $ex) {
@@ -90,6 +120,15 @@ class SimpleTrack extends SimpleEntity {
 	 * @return string FileName as given in dedex or empty string if not specified
 	 */
 	public function getFileName() {
+		if ($this->isVersion4x($this->version)) {
+			// ERN 4.x: URI in TechnicalDetails/File
+			try {
+				return $this->ddexDetails->getTechnicalDetails()[0]->getFile()->getURI();
+			} catch (Throwable $ex) {
+				return "";
+			}
+		}
+		// ERN 3.x: FileName is in TechnicalSoundRecordingDetails/File
 		try {
 			return $this->ddexDetails->getTechnicalSoundRecordingDetails()[0]->getFile()[0]->getFileName();
 		} catch (Throwable $ex) {
@@ -113,6 +152,15 @@ class SimpleTrack extends SimpleEntity {
 	 * @return string or null
 	 */
 	public function getIsrc(): ?string {
+		if ($this->isVersion4x($this->version)) {
+			// ERN 4.x: ResourceId instead of SoundRecordingId
+			try {
+				return $this->ddexSoundrecording->getResourceId()[0]->getISRC();
+			} catch (Throwable $ex) {
+				return null;
+			}
+		}
+		// ERN 3.x: SoundRecordingId
 		try {
 			return $this->ddexSoundrecording->getSoundRecordingId()[0]->getISRC();
 		} catch (Throwable $ex) {
@@ -173,20 +221,28 @@ class SimpleTrack extends SimpleEntity {
 	}
 
 	/**
-	 * Get title from ReferenceTitle, or DisplayTitle or FormalTitle, in that order
+	 * Get title from ReferenceTitle, or DisplayTitle, FormalTitle,
+	 * or DisplayTitleText, in that order.
 	 * @return string|null
 	 */
 	public function getTitle(): ?string {
-		$title = $this->getReferenceTitle();
+		if ($this->isVersion4x($this->version)) {
+			// ERN 4.x: DisplayTitleText is directly on the SoundRecording
+			try {
+				return $this->ddexSoundrecording->getDisplayTitleText()[0]->value();
+			} catch (Throwable $ex) {
+				return null;
+			}
+		}
 
+		// ERN 3.x: ReferenceTitle, then DisplayTitle, then FormalTitle
+		$title = $this->getReferenceTitle();
 		if ($title === null) {
 			$title = $this->getDisplayTitle();
 		}
-
 		if ($title === null) {
 			$title = $this->getFormalTitle();
 		}
-
 		return $title;
 	}
 
@@ -239,66 +295,61 @@ class SimpleTrack extends SimpleEntity {
 	}
 	
 	/**
-	 * 
+	 *
 	 * @return SimpleArtist[]
 	 */
 	public function getDisplayArtists() {
-		$artists = [];
-		
-		foreach ($this->ddexDetails->getDisplayArtist() as $artist) {
-			try {
-				$name = $artist->getPartyName()[0]->getFullName();
-				$role = $this->getUserDefinedValue($artist->getArtistRole()[0]);
-				$artists[] = new SimpleArtist($name, $role);
-			} catch (Throwable $ex) {
-				// skip this artist
-				continue;
-			}
-		}
-		
-		return $artists;
+		return $this->resolveDisplayArtists($this->ddexDetails->getDisplayArtist(), $this->partyIndex);
 	}
 	
 	/**
-	 * 
-	 * @return SimpleArtist
+	 *
+	 * @return SimpleArtist[]
 	 */
 	public function getArtistsFromResourceContributors() {
-		$artists = [];
-		
-		foreach ($this->ddexDetails->getResourceContributor() as $artist) {
+		if ($this->isVersion4x($this->version)) {
+			// ERN 4.x: getContributor() replaces getResourceContributor()
 			try {
-				$name = $artist->getPartyName()[0]->getFullName();
-				$role = $this->getUserDefinedValue($artist->getResourceContributorRole()[0]);
-				$artists[] = new SimpleArtist($name, $role);
+				return $this->resolveContributors(
+					$this->ddexDetails->getContributor(),
+					$this->partyIndex,
+					'getRole'
+				);
 			} catch (Throwable $ex) {
-				// skip this artist
-				continue;
+				return [];
 			}
 		}
-		
-		return $artists;
+		// ERN 3.x: getResourceContributor()
+		try {
+			return $this->resolveContributors(
+				$this->ddexDetails->getResourceContributor(),
+				$this->partyIndex,
+				'getResourceContributorRole'
+			);
+		} catch (Throwable $ex) {
+			return [];
+		}
 	}
 	
 	/**
-	 * 
-	 * @return SimpleArtist
+	 *
+	 * @return SimpleArtist[]
 	 */
 	public function getArtistsFromIndirectResourceContributors() {
-		$artists = [];
-		
-		foreach ($this->ddexDetails->getIndirectResourceContributor() as $artist) {
-			try {
-				$name = $artist->getPartyName()[0]->getFullName();
-				$role = $this->getUserDefinedValue($artist->getIndirectResourceContributorRole()[0]);
-				$artists[] = new SimpleArtist($name, $role);
-			} catch (Throwable $ex) {
-				// skip this artist
-				continue;
-			}
+		if ($this->isVersion4x($this->version)) {
+			// ERN 4.x: no IndirectResourceContributor
+			return [];
 		}
-		
-		return $artists;
+		// ERN 3.x: IndirectResourceContributor
+		try {
+			return $this->resolveContributors(
+				$this->ddexDetails->getIndirectResourceContributor(),
+				$this->partyIndex,
+				'getIndirectResourceContributorRole'
+			);
+		} catch (Throwable $ex) {
+			return [];
+		}
 	}
 	
 	/**
@@ -326,11 +377,14 @@ class SimpleTrack extends SimpleEntity {
 	 * @return string|null
 	 */
 	public function getLabelName(): ?string {
+		if ($this->isVersion4x($this->version)) {
+			// ERN 4.x: no LabelName on SoundRecordingType
+			return null;
+		}
+		// ERN 3.x: LabelName is an object with value()
 		try {
 			return $this->ddexDetails->getLabelName()[0]->value();
 		} catch (Throwable $ex) {
-			return null;
-		} catch (Exception $ex) {
 			return null;
 		}
 	}
@@ -371,26 +425,32 @@ class SimpleTrack extends SimpleEntity {
 	 * @return string|null
 	 */
 	public function getGenre(): ?string {
+		if ($this->isVersion4x($this->version)) {
+			// ERN 4.x: no Genre on SoundRecordingType
+			return null;
+		}
+		// ERN 3.x: GenreText is an object with value()
 		try {
 			return $this->ddexDetails->getGenre()[0]->getGenreText()->value();
 		} catch (Throwable $ex) {
 			return null;
-		} catch (Exception $ex) {
-			return null;
 		}
 	}
-	
+
 	/**
 	 * Supposes only one genre (and one sub genre)
-	 * 
+	 *
 	 * @return string|null
 	 */
 	public function getSubGenre(): ?string {
+		if ($this->isVersion4x($this->version)) {
+			// ERN 4.x: no SubGenre on SoundRecordingType
+			return null;
+		}
+		// ERN 3.x: SubGenre is an object with value()
 		try {
 			return $this->ddexDetails->getGenre()[0]->getSubGenre()->value();
 		} catch (Throwable $ex) {
-			return null;
-		} catch (Exception $ex) {
 			return null;
 		}
 	}
@@ -401,11 +461,18 @@ class SimpleTrack extends SimpleEntity {
 	 * @return string|null
 	 */
 	public function getParentalWarningType(): ?string {
+		if ($this->isVersion4x($this->version)) {
+			// ERN 4.x: ParentalWarningType has value() method
+			try {
+				return $this->ddexDetails->getParentalWarningType()[0]->value();
+			} catch (Throwable $ex) {
+				return null;
+			}
+		}
+		// ERN 3.x: ParentalWarningType may be a UserDefinedValue
 		try {
 			return $this->getUserDefinedValue($this->ddexDetails->getParentalWarningType()[0]);
 		} catch (Throwable $ex) {
-			return null;
-		} catch (Exception $ex) {
 			return null;
 		}
 	}
@@ -416,26 +483,40 @@ class SimpleTrack extends SimpleEntity {
 	 * @return string|null
 	 */
 	public function getHashSum(): ?string {
+		if ($this->isVersion4x($this->version)) {
+			// ERN 4.x: TechnicalDetails/File (single)/HashSum/HashSumValue
+			try {
+				return $this->ddexDetails->getTechnicalDetails()[0]->getFile()->getHashSum()->getHashSumValue();
+			} catch (Throwable $ex) {
+				return null;
+			}
+		}
+		// ERN 3.x: TechnicalSoundRecordingDetails/File (array)/HashSum
 		try {
 			return $this->ddexDetails->getTechnicalSoundRecordingDetails()[0]->getFile()[0]->getHashSum()->getHashSum();
 		} catch (Throwable $ex) {
 			return null;
-		} catch (Exception $ex) {
-			return null;
 		}
 	}
-	
+
 	/**
 	 * Supposes one file technical details and one hash sum.
-	 * 
+	 *
 	 * @return string|null
 	 */
 	public function getHashSumAlgorithm(): ?string {
+		if ($this->isVersion4x($this->version)) {
+			// ERN 4.x: TechnicalDetails/File (single)/HashSum/Algorithm
+			try {
+				return $this->ddexDetails->getTechnicalDetails()[0]->getFile()->getHashSum()->getAlgorithm();
+			} catch (Throwable $ex) {
+				return null;
+			}
+		}
+		// ERN 3.x: TechnicalSoundRecordingDetails/File (array)/HashSum/HashSumAlgorithmType
 		try {
 			return $this->getUserDefinedValue($this->ddexDetails->getTechnicalSoundRecordingDetails()[0]->getFile()[0]->getHashSum()->getHashSumAlgorithmType());
 		} catch (Throwable $ex) {
-			return null;
-		} catch (Exception $ex) {
 			return null;
 		}
 	}

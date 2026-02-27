@@ -42,37 +42,65 @@ class SimpleImage extends SimpleEntity {
 	 * @var ImageType
 	 */
 	private $ddexImage;
-	
+
 	/**
 	 *
-	 * @var ImageDetailsByTerritoryType 
+	 * @var ImageDetailsByTerritoryType
 	 */
 	private $details;
-	
+
+	/**
+	 * Version string as detected by ErnParserController.
+	 *
+	 * @var string
+	 */
+	private $version;
+
 	/**
 	 * @param ImageType $image
+	 * @param string $version version string as detected by ErnParserController
 	 */
-	public function __construct($image) {
+	public function __construct($image, string $version) {
 		$this->ddexImage = $image;
-		
-		$this->details = $this->getDetailsByTerritory($image, "image", "worldwide");
+		$this->version = $version;
+
+		if ($this->isVersion4x($version)) {
+			// ERN 4.x: no DetailsByTerritory, the Image itself holds the details
+			$this->details = $image;
+		} else {
+			$this->details = $this->getDetailsByTerritory($image, "image", "worldwide");
+		}
 	}
 	
 	/**
 	 * @return string FilePath as given in dedex or empty string if not specified
 	 */
 	public function getFilePath() {
+		if ($this->isVersion4x($this->version)) {
+			// ERN 4.x: no separate FilePath, URI contains the full path
+			return "";
+		}
+		// ERN 3.x: FilePath is in TechnicalImageDetails/File
 		try {
 			return $this->details->getTechnicalImageDetails()[0]->getFile()[0]->getFilePath();
 		} catch (Throwable $ex) {
 			return "";
 		}
 	}
-	
+
 	/**
 	 * @return string FileName as given in dedex or empty string if not specified
 	 */
 	public function getFileName() {
+		if ($this->isVersion4x($this->version)) {
+			// ERN 4.x: URI in TechnicalDetails/File
+			try {
+				return $this->details->getTechnicalDetails()[0]->getFile()->getURI();
+			} catch (Throwable $ex) {
+				return "";
+			}
+		}
+		// ERN 3.x: FileName is in TechnicalImageDetails/File
 		try {
 			return $this->details->getTechnicalImageDetails()[0]->getFile()[0]->getFileName();
 		} catch (Throwable $ex) {
@@ -94,19 +122,37 @@ class SimpleImage extends SimpleEntity {
 	 * @return string|null
 	 */
 	public function getHashSum(): ?string {
+		if ($this->isVersion4x($this->version)) {
+			// ERN 4.x: TechnicalDetails/File (single)/HashSum/HashSumValue
+			try {
+				return $this->details->getTechnicalDetails()[0]->getFile()->getHashSum()->getHashSumValue();
+			} catch (Throwable $ex) {
+				return null;
+			}
+		}
+		// ERN 3.x: TechnicalImageDetails/File (array)/HashSum
 		try {
 			return $this->details->getTechnicalImageDetails()[0]->getFile()[0]->getHashSum()->getHashSum();
 		} catch (Throwable $ex) {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * Supposes one file technical details and one hash sum.
-	 * 
+	 *
 	 * @return string|null
 	 */
 	public function getHashSumAlgorithm(): ?string {
+		if ($this->isVersion4x($this->version)) {
+			// ERN 4.x: TechnicalDetails/File (single)/HashSum/Algorithm
+			try {
+				return $this->details->getTechnicalDetails()[0]->getFile()->getHashSum()->getAlgorithm();
+			} catch (Throwable $ex) {
+				return null;
+			}
+		}
+		// ERN 3.x: TechnicalImageDetails/File (array)/HashSum/HashSumAlgorithmType
 		try {
 			return $this->getUserDefinedValue($this->details->getTechnicalImageDetails()[0]->getFile()[0]->getHashSum()->getHashSumAlgorithmType());
 		} catch (Throwable $ex) {

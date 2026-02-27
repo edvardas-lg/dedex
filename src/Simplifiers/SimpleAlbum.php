@@ -107,18 +107,38 @@ class SimpleAlbum extends SimpleEntity {
    * True when this current album is a purged release (to be considered by
    * DSP as a takedown). No tracks or deals or many details expected in this
    * case.
-   * 
+   *
    * @var bool
    */
   private $isPurge;
 
   /**
-   * @param NewReleaseMessage $ern type DedexBundle\Entity\Ern382\NewReleaseMessage or
-   * DedexBundle\Entity\Ern4&\NewReleaseMessage
+   * Party index for ERN 4.x. Maps party references to full names.
+   * Null for ERN 3.x where names are inline.
+   *
+   * @var array|null
    */
-  public function __construct($ern) {
+  private $partyIndex = null;
+
+  /**
+   * Version string as detected by ErnParserController.
+   *
+   * @var string
+   */
+  private $version;
+
+  /**
+   * @param mixed $ern NewReleaseMessage or PurgeReleaseMessage
+   * @param string $version version string as detected by ErnParserController
+   */
+  public function __construct($ern, string $version) {
     $this->ern = $ern;
-    
+    $this->version = $version;
+
+    if ($this->isVersion4x($version)) {
+      $this->partyIndex = $this->buildPartyIndex($ern);
+    }
+
     // Special case for PurgedReleasedMessage
     // No releases or deals expected in this case
     $className = (new \ReflectionClass($this->ern))->getShortName();
@@ -129,6 +149,20 @@ class SimpleAlbum extends SimpleEntity {
       return $this;
     }
 
+    if ($this->isVersion4x($version)) {
+      $this->initFromErn4x();
+    } else {
+      $this->initFromErn3x();
+    }
+
+    return $this;
+  }
+
+  /**
+   * Initialize from ERN 3.x structure where getReleaseList()->getRelease()
+   * returns an array and release details are in DetailsByTerritory.
+   */
+  private function initFromErn3x() {
     // Find release of type MainRelease from this ERN
     foreach ($this->ern->getReleaseList()->getRelease() as $release) {
       foreach ($release->getReleaseType() as $type) {
@@ -143,14 +177,59 @@ class SimpleAlbum extends SimpleEntity {
     if ($this->ddexReleaseAlbum === null) {
       throw new Exception("No Album release found in this release message");
     }
-    
+
     // index deals
     $this->indexDealsByReleaseReference();
     $this->deal = $this->dealsByReleaseReference[$this->ddexReleaseAlbum->getReleaseReference()[0]];
-    
+
     // index resources
     $this->ddexDetails = $this->getDetailsByTerritory($this->ddexReleaseAlbum, "release", "worldwide");
     $this->indexResources();
+  }
+
+  /**
+   * Initialize from ERN 4.x structure where getReleaseList()->getRelease()
+   * returns a single ReleaseType and there is no DetailsByTerritory.
+   *
+   * ERN 4.3 entities have a compat layer where getRelease() may return an
+   * array and getReleaseReference() may return an array. This method handles
+   * both ERN 4.2 (clean) and ERN 4.3 (compat-wrapped) entity behaviors.
+   */
+  private function initFromErn4x() {
+    $releaseList = $this->ern->getReleaseList();
+
+    // In ERN 4.2, getRelease() returns a single ReleaseType (the album).
+    // In ERN 4.3 (compat layer), getRelease() returns an array; use
+    // getRawRelease() when available for the clean single object.
+    $release = method_exists($releaseList, 'getRawRelease')
+      ? $releaseList->getRawRelease()
+      : $releaseList->getRelease();
+    if ($release === null) {
+      throw new Exception("No Album release found in this release message");
+    }
+    $this->ddexReleaseAlbum = $release;
+
+    // In ERN 4.x, the release object itself acts as the details
+    // (no DetailsByTerritory wrapper)
+    $this->ddexDetails = $release;
+
+    // Track releases are separate TrackRelease elements
+    foreach ($releaseList->getTrackRelease() as $trackRelease) {
+      $this->trackReleasesByReference[$trackRelease->getReleaseReference()] = $trackRelease;
+    }
+
+    // index deals
+    $this->indexDealsByReleaseReference4x();
+    $albumRef = $this->ddexReleaseAlbum->getReleaseReference();
+    // ERN 4.3 compat: getReleaseReference() may return an array
+    if (is_array($albumRef)) {
+      $albumRef = $albumRef[0];
+    }
+    $this->deal = $this->dealsByReleaseReference[$albumRef] ?? null;
+
+    // index resources
+    $this->indexResourcesByReference();
+    $this->indexResourcesFromErn4x();
   }
   
   /**
@@ -160,7 +239,7 @@ class SimpleAlbum extends SimpleEntity {
   private function indexDealsByReleaseReference() {
     foreach ($this->ern->getDealList()->getReleaseDeal() as $releaseDeal) {
       /* @var $releaseDeal ReleaseDealType */
-      $this->dealsByReleaseReference[$releaseDeal->getDealReleaseReference()[0]] = new SimpleDeal($releaseDeal);
+      $this->dealsByReleaseReference[$releaseDeal->getDealReleaseReference()[0]] = new SimpleDeal($releaseDeal, $this->version);
       
       // find release for this deal
       $deal_release_reference = $releaseDeal->getDealReleaseReference()[0];
@@ -189,7 +268,94 @@ class SimpleAlbum extends SimpleEntity {
       }
     }
   }
-  
+
+  /**
+   * Index deals for ERN 4.x where a ReleaseDeal can reference multiple
+   * releases and TrackRelease has getReleaseResourceReference() directly.
+   */
+  private function indexDealsByReleaseReference4x() {
+    try {
+      foreach ($this->ern->getDealList()->getReleaseDeal() as $releaseDeal) {
+        $deal = new SimpleDeal($releaseDeal, $this->version);
+        foreach ($releaseDeal->getDealReleaseReference() as $ref) {
+          $this->dealsByReleaseReference[$ref] = $deal;
+
+          // Map resource reference for track releases
+          if (isset($this->trackReleasesByReference[$ref])) {
+            $trackRelease = $this->trackReleasesByReference[$ref];
+            $resourceRef = $trackRelease->getReleaseResourceReference();
+            if ($resourceRef !== null) {
+              $this->dealsByResourceReference[$resourceRef] = $releaseDeal;
+            }
+          }
+        }
+      }
+    } catch (Throwable $ex) {
+      // No deals available
+    }
+  }
+
+  /**
+   * Index resources from ERN 4.x structure where ResourceGroup is a single
+   * object on the Release, content items use string references, and images
+   * are in LinkedReleaseResourceReference.
+   */
+  private function indexResourcesFromErn4x() {
+    $resourceGroup = $this->ddexReleaseAlbum->getResourceGroup();
+    if ($resourceGroup === null) {
+      return;
+    }
+
+    // In ERN 4.x, the ResourceGroup may contain sub-groups (ResourceSubGroupType)
+    // or directly contain ResourceGroupContentItems
+    $subGroups = $resourceGroup->getResourceGroup();
+    if (!empty($subGroups)) {
+      // Multi-CD or grouped structure
+      foreach ($subGroups as $group_cd) {
+        $cd_num = (int) ($group_cd->getSequenceNumber() ?? 1);
+        $this->tracksPerCd[$cd_num] = [];
+        $this->indexContentItems4x($group_cd->getResourceGroupContentItem(), $cd_num);
+      }
+    } else {
+      // Single group with all content items directly
+      $cd_num = 1;
+      $this->tracksPerCd[$cd_num] = [];
+      $this->indexContentItems4x($resourceGroup->getResourceGroupContentItem(), $cd_num);
+    }
+
+    // Image from LinkedReleaseResourceReference on the ResourceGroup
+    foreach ($resourceGroup->getLinkedReleaseResourceReference() as $linkedRef) {
+      $ref = $linkedRef->value();
+      if (array_key_exists($ref, $this->resourcesByReference)) {
+        $resource = $this->resourcesByReference[$ref];
+        if (method_exists($resource, 'getType') && strtolower($resource->getType()) === "frontcoverimage") {
+          $this->frontCoverImage = new SimpleImage($resource, $this->version);
+        }
+      }
+    }
+  }
+
+  /**
+   * Index content items from ERN 4.x ResourceGroupContentItem array.
+   */
+  private function indexContentItems4x(array $contentItems, int $cd_num) {
+    foreach ($contentItems as $item) {
+      $track_num = (int) $item->getSequenceNumber();
+      $track_reference = $item->getReleaseResourceReference();
+
+      if (!array_key_exists($track_reference, $this->resourcesByReference)) {
+        continue;
+      }
+      $track = $this->resourcesByReference[$track_reference];
+
+      $track_deal = array_key_exists($track_reference, $this->dealsByResourceReference ?? [])
+              ? new SimpleDeal($this->dealsByResourceReference[$track_reference], $this->version)
+              : null;
+
+      $this->tracksPerCd[$cd_num][$track_num] = new SimpleTrack($track, $track_deal, $this->version, $this->partyIndex);
+    }
+  }
+
   /**
    * Return the deals corresponding to the album release
    * @return SimpleDeal|null
@@ -259,10 +425,10 @@ class SimpleAlbum extends SimpleEntity {
           // Find deal for this track (sound recording)
           // Find release first. Assumption: one release per track
           $track_deal = array_key_exists($track_reference, $this->dealsByResourceReference ?? []) 
-                  ? new SimpleDeal($this->dealsByResourceReference[$track_reference]) 
+                  ? new SimpleDeal($this->dealsByResourceReference[$track_reference], $this->version) 
                   : null;
           
-          $this->tracksPerCd[$cd_num][$track_num] = new SimpleTrack($track, $track_deal);
+          $this->tracksPerCd[$cd_num][$track_num] = new SimpleTrack($track, $track_deal, $this->version, $this->partyIndex);
         }
       }
 
@@ -274,7 +440,7 @@ class SimpleAlbum extends SimpleEntity {
             /* @var $image ImageType */
             $image = $this->getResourceByReference($item->getReleaseResourceReference()->value());
             if (strtolower($image->getImageType()) === "frontcoverimage") {
-              $this->frontCoverImage = new SimpleImage($image);
+              $this->frontCoverImage = new SimpleImage($image, $this->version);
             }
           }
         }
@@ -359,10 +525,21 @@ class SimpleAlbum extends SimpleEntity {
   }
 
   /**
-   * Get title from ReferenceTitle, or DisplayTitle or FormalTitle, in that order
+   * Get title from ReferenceTitle, or DisplayTitle, FormalTitle,
+   * or DisplayTitleText, in that order.
    * @return string|null
    */
   public function getTitle(): ?string {
+    if ($this->isVersion4x($this->version)) {
+      // ERN 4.x: DisplayTitleText is directly on the Release
+      try {
+        return $this->ddexReleaseAlbum->getDisplayTitleText()[0]->value();
+      } catch (Throwable $ex) {
+        return null;
+      }
+    }
+
+    // ERN 3.x: ReferenceTitle, then DisplayTitle, then FormalTitle
     $title = $this->getReferenceTitle();
 
     if ($title === null) {
@@ -382,6 +559,15 @@ class SimpleAlbum extends SimpleEntity {
    * @return string|null
    */
   public function getLabelName(): ?string {
+    if ($this->isVersion4x($this->version)) {
+      // ERN 4.x: LabelName is a string directly on the Release
+      try {
+        return $this->ddexDetails->getLabelName()[0];
+      } catch (Throwable $ex) {
+        return null;
+      }
+    }
+    // ERN 3.x: LabelName is an object with value()
     try {
       return $this->ddexDetails->getLabelName()[0]->value();
     } catch (Throwable $ex) {
@@ -393,23 +579,10 @@ class SimpleAlbum extends SimpleEntity {
    * Concatenate DisplayArtists, ResourceContributors and IndirectResourceContributors
    * in the same array.
    * Ignores sequence numbering
-   * @return SimpleArtist
+   * @return SimpleArtist[]
    */
   public function getArtists() {
-    $artists = [];
-
-    foreach ($this->ddexDetails->getDisplayArtist() as $artist) {
-      try {
-        $name = $artist->getPartyName()[0]->getFullName();
-        $role = $this->getUserDefinedValue($artist->getArtistRole()[0]);
-        $artists[] = new SimpleArtist($name, $role);
-      } catch (Throwable $ex) {
-        // skip this artist
-        continue;
-      }
-    }
-
-    return $artists;
+    return $this->resolveDisplayArtists($this->ddexDetails->getDisplayArtist(), $this->partyIndex);
   }
   
   /**
@@ -418,6 +591,15 @@ class SimpleAlbum extends SimpleEntity {
    * @return string|null
    */
   public function getParentalWarningType(): ?string {
+    if ($this->isVersion4x($this->version)) {
+      // ERN 4.x: ParentalWarningType has value() method
+      try {
+        return $this->ddexDetails->getParentalWarningType()[0]->value();
+      } catch (Throwable $ex) {
+        return null;
+      }
+    }
+    // ERN 3.x: ParentalWarningType may be a UserDefinedValue
     try {
       return $this->getUserDefinedValue($this->ddexDetails->getParentalWarningType()[0]);
     } catch (Throwable $ex) {
@@ -431,11 +613,18 @@ class SimpleAlbum extends SimpleEntity {
    * @return string|null
    */
   public function getGenre(): ?string {
+    if ($this->isVersion4x($this->version)) {
+      // ERN 4.x: GenreText is a string directly
+      try {
+        return $this->ddexDetails->getGenre()[0]->getGenreText();
+      } catch (Throwable $ex) {
+        return null;
+      }
+    }
+    // ERN 3.x: GenreText is an object with value()
     try {
       return $this->ddexDetails->getGenre()[0]->getGenreText()->value();
     } catch (Throwable $ex) {
-      return null;
-    } catch (Exception $ex) {
       return null;
     }
   }
@@ -446,11 +635,18 @@ class SimpleAlbum extends SimpleEntity {
    * @return string|null
    */
   public function getSubGenre(): ?string {
+    if ($this->isVersion4x($this->version)) {
+      // ERN 4.x: SubGenre is a string directly
+      try {
+        return $this->ddexDetails->getGenre()[0]->getSubGenre();
+      } catch (Throwable $ex) {
+        return null;
+      }
+    }
+    // ERN 3.x: SubGenre is an object with value()
     try {
       return $this->ddexDetails->getGenre()[0]->getSubGenre()->value();
     } catch (Throwable $ex) {
-      return null;
-    } catch (Exception $ex) {
       return null;
     }
   }
@@ -460,11 +656,22 @@ class SimpleAlbum extends SimpleEntity {
    * @return DateTimeImmutable
    */
   public function getOriginalReleaseDate(): ?DateTimeImmutable {
-    try {
-      return DateTimeImmutable::createFromFormat("Y-m-d", $this->ddexDetails->getOriginalReleaseDate()->value());
-    } catch (Throwable $ex) {
+    if ($this->isVersion4x($this->version)) {
+      // ERN 4.x: OriginalReleaseDate is an array of strings
+      try {
+        $dates = $this->ddexDetails->getOriginalReleaseDate();
+        if (count($dates) > 0) {
+          return DateTimeImmutable::createFromFormat("Y-m-d", $dates[0]) ?: null;
+        }
+      } catch (Throwable $ex) {
+        return null;
+      }
       return null;
-    } catch (Exception $ex) {
+    }
+    // ERN 3.x: OriginalReleaseDate is an object with value()
+    try {
+      return DateTimeImmutable::createFromFormat("Y-m-d", $this->ddexDetails->getOriginalReleaseDate()->value()) ?: null;
+    } catch (Throwable $ex) {
       return null;
     }
   }
@@ -474,11 +681,14 @@ class SimpleAlbum extends SimpleEntity {
    * @return DateTimeImmutable
    */
   public function getOriginalDigitalReleaseDate(): ?DateTimeImmutable {
-    try {
-      return DateTimeImmutable::createFromFormat("Y-m-d", $this->ddexDetails->getOriginalDigitalReleaseDate()->value());
-    } catch (Throwable $ex) {
+    if ($this->isVersion4x($this->version)) {
+      // ERN 4.x: no OriginalDigitalReleaseDate
       return null;
-    } catch (Exception $ex) {
+    }
+    // ERN 3.x: OriginalDigitalReleaseDate is an object with value()
+    try {
+      return DateTimeImmutable::createFromFormat("Y-m-d", $this->ddexDetails->getOriginalDigitalReleaseDate()->value()) ?: null;
+    } catch (Throwable $ex) {
       return null;
     }
   }
@@ -493,8 +703,6 @@ class SimpleAlbum extends SimpleEntity {
       return (int) $this->ddexReleaseAlbum->getPLine()[0]->getYear();
     } catch (Throwable $ex) {
       return null;
-    } catch (Exception $ex) {
-      return null;
     }
   }
   
@@ -507,8 +715,6 @@ class SimpleAlbum extends SimpleEntity {
     try {
       return $this->ddexReleaseAlbum->getPLine()[0]->getPLineText();
     } catch (Throwable $ex) {
-      return null;
-    } catch (Exception $ex) {
       return null;
     }
   }
@@ -523,8 +729,6 @@ class SimpleAlbum extends SimpleEntity {
       return (int) $this->ddexReleaseAlbum->getCLine()[0]->getYear();
     } catch (Throwable $ex) {
       return null;
-    } catch (Exception $ex) {
-      return null;
     }
   }
   
@@ -538,8 +742,6 @@ class SimpleAlbum extends SimpleEntity {
       return $this->ddexReleaseAlbum->getCLine()[0]->getCLineText();
     } catch (Throwable $ex) {
       return null;
-    } catch (Exception $ex) {
-      return null;
     }
   }
   
@@ -549,11 +751,18 @@ class SimpleAlbum extends SimpleEntity {
    * @return string|null
    */
   public function getGrid(): ?string {
+    if ($this->isVersion4x($this->version)) {
+      // ERN 4.x: ReleaseId is a single object
+      try {
+        return $this->ddexReleaseAlbum->getReleaseId()->getGRid();
+      } catch (Throwable $ex) {
+        return null;
+      }
+    }
+    // ERN 3.x: ReleaseId is an array
     try {
       return $this->ddexReleaseAlbum->getReleaseId()[0]->getGRid();
     } catch (Throwable $ex) {
-      return null;
-    } catch (Exception $ex) {
       return null;
     }
   }
@@ -564,11 +773,18 @@ class SimpleAlbum extends SimpleEntity {
    * @return string|null
    */
   public function getIcpn(): ?string {
+    if ($this->isVersion4x($this->version)) {
+      // ERN 4.x: ReleaseId is a single object
+      try {
+        return $this->ddexReleaseAlbum->getReleaseId()->getICPN();
+      } catch (Throwable $ex) {
+        return null;
+      }
+    }
+    // ERN 3.x: ReleaseId is an array
     try {
       return $this->ddexReleaseAlbum->getReleaseId()[0]->getICPN();
     } catch (Throwable $ex) {
-      return null;
-    } catch (Exception $ex) {
       return null;
     }
   }
@@ -579,11 +795,18 @@ class SimpleAlbum extends SimpleEntity {
    * @return string|null
    */
   public function getCatalogNumber(): ?string {
+    if ($this->isVersion4x($this->version)) {
+      // ERN 4.x: ReleaseId is a single object
+      try {
+        return $this->ddexReleaseAlbum->getReleaseId()->getCatalogNumber();
+      } catch (Throwable $ex) {
+        return null;
+      }
+    }
+    // ERN 3.x: ReleaseId is an array
     try {
       return $this->ddexReleaseAlbum->getReleaseId()[0]->getCatalogNumber();
     } catch (Throwable $ex) {
-      return null;
-    } catch (Exception $ex) {
       return null;
     }
   }
