@@ -77,8 +77,12 @@ class ErnParserController {
    * NewReleaseMessage object from the right entity based on version, like:
    *     \DedexBundle\Entity\Ern382\NewReleaseMessage
    * or  \DedexBundle\Entity\Ern41\NewReleaseMessage
+   * or  \DedexBundle\Entity\Ern411\NewReleaseMessage
+   * or  \DedexBundle\Entity\Ern42\NewReleaseMessage
    * or  \DedexBundle\Entity\Ern382\PurgeReleaseMessage
    * or  \DedexBundle\Entity\Ern41\PurgeReleaseMessage
+   * or  \DedexBundle\Entity\Ern411\PurgeReleaseMessage
+   * or  \DedexBundle\Entity\Ern42\PurgeReleaseMessage
    */
   private $ern = null;
 
@@ -637,14 +641,14 @@ class ErnParserController {
   }
 
   /**
-   * Look for text xmlns:ern="http://ddex.net/xml/ern/382" or 41 in XML file
+   * Look for text xmlns:ern="http://ddex.net/xml/ern/382" or other version in XML file
    * @param filedescription $fp Open wml file. Considered as valid XML file at this point
    * @return string version such as "382" or "41"
    * @throws Exception
    */
   private function detectVersion($fp) {
     $version = null;
-    $supported_versions = ["411", "41", "382"];
+    $supported_versions = ["411", "41", "42", "382"];
 
     while (($buffer = fgets($fp, 4096)) !== false) {
       $trimed = trim($buffer);
@@ -752,6 +756,16 @@ class ErnParserController {
   }
 
   /**
+   * Return the detected version string (e.g. "382", "41", "411", "42").
+   * Available after parse() has been called.
+   *
+   * @return string|null
+   */
+  public function getVersion(): ?string {
+    return $this->version;
+  }
+
+  /**
    * This is the main parsing function that will go through the whole XML
    * 
    * @param string $file_path Location of XML path
@@ -768,7 +782,7 @@ class ErnParserController {
       throw new XmlLoadException("Can't load XML file: $file_path");
     }
 
-    $this->version = $this->detectVersion($fp); // 382 or 41
+    $this->version = $this->detectVersion($fp);
     // Validate xml against XSD
     $this->validateXml($file_path);
 
