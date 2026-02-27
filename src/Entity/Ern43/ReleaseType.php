@@ -12,6 +12,8 @@ class ReleaseType
 {
     // ERN 4.3 compat: party reference → name map
     private $_partyMap = [];
+    private $_soundRecordingRefs = [];
+    private $_imageRefs = [];
 
     /**
      * The Language and script for the Elements of the Release as defined in IETF RfC 5646. Language and Script are provided as lang[-script][-region][-variant]. This is represented in an XML schema as an XML Attribute.
@@ -1908,7 +1910,7 @@ class ReleaseType
     public function getResourceGroup()
     {
         return $this->resourceGroup !== null
-            ? [new Ern43CompatResourceGroupWrapper($this->resourceGroup)]
+            ? [new Ern43CompatResourceGroupWrapper($this->resourceGroup, $this->_soundRecordingRefs, $this->_imageRefs)]
             : [];
     }
 
@@ -2498,6 +2500,16 @@ class ReleaseType
     public function setPartyMap(array $map)
     {
         $this->_partyMap = $map;
+    }
+
+    public function setSoundRecordingReferences(array $refs)
+    {
+        $this->_soundRecordingRefs = $refs;
+    }
+
+    public function setImageReferences(array $refs)
+    {
+        $this->_imageRefs = $refs;
     }
 
     public function getReleaseDetailsByTerritory()

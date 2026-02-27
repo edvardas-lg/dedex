@@ -175,5 +175,15 @@ class DetailedHashSumType
         $this->hashSumValue = $hashSumValue;
         return $this;
     }
+
+    public function getHashSum()
+    {
+        return $this->hashSumValue;
+    }
+
+    public function getHashSumAlgorithmType()
+    {
+        return $this->algorithm;
+    }
 }
 

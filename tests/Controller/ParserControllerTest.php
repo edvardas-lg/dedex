@@ -894,6 +894,105 @@ class ParserControllerTest extends TestCase {
    * Test ERN 4.3 DJ Mix (sample 027)
    * 1 main mix + 8 supplemental source tracks, Nu Disco genre, HasContentFrom relationships
    */
+  /**
+   * Test ERN 4.3 real-world LabelGrid single (sample 029)
+   * 2 sound recordings + 1 image, Single release type, 3 deals, contributor
+   */
+  public function testSample029Ern43SingleInlineImage() {
+    $xml_path = "tests/samples/029_ern43_single_inline_image.xml";
+    $parser_controller = new ErnParserController();
+    $parser_controller->setDisplayLog(true);
+    $parser_controller->setXsdValidation(true);
+    $ddex = $parser_controller->parse($xml_path);
+
+    $this->assertEquals('DedexBundle\Entity\Ern43\NewReleaseMessage', get_class($ddex));
+
+    // MessageHeader
+    $header = $ddex->getMessageHeader();
+    $this->assertEquals("PADPIDA2024021301T", $header->getMessageSender()->getPartyId());
+    $this->assertEquals("Test Sender", $header->getMessageSender()->getPartyName()->getFullName());
+    $this->assertEquals("PADPIDA2024021302R", $header->getMessageRecipient()[0]->getPartyId());
+    $this->assertEquals("Test Recipient", $header->getMessageRecipient()[0]->getPartyName()->getFullName());
+
+    // PartyList: 3 parties (label, artist, contributor)
+    $parties = $ddex->getPartyList();
+    $this->assertCount(3, $parties);
+
+    // ResourceList: 2 SoundRecordings + 1 Image
+    $soundRecordings = $ddex->getResourceList()->getSoundRecording();
+    $this->assertCount(2, $soundRecordings);
+    $images = $ddex->getResourceList()->getImage();
+    $this->assertCount(1, $images);
+
+    // Sound recording 1 (A1): Summer Breeze (Radio Edit)
+    $sr0 = $soundRecordings[0];
+    $this->assertEquals("A1", $sr0->getResourceReference());
+    $this->assertEquals("TEST43S00001", $sr0->getSoundRecordingEdition()[0]->getResourceId()[0]->getISRC());
+    $this->assertEquals("Summer Breeze", (string) $sr0->getDisplayTitleText()[0]);
+    $this->assertEquals("Radio Edit", $sr0->getDisplayTitle()[0]->getSubTitle()[0]);
+    $this->assertEquals("PT0H2M45S", $sr0->getDuration()->format("PT%hH%iM%sS"));
+
+    // Display artist
+    $artists = $sr0->getDisplayArtist();
+    $this->assertCount(1, $artists);
+    $this->assertEquals("MainArtist", $artists[0]->getDisplayArtistRole());
+
+    // Contributor
+    $contributors = $sr0->getContributor();
+    $this->assertCount(1, $contributors);
+
+    // PLine from SoundRecordingEdition
+    $pline = $sr0->getSoundRecordingEdition()[0]->getPLine()[0];
+    $this->assertEquals("2024", $pline->getYear());
+    $this->assertEquals("Test Label", $pline->getPLineText());
+
+    // Sound recording 2 (A2): Summer Breeze (original)
+    $sr1 = $soundRecordings[1];
+    $this->assertEquals("A2", $sr1->getResourceReference());
+    $this->assertEquals("TEST43S00002", $sr1->getSoundRecordingEdition()[0]->getResourceId()[0]->getISRC());
+    $this->assertEquals("Summer Breeze", (string) $sr1->getDisplayTitleText()[0]);
+    $this->assertEquals("PT0H4M39S", $sr1->getDuration()->format("PT%hH%iM%sS"));
+
+    // Image: FrontCoverImage
+    $this->assertEquals("FrontCoverImage", (string) $images[0]->getType());
+
+    // Release: Single
+    $releases = $ddex->getReleaseList()->getRelease();
+    $mainRelease = $releases[0];
+    $this->assertEquals("9876543210123", (string) $mainRelease->getReleaseId()[0]->getICPN());
+    $this->assertEquals("Summer Breeze", (string) $mainRelease->getDisplayTitleText()[0]);
+
+    // Genre + SubGenre
+    $this->assertEquals("Electronic", (string) $mainRelease->getGenre()[0]->getGenreText());
+    $this->assertEquals("Trance", $mainRelease->getGenre()[0]->getSubGenre()->value());
+
+    // PLine/CLine on release
+    $this->assertEquals("2024", $mainRelease->getPLine()[0]->getYear());
+    $this->assertEquals("Test Label", $mainRelease->getPLine()[0]->getPLineText());
+    $this->assertEquals("2024", $mainRelease->getCLine()[0]->getYear());
+    $this->assertEquals("Test Label", $mainRelease->getCLine()[0]->getCLineText());
+
+    // OriginalReleaseDate
+    $this->assertStringContainsString("2024-06-15", (string) $mainRelease->getOriginalReleaseDate());
+
+    // ParentalWarningType
+    $this->assertEquals("NotExplicit", (string) $mainRelease->getParentalWarningType()[0]);
+
+    // Track releases
+    $trackReleases = $ddex->getReleaseList()->getTrackRelease();
+    $this->assertCount(2, $trackReleases);
+
+    // DealList: 1 ReleaseDeal with 3 Deal elements
+    $releaseDeals = $ddex->getDealList()->getReleaseDeal();
+    $this->assertCount(1, $releaseDeals);
+    $deals = $releaseDeals[0]->getDeal();
+    $this->assertCount(3, $deals);
+    $this->assertEquals("SubscriptionModel", (string) $deals[0]->getDealTerms()->getCommercialModelType()[0]);
+    $this->assertEquals("AdvertisementSupportedModel", (string) $deals[1]->getDealTerms()->getCommercialModelType()[0]);
+    $this->assertEquals("PayAsYouGoModel", (string) $deals[2]->getDealTerms()->getCommercialModelType()[0]);
+    $this->assertEquals("PermanentDownload", (string) $deals[2]->getDealTerms()->getUseType()[0]);
+  }
+
   public function testSample027Ern43DjMix() {
     $xml_path = "tests/samples/027_ern43_dj_mix.xml";
     $parser_controller = new ErnParserController();

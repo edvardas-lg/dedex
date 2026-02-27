@@ -508,6 +508,19 @@ class NewReleaseMessage
     {
         if ($this->releaseList !== null) {
             $this->releaseList->setPartyMap($this->getPartyMap());
+            $rawRelease = $this->releaseList->getRawRelease();
+            if ($rawRelease !== null && $this->resourceList !== null) {
+                $srRefs = [];
+                $imgRefs = [];
+                foreach ($this->resourceList->getSoundRecording() as $sr) {
+                    $srRefs[] = $sr->getResourceReference();
+                }
+                foreach ($this->resourceList->getImage() as $img) {
+                    $imgRefs[] = $img->getResourceReference();
+                }
+                $rawRelease->setSoundRecordingReferences($srRefs);
+                $rawRelease->setImageReferences($imgRefs);
+            }
         }
         return $this->releaseList;
     }

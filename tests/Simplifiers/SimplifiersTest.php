@@ -484,6 +484,99 @@ class SimplifiersTest extends TestCase {
   }
 
   /**
+   * Test SimpleAlbum with ERN 4.3 real-world LabelGrid single (sample 029)
+   * 2-track single with contributor, 3 deals, ReleaseLabelReference,
+   * image in ResourceGroupContentItem (not LinkedReleaseResourceReference)
+   */
+  public function testSimpleAlbumErn43Sample029SingleInlineImage() {
+    $parser = new ErnParserController();
+    $ern = $parser->parse("tests/samples/029_ern43_single_inline_image.xml");
+
+    $album = new SimpleAlbum($ern);
+
+    // Album title
+    $this->assertEquals("Summer Breeze", $album->getTitle());
+
+    // ICPN
+    $this->assertEquals("9876543210123", $album->getIcpn());
+
+    // CatalogNumber
+    $this->assertEquals("TEST-001", (string) $album->getCatalogNumber());
+
+    // Label name (resolved via PartyList: P1 → Test Label)
+    $this->assertEquals("Test Label", $album->getLabelName());
+
+    // PLine and CLine
+    $this->assertEquals(2024, $album->getPLineYear());
+    $this->assertEquals("Test Label", $album->getPLineText());
+    $this->assertEquals(2024, $album->getCLineYear());
+    $this->assertEquals("Test Label", $album->getCLineText());
+
+    // Artists
+    $artists = $album->getArtists();
+    $this->assertNotEmpty($artists);
+    $this->assertEquals("Test Artist", $artists[0]->getName());
+    $this->assertEquals("MainArtist", $artists[0]->getRole());
+
+    // Genre + SubGenre
+    $this->assertEquals("Electronic", $album->getGenre());
+    $this->assertEquals("Trance", $album->getSubGenre());
+
+    // Parental warning
+    $this->assertEquals("NotExplicit", $album->getParentalWarningType());
+
+    // Original release date
+    $this->assertEquals("2024-06-15", $album->getOriginalReleaseDate()->format("Y-m-d"));
+
+    // Not a takedown
+    $this->assertFalse($album->isTakedown());
+
+    // Deal (from first Deal element: SubscriptionModel)
+    $deal = $album->getDeal();
+    $this->assertNotNull($deal);
+    $this->assertContains("SubscriptionModel", $deal->getCommercialModelTypes());
+    $this->assertContains("Worldwide", $deal->getTerritories());
+    $this->assertEquals("2024-06-15", $deal->getStartDate()->format("Y-m-d"));
+
+    // Image front cover (inline in ResourceGroupContentItem, not LinkedReleaseResourceReference)
+    $image = $album->getImageFrontCover();
+    $this->assertNotNull($image);
+    $this->assertEquals("9876543210123.jpg", $image->getFileName());
+
+    // Tracks (2 tracks on 1 CD, image filtered out)
+    $tracks = $album->getTracksPerCd();
+    $this->assertCount(1, $tracks);
+    $this->assertCount(2, $tracks[1]);
+
+    // Track 1: Summer Breeze (Radio Edit)
+    $track1 = $tracks[1][1];
+    $this->assertEquals("Summer Breeze", $track1->getTitle());
+    $this->assertEquals("TEST43S00001", $track1->getIsrc());
+    $this->assertEquals("PT0H2M45S", $track1->getDurationIso());
+    $this->assertEquals(165, $track1->getDurationInSeconds());
+
+    // Track 1 artists
+    $trackArtists = $track1->getArtists();
+    $this->assertNotEmpty($trackArtists);
+    $this->assertEquals("Test Artist", $trackArtists[0]->getName());
+
+    // Track 1 hash sum (ERN 4.3 DetailedHashSum compat)
+    $this->assertEquals("aa11bb22cc33dd44ee55ff6677889900", $track1->getHashSum());
+    $this->assertEquals("MD5", $track1->getHashSumAlgorithm());
+
+    // Track 2: Summer Breeze (original)
+    $track2 = $tracks[1][2];
+    $this->assertEquals("Summer Breeze", $track2->getTitle());
+    $this->assertEquals("TEST43S00002", $track2->getIsrc());
+    $this->assertEquals("PT0H4M39S", $track2->getDurationIso());
+    $this->assertEquals(279, $track2->getDurationInSeconds());
+
+    // Track 2 hash sum
+    $this->assertEquals("11aa22bb33cc44dd55ee66ff77889900", $track2->getHashSum());
+    $this->assertEquals("MD5", $track2->getHashSumAlgorithm());
+  }
+
+  /**
    * Test SimpleAlbum with ERN 4.3 DJ mix (sample 027)
    * DJ mix with 1 main mix + 8 supplemental source tracks, Nu Disco genre
    */
