@@ -69,7 +69,7 @@ class ResourceContainedResourceReferenceType
      *
      * The total Duration of the Resource that has been used in a specified context (this may be less than the total Duration of the Resource) (using the ISO 8601 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
      *
-     * @return \DedexBundle\Entity\Ern43\Ern43Duration
+     * @return \DateInterval
      */
     public function getDurationUsed()
     {
@@ -81,7 +81,7 @@ class ResourceContainedResourceReferenceType
      *
      * The total Duration of the Resource that has been used in a specified context (this may be less than the total Duration of the Resource) (using the ISO 8601 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
      *
-     * @param \DedexBundle\Entity\Ern43\Ern43Duration $durationUsed
+     * @param \DateInterval $durationUsed
      * @return self
      */
     public function setDurationUsed(?\DateInterval $durationUsed = null)

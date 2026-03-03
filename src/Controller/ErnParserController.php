@@ -590,6 +590,10 @@ class ErnParserController {
       // Support both ATOM or regular datetime format
       $format = (mb_strlen($value) > mb_strlen('0000-00-00T00:00:00')) ? "Y-m-d\TH:i:sP" : "Y-m-d\TH:i:s";
       $new_elem = DateTime::createFromFormat($format, $value);
+    } elseif ($type == "\DateInterval") {
+      // Strip fractional seconds (e.g. PT4M23.583S → PT4M23S) that PHP's DateInterval doesn't support
+      $value_default = preg_replace('/(\d+)\.\d+S/', '$1S', $value_default ?? 'PT0S');
+      $new_elem = new \DateInterval($value_default);
     } else {
       try {
         $new_elem = new $type($value_default);

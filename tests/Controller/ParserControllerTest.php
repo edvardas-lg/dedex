@@ -291,15 +291,15 @@ class ParserControllerTest extends TestCase {
     $this->assertEquals("MainArtist", (string) $sr0->getDisplayArtist()[0]->getDisplayArtistRole());
 
     // Sound recording PLine (from SoundRecordingEdition)
-    $pline = $sr0->getPLine()[0];
+    $pline = $sr0->getSoundRecordingEdition()[0]->getPLine()[0];
     $this->assertEquals("2024", $pline->getYear());
     $this->assertEquals("(P) 2024 Test Label", $pline->getPLineText());
 
-    // Sound recording technical details
-    $techDetails = $sr0->getTechnicalDetails();
+    // Sound recording technical details (inside edition for ERN 4.3)
+    $techDetails = $sr0->getSoundRecordingEdition()[0]->getTechnicalDetails();
     $this->assertCount(1, $techDetails);
     $this->assertEquals("T1", $techDetails[0]->getTechnicalResourceDetailsReference());
-    $this->assertEquals("track_001.wav", $techDetails[0]->getFile()->getFileName());
+    $this->assertEquals("track_001.wav", $techDetails[0]->getDeliveryFile()[0]->getFile()->getURI());
 
     // Second sound recording
     $sr1 = $ddex->getResourceList()->getSoundRecording()[1];
@@ -312,7 +312,7 @@ class ParserControllerTest extends TestCase {
     $image = $ddex->getResourceList()->getImage()[0];
     $this->assertEquals("A3", $image->getResourceReference());
     $this->assertEquals("FrontCoverImage", (string) $image->getType());
-    $this->assertEquals("test_cover.jpg", $image->getTechnicalDetails()[0]->getFile()->getFileName());
+    $this->assertEquals("test_cover.jpg", $image->getTechnicalDetails()[0]->getFile()->getURI());
 
     // Releases (1 main release + 2 track releases)
     $release = $ddex->getReleaseList()->getRelease();
@@ -391,11 +391,11 @@ class ParserControllerTest extends TestCase {
     $this->assertEquals("Composer", (string) $contributors[0]->getRole()[0]);
 
     // PLine from SoundRecordingEdition
-    $this->assertEquals("2025", $sr0->getPLine()[0]->getYear());
-    $this->assertEquals("(P) 2025 Sky High Trance", $sr0->getPLine()[0]->getPLineText());
+    $this->assertEquals("2025", $sr0->getSoundRecordingEdition()[0]->getPLine()[0]->getYear());
+    $this->assertEquals("(P) 2025 Sky High Trance", $sr0->getSoundRecordingEdition()[0]->getPLine()[0]->getPLineText());
 
-    // Technical details and file
-    $this->assertEquals("5063642055734_T1_001.wav", $sr0->getTechnicalDetails()[0]->getFile()->getFileName());
+    // Technical details and file (inside edition for ERN 4.3)
+    $this->assertEquals("5063642055734_T1_001.wav", $sr0->getSoundRecordingEdition()[0]->getTechnicalDetails()[0]->getDeliveryFile()[0]->getFile()->getURI());
 
     // Second sound recording (A2) - Radio Edit
     $sr1 = $ddex->getResourceList()->getSoundRecording()[1];
@@ -406,7 +406,7 @@ class ParserControllerTest extends TestCase {
     $image = $ddex->getResourceList()->getImage()[0];
     $this->assertEquals("A3", $image->getResourceReference());
     $this->assertEquals("FrontCoverImage", (string) $image->getType());
-    $this->assertEquals("5063642055734_T3.jpg", $image->getTechnicalDetails()[0]->getFile()->getFileName());
+    $this->assertEquals("5063642055734_T3.jpg", $image->getTechnicalDetails()[0]->getFile()->getURI());
 
     // Releases: 1 main + 2 track releases
     $release = $ddex->getReleaseList()->getRelease();
@@ -537,10 +537,10 @@ class ParserControllerTest extends TestCase {
     $this->assertEquals("The English Concert", $this->resolvePartyName($ddex, $contributors[1]->getContributorPartyReference()));
     $this->assertEquals("Orchestra", (string) $contributors[1]->getRole()[0]);
 
-    // Technical details with hash sum
-    $techDetails = $sr0->getTechnicalDetails();
+    // Technical details with hash sum (inside edition for ERN 4.3)
+    $techDetails = $sr0->getSoundRecordingEdition()[0]->getTechnicalDetails();
     $this->assertCount(1, $techDetails);
-    $this->assertEquals("1.flac", $techDetails[0]->getFile()->getFileName());
+    $this->assertEquals("resources/1.flac", $techDetails[0]->getDeliveryFile()[0]->getFile()->getURI());
   }
 
   /**
@@ -661,8 +661,8 @@ class ParserControllerTest extends TestCase {
     $this->assertCount(1, $artists);
     $this->assertEquals("RIOPY", $this->resolvePartyName($ddex, $artists[0]->getArtistPartyReference()));
 
-    // PLine
-    $pline = $sr0->getPLine()[0];
+    // PLine (inside edition for ERN 4.3)
+    $pline = $sr0->getSoundRecordingEdition()[0]->getPLine()[0];
     $this->assertEquals("2015", $pline->getYear());
 
     // Image: FrontCoverImage

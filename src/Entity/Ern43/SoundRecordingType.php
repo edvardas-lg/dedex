@@ -1469,7 +1469,7 @@ class SoundRecordingType
      *
      * The Duration of the SoundRecording (using the ISO 8601 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
      *
-     * @return \DedexBundle\Entity\Ern43\Ern43Duration
+     * @return \DateInterval
      */
     public function getDuration()
     {
@@ -1481,7 +1481,7 @@ class SoundRecordingType
      *
      * The Duration of the SoundRecording (using the ISO 8601 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
      *
-     * @param \DedexBundle\Entity\Ern43\Ern43Duration $duration
+     * @param \DateInterval $duration
      * @return self
      */
     public function setDuration(\DateInterval $duration)
@@ -2554,51 +2554,5 @@ class SoundRecordingType
         return $this;
     }
 
-    // --- ERN 4.3 delegation methods ---
-    // In ERN 4.3, IDs, technical details, and PLine live inside
-    // SoundRecordingEdition. These methods delegate to the first edition
-    // so the Simplifiers can use the same API as ERN 4.2.
-
-    /**
-     * Delegate to first SoundRecordingEdition's resource IDs.
-     * ERN 4.2 has this directly; ERN 4.3 stores it in editions.
-     *
-     * @return \DedexBundle\Entity\Ern43\ResourceIdType[]
-     */
-    public function getResourceId()
-    {
-        if (!empty($this->soundRecordingEdition) && $this->soundRecordingEdition[0]) {
-            return $this->soundRecordingEdition[0]->getResourceId();
-        }
-        return [];
-    }
-
-    /**
-     * Delegate to first SoundRecordingEdition's technical details.
-     * ERN 4.2 has this directly; ERN 4.3 stores it in editions.
-     *
-     * @return \DedexBundle\Entity\Ern43\TechnicalSoundRecordingDetailsType[]
-     */
-    public function getTechnicalDetails()
-    {
-        if (!empty($this->soundRecordingEdition) && $this->soundRecordingEdition[0]) {
-            return $this->soundRecordingEdition[0]->getTechnicalDetails();
-        }
-        return [];
-    }
-
-    /**
-     * Delegate to first SoundRecordingEdition's PLine.
-     * ERN 4.2 has this directly; ERN 4.3 stores it in editions.
-     *
-     * @return \DedexBundle\Entity\Ern43\PLineWithDefaultType[]
-     */
-    public function getPLine()
-    {
-        if (!empty($this->soundRecordingEdition) && $this->soundRecordingEdition[0]) {
-            return $this->soundRecordingEdition[0]->getPLine();
-        }
-        return [];
-    }
 }
 

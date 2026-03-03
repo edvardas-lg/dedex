@@ -109,20 +109,5 @@ class FileType
         return $this;
     }
 
-    // --- ERN 4.3 compat methods for Simplifiers ---
-
-    public function getFileName()
-    {
-        return $this->uRI !== null ? basename($this->uRI) : null;
-    }
-
-    public function getFilePath()
-    {
-        if ($this->uRI === null) {
-            return null;
-        }
-        $dir = dirname($this->uRI);
-        return ($dir === '.') ? '' : $dir;
-    }
 }
 

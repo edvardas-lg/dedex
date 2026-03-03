@@ -820,7 +820,7 @@ class VideoDeliveryFileType
      *
      * The Duration of the instantiation of the Video if this differs from the Duration provided for the Video itself (using the ISO 8601 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S). This element must only be used if and when there are no royalty reporting implications on this change in duration and when the specific technical instantiation is a clip taken from a technical instantiation representing the whole Video.
      *
-     * @return \DedexBundle\Entity\Ern43\Ern43Duration
+     * @return \DateInterval
      */
     public function getDuration()
     {
@@ -832,7 +832,7 @@ class VideoDeliveryFileType
      *
      * The Duration of the instantiation of the Video if this differs from the Duration provided for the Video itself (using the ISO 8601 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S). This element must only be used if and when there are no royalty reporting implications on this change in duration and when the specific technical instantiation is a clip taken from a technical instantiation representing the whole Video.
      *
-     * @param \DedexBundle\Entity\Ern43\Ern43Duration $duration
+     * @param \DateInterval $duration
      * @return self
      */
     public function setDuration(?\DateInterval $duration = null)

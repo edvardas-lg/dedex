@@ -36,7 +36,7 @@ class SegmentType
      *
      * The start time of the segment, measured from the start of the Resource (using the ISO 8601 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
      *
-     * @return \DedexBundle\Entity\Ern43\Ern43Duration
+     * @return \DateInterval
      */
     public function getStartTime()
     {
@@ -48,7 +48,7 @@ class SegmentType
      *
      * The start time of the segment, measured from the start of the Resource (using the ISO 8601 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
      *
-     * @param \DedexBundle\Entity\Ern43\Ern43Duration $startTime
+     * @param \DateInterval $startTime
      * @return self
      */
     public function setStartTime(\DateInterval $startTime)
@@ -62,7 +62,7 @@ class SegmentType
      *
      * The Duration of the segment (using the ISO 8601 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
      *
-     * @return \DedexBundle\Entity\Ern43\Ern43Duration
+     * @return \DateInterval
      */
     public function getDuration()
     {
@@ -74,7 +74,7 @@ class SegmentType
      *
      * The Duration of the segment (using the ISO 8601 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
      *
-     * @param \DedexBundle\Entity\Ern43\Ern43Duration $duration
+     * @param \DateInterval $duration
      * @return self
      */
     public function setDuration(?\DateInterval $duration = null)
@@ -88,7 +88,7 @@ class SegmentType
      *
      * The end time of the segment, measured from the start of the Resource (using the ISO 8601 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
      *
-     * @return \DedexBundle\Entity\Ern43\Ern43Duration
+     * @return \DateInterval
      */
     public function getEndTime()
     {
@@ -100,7 +100,7 @@ class SegmentType
      *
      * The end time of the segment, measured from the start of the Resource (using the ISO 8601 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
      *
-     * @param \DedexBundle\Entity\Ern43\Ern43Duration $endTime
+     * @param \DateInterval $endTime
      * @return self
      */
     public function setEndTime(?\DateInterval $endTime = null)

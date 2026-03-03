@@ -595,7 +595,7 @@ class ResourceSubGroupType
      *
      * The Duration of the ResourceGroup, if it is a SoundRecording or Video (using the ISO 8601 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
      *
-     * @return \DedexBundle\Entity\Ern43\Ern43Duration
+     * @return \DateInterval
      */
     public function getDuration()
     {
@@ -607,7 +607,7 @@ class ResourceSubGroupType
      *
      * The Duration of the ResourceGroup, if it is a SoundRecording or Video (using the ISO 8601 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
      *
-     * @param \DedexBundle\Entity\Ern43\Ern43Duration $duration
+     * @param \DateInterval $duration
      * @return self
      */
     public function setDuration(?\DateInterval $duration = null)

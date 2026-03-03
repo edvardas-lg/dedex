@@ -40,10 +40,15 @@ class AllSoundRecordingsHaveIsrc extends Rule {
     $valid = true;
     
     foreach ($newReleaseMessage->getResourceList()->getSoundRecording() as $sr) {
-      // ERN 382 uses getSoundRecordingId(), all 4.x versions use getResourceId()
-      $ids = $sr instanceof \DedexBundle\Entity\Ern382\SoundRecordingType
-        ? $sr->getSoundRecordingId()
-        : $sr->getResourceId();
+      // ERN 382 uses getSoundRecordingId(), ERN 4.3 stores ResourceId in editions, other 4.x use getResourceId()
+      if ($sr instanceof \DedexBundle\Entity\Ern382\SoundRecordingType) {
+        $ids = $sr->getSoundRecordingId();
+      } elseif ($sr instanceof \DedexBundle\Entity\Ern43\SoundRecordingType) {
+        $editions = $sr->getSoundRecordingEdition();
+        $ids = !empty($editions) ? $editions[0]->getResourceId() : [];
+      } else {
+        $ids = $sr->getResourceId();
+      }
       if (empty($ids)) {
         return false;
       }

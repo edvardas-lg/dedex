@@ -84,6 +84,10 @@ class SimpleEntity {
 		return $version[0] === '4';
 	}
 
+	protected function isVersion43OrLater(string $version): bool {
+		return $this->isVersion4x($version) && intval(substr($version, 0, 2)) >= 43;
+	}
+
 	/**
 	 * Build an index of party references to full names from the PartyList.
 	 * Used for ERN 4.x where artist/contributor names are stored in a

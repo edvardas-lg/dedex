@@ -789,7 +789,7 @@ class CueType
      *
      * The start time of the Creation, measured from the start of the Resource from which the CueSheet is referenced (using the ISO 8601 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
      *
-     * @return \DedexBundle\Entity\Ern43\Ern43Duration
+     * @return \DateInterval
      */
     public function getStartTime()
     {
@@ -801,7 +801,7 @@ class CueType
      *
      * The start time of the Creation, measured from the start of the Resource from which the CueSheet is referenced (using the ISO 8601 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
      *
-     * @param \DedexBundle\Entity\Ern43\Ern43Duration $startTime
+     * @param \DateInterval $startTime
      * @return self
      */
     public function setStartTime(?\DateInterval $startTime = null)
@@ -815,7 +815,7 @@ class CueType
      *
      * The Duration of the use of the Creation that is referenced in the CueCreationReference (using the ISO 8601 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
      *
-     * @return \DedexBundle\Entity\Ern43\Ern43Duration
+     * @return \DateInterval
      */
     public function getDuration()
     {
@@ -827,7 +827,7 @@ class CueType
      *
      * The Duration of the use of the Creation that is referenced in the CueCreationReference (using the ISO 8601 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
      *
-     * @param \DedexBundle\Entity\Ern43\Ern43Duration $duration
+     * @param \DateInterval $duration
      * @return self
      */
     public function setDuration(?\DateInterval $duration = null)
@@ -841,7 +841,7 @@ class CueType
      *
      * The end time of the Creation, measured from the start of the Resource from which the CueSheet is referenced (using the ISO 8601 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
      *
-     * @return \DedexBundle\Entity\Ern43\Ern43Duration
+     * @return \DateInterval
      */
     public function getEndTime()
     {
@@ -853,7 +853,7 @@ class CueType
      *
      * The end time of the Creation, measured from the start of the Resource from which the CueSheet is referenced (using the ISO 8601 PT[[hhH]mmM]ssS format, where lower case characters indicate variables, upper case characters are part of the xs:string, e.g. one hour, two minutes and three seconds would be PT1H2M3S). The seconds section ss may include fractions (e.g. one minute and 30.5 seconds would be PT1M30.5S).
      *
-     * @param \DedexBundle\Entity\Ern43\Ern43Duration $endTime
+     * @param \DateInterval $endTime
      * @return self
      */
     public function setEndTime(?\DateInterval $endTime = null)

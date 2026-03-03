@@ -1163,16 +1163,5 @@ class DealTermsType
         return $this;
     }
 
-    // --- ERN 4.3 compat methods for Simplifiers ---
-
-    public function getUsage()
-    {
-        return [$this];
-    }
-
-    public function getDistributionChannelType()
-    {
-        return [];
-    }
 }
 

@@ -358,19 +358,5 @@ class TechnicalSoundRecordingDetailsType
         return $this;
     }
 
-    // --- Delegation: return first File from DeliveryFile chain (matches 41/411/42 single-file API) ---
-
-    public function getFile()
-    {
-        if (is_array($this->deliveryFile)) {
-            foreach ($this->deliveryFile as $df) {
-                $file = $df->getFile();
-                if ($file !== null) {
-                    return $file;
-                }
-            }
-        }
-        return null;
-    }
 }
 
