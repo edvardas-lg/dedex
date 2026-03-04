@@ -217,13 +217,7 @@ class DealTermsType
      */
     public function getTerritoryCode()
     {
-        $result = [];
-        if (is_array($this->territoryCode)) {
-            foreach ($this->territoryCode as $tc) {
-                $result[] = is_object($tc) ? (string) $tc : $tc;
-            }
-        }
-        return $result;
+        return $this->territoryCode;
     }
 
     /**

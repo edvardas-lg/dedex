@@ -126,7 +126,7 @@ class SimpleDeal extends SimpleEntity {
 
 		// Territory codes
 		foreach ($deal->getDealTerms()->getTerritoryCode() as $territory) {
-			$this->territories[] = $territory;
+			$this->territories[] = is_object($territory) ? (string) $territory : $territory;
 		}
 	}
 	
